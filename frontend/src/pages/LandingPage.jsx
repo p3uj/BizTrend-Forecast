@@ -1,14 +1,20 @@
 import "../css/custom-colors.css";
-import styles from "../css/LandingPage.module.css";
+import "../css/LandingPage.css";
 import illustration1 from "../assets/img/illustration1.png";
 import illustration2 from "../assets/img/illustration2.png";
 import illustration3 from "../assets/img/illustration3.png";
 import systemIcon from "../assets/icons/system_icon.png";
+import { useNavigate } from "react-router-dom";
 
 function LandingPage() {
+  const navigate = useNavigate();
+  const LogIn = () => {
+    navigate("/login");
+  };
+
   return (
-    <main>
-      <section className={styles.leftPanel}>
+    <main className="landing-page">
+      <section className="left-panel">
         <h1>
           BIZTREND
           <br />
@@ -21,27 +27,29 @@ function LandingPage() {
         <p>Ready to explore?</p>
         <p>Select your user type and we'll guide the way!</p>
         <br />
-        <div className={`${styles.buttonsGroup} ${styles.extraStyle}`}>
-          <button className={styles.adminBtn}>Admin User</button>
-          <button className={styles.guestBtn}>Gust User</button>
+        <div className="buttons-group extra-style">
+          <button className="admin-btn" onClick={LogIn}>
+            Admin User
+          </button>
+          <button className="guest-btn">Gust User</button>
         </div>
       </section>
-      <section className={styles.rightPanel}>
-        <div className={styles.bigCircle}></div>
-        <div className={styles.smallCircleTop}></div>
-        <div className={styles.smallCircleBottom}></div>
+      <section className="right-panel">
+        <div className="big-circle"></div>
+        <div className="small-circle-top"></div>
+        <div className="small-circle-bottom"></div>
         <img
-          className={styles.illustrationTop}
+          className="illustration-top"
           src={illustration3}
           alt="illustration1"
         />
         <img
-          className={styles.illustrationCenter}
+          className="illustration-middle"
           src={illustration2}
           alt="illustration2"
         />
         <img
-          className={styles.illustrationBottom}
+          className="illustration-bottom"
           src={illustration1}
           alt="illustration3"
         />
