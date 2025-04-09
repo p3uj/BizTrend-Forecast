@@ -29,12 +29,32 @@ main section {
   padding: 105px;
 }
 
+.leftPanel h1 {
+  letter-spacing: 25px;
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.leftPanel span {
+  margin-left: 20px;
+}
+
+.leftPanel img {
+  height: 30px;
+}
+
+.leftPanel h4 {
+  font-weight: 600;
+  letter-spacing: 3px;
+}
+
 button {
   font-size: 20px;
   padding: 16px 24px;
   border-radius: 40px;
   background-color: white;
   color: var(--secondary-color);
+  transition: ease 0.5s;
 }
 
 .adminBtn:hover {
@@ -69,16 +89,160 @@ button {
   position: relative;
   display: flex;
   width: 50vw;
-  overflow: hidden;
+  height: 100vh;
 }
 
 .bigCircle {
   position: absolute;
-  left: 80%;
   height: 300px;
-  width: 300px;
-  border-radius: 50%;
+  width: 150px;
+  border-radius: 150px 0 0 150px;
   background-color: var(--btn-color);
   box-shadow: 0 0 0 50px rgba(79, 70, 229, 0.25),
     0 0 0 100px rgba(79, 70, 229, 0.25), 0 0 0 150px rgba(79, 70, 229, 0.25);
+  align-self: end;
+  animation: bigCircleShadow 2s ease;
+  transition: ease 0.3s, box-shadow ease 0.6s;
+}
+
+.bigCircle:hover {
+  background-color: var(--forecast-active-color);
+  box-shadow: 0 0 0 50px rgba(255, 215, 0, 0.25),
+    0 0 0 100px rgba(255, 215, 0, 0.25), 0 0 0 150px rgba(255, 215, 0, 0.25);
+}
+
+@keyframes bigCircleShadow {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    box-shadow: 0 0 0 50px rgba(79, 70, 229, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 0 50px rgba(79, 70, 229, 0.25),
+      0 0 0 100px rgba(79, 70, 229, 0.25);
+  }
+  100% {
+    box-shadow: 0 0 0 50px rgba(79, 70, 229, 0.25),
+      0 0 0 100px rgba(79, 70, 229, 0.1), 0 0 0 150px rgba(79, 70, 229, 0.25);
+  }
+}
+
+.smallCircleTop {
+  position: absolute;
+  height: 25px;
+  width: 50px;
+  border-radius: 0 0 50px 50px;
+  background-color: var(--btn-color);
+  box-shadow: 0 0 0 10px rgba(79, 70, 229, 0.25),
+    0 0 0 20px rgba(79, 70, 229, 0.25), 0 0 0 30px rgba(79, 70, 229, 0.25);
+  align-self: end;
+  top: 0;
+  margin-right: 200px;
+  animation: smallCircleShadow 2s ease;
+  transition: ease 0.3s, box-shadow ease 0.6s;
+}
+
+.smallCircleBottom {
+  position: absolute;
+  height: 25px;
+  width: 50px;
+  border-radius: 50px 50px 0 0;
+  background-color: var(--btn-color);
+  box-shadow: 0 0 0 10px rgba(79, 70, 229, 0.25),
+    0 0 0 20px rgba(79, 70, 229, 0.25), 0 0 0 30px rgba(79, 70, 229, 0.25);
+  align-self: end;
+  bottom: 0;
+  margin-right: 200px;
+  animation: smallCircleShadow 2s ease;
+  transition: ease 0.3s, box-shadow ease 0.6s;
+}
+
+.smallCircleTop:hover,
+.smallCircleBottom:hover {
+  background-color: var(--forecast-active-color);
+  box-shadow: 0 0 0 10px rgba(255, 215, 0, 0.25),
+    0 0 0 20px rgba(255, 215, 0, 0.25), 0 0 0 30px rgba(255, 215, 0, 0.25);
+}
+
+@keyframes smallCircleShadow {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    box-shadow: 0 0 0 10px rgba(79, 70, 229, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(79, 70, 229, 0.25),
+      0 0 0 20px rgba(79, 70, 229, 0.25);
+  }
+  100% {
+    box-shadow: 0 0 0 10px rgba(79, 70, 229, 0.25),
+      0 0 0 20px rgba(79, 70, 229, 0.1), 0 0 0 30px rgba(79, 70, 229, 0.25);
+  }
+}
+
+.illustrationBottom {
+  position: absolute;
+  height: 125px;
+  width: 125px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  border: 2px solid var(--secondary-color);
+  bottom: 0;
+  align-self: end;
+  margin-right: 315px;
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: fadeIn 1s ease forwards;
+  animation-delay: 0.3s;
+  transition: ease 0.3s, box-shadow ease 0.6s;
+}
+
+.illustrationCenter {
+  position: absolute;
+  height: 300px;
+  width: 300px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  border: 2px solid var(--secondary-color);
+  opacity: 0;
+  animation: fadeIn 1s ease forwards;
+  animation-delay: 0.5s;
+  transition: ease 0.3s, box-shadow ease 0.6s;
+}
+
+.illustrationTop {
+  position: absolute;
+  height: 125px;
+  width: 125px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  border: 2px solid var(--secondary-color);
+  top: 0;
+  align-self: end;
+  margin-right: 315px;
+  margin-top: 40px;
+  opacity: 0;
+  animation: fadeIn 1s ease forwards;
+  animation-delay: 0.7s;
+  transition: ease 0.3s, box-shadow ease 0.6s;
+}
+
+.illustrationTop:hover,
+.illustrationCenter:hover,
+.illustrationBottom:hover {
+  background-color: rgba(79, 70, 229, 0.3);
+  border: 2px solid transparent;
+  box-shadow: 0 0 0 10px rgba(79, 70, 229, 0.1),
+    0 0 0 20px rgba(79, 70, 229, 0.1), 0 0 0 30px rgba(79, 70, 229, 0.1);
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
