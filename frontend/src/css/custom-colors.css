@@ -3,4 +3,8 @@
   --secondary-color: #232333;
 
   --btn-color: #4f46e5;
+  --btn-color: rgba(79, 70, 229, 0.8);
+
+  --forecast-active-color: #ffd700;
+  --forecast-inactive-color: rgba(255, 215, 0, 0.7);
 }
