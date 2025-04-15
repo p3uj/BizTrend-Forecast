@@ -31,7 +31,7 @@ function LandingPage() {
           <button className="admin-btn" onClick={LogIn}>
             Admin User
           </button>
-          <button className="guest-btn">Gust User</button>
+          <button className="guest-btn">Guest User</button>
         </div>
       </section>
       <section className="right-panel">
