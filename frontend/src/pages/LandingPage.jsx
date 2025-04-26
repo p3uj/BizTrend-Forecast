@@ -8,9 +8,6 @@ import { useNavigate } from "react-router-dom";
 
 function LandingPage() {
   const navigate = useNavigate();
-  const LogIn = () => {
-    navigate("/login");
-  };
 
   return (
     <main className="landing-page">
@@ -28,10 +25,12 @@ function LandingPage() {
         <p>Select your user type and we'll guide the way!</p>
         <br />
         <div className="buttons-group extra-style">
-          <button className="admin-btn" onClick={LogIn}>
+          <button className="admin-btn" onClick={() => navigate("/login")}>
             Admin User
           </button>
-          <button className="guest-btn">Guest User</button>
+          <button className="guest-btn" onClick={() => navigate("/home")}>
+            Guest User
+          </button>
         </div>
       </section>
       <section className="right-panel">
