@@ -49,7 +49,12 @@
 .login-page fieldset {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
+}
+
+.login-page fieldset label {
+  font-weight: 500;
+  color: var(--secondary-dark-color);
 }
 
 .login-page form input {
@@ -73,10 +78,16 @@
   font-size: 1rem;
   font-weight: 600;
   transition: ease 0.5s;
+  cursor: pointer;
 }
 
-.login-page button:hover {
+.login-page button:hover:not(.login-page button:disabled) {
   background-color: var(--btn-hover-color);
+}
+
+.login-page button:disabled {
+  background-color: #d3d3d3;
+  cursor: no-drop;
 }
 
 .login-page a {
@@ -87,4 +98,9 @@
 
 .login-page a:hover {
   color: var(--btn-hover-color);
+}
+
+.login-page span {
+  font-size: 0.875rem;
+  color: red;
 }
