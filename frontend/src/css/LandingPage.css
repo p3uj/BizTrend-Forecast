@@ -55,6 +55,7 @@
   background-color: white;
   color: var(--primary-dark-color);
   transition: ease 0.5s;
+  cursor: pointer;
 }
 
 .admin-btn:hover {
