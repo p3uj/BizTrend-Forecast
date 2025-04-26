@@ -87,7 +87,8 @@
 
 .login-page button:disabled {
   background-color: #d3d3d3;
-  cursor: no-drop;
+  cursor: not-allowed;
+  color: #808080;
 }
 
 .login-page a {
