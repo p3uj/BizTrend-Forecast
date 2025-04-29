@@ -33,12 +33,12 @@ function Navbar({ showModal }) {
           <a href="#graphs-visual">Graphs Visual</a>
         </li>
         <li onClick={showModal}>Upload Dataset</li>
-        <li
+        {/* <li
           className={activeTab === ".about" ? "active" : ""}
           onClick={() => setActiveTab(".about")}
         >
           <a href="#about">About</a>
-        </li>
+        </li> */}
       </ul>
     </nav>
   );
