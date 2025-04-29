@@ -3,10 +3,11 @@
   --secondary-color: #f8fafc;
   --primary-dark-color: #232333;
   --secondary-dark-color: rgba(35, 35, 51, 0.8);
+  --primary-dark-inactive-color: #4f4f5c;
 
   --btn-color: #4f46e5;
   --btn-hover-color: rgba(79, 70, 229, 0.8);
 
   --forecast-active-color: #ffd700;
-  --forecast-inactive-color: rgba(255, 215, 0, 0.7);
+  --forecast-inactive-color: #ffe34c;
 }
