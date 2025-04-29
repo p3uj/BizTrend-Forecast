@@ -4,15 +4,16 @@
   width: 100vw;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  z-index: 2;
+  position: fixed;
+  z-index: 10;
 }
 
 .upload-dataset-modal .overlay {
   display: flex;
   height: 100%;
   width: 100%;
-  background-color: rgba(211, 211, 211, 0.8);
+  /* background-color: rgba(211, 211, 211, 0.8); */
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .upload-dataset-modal .content {
