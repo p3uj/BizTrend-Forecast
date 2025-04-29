@@ -1,5 +1,5 @@
 nav {
-  position: sticky;
+  position: fixed;
   top: 0;
   background-color: var(--primary-dark-color);
   height: 60px;
@@ -8,6 +8,16 @@ nav {
   justify-content: center;
   box-shadow: 0px 0px 80px 30px rgba(43, 43, 63, 0.3);
   z-index: 1;
+}
+
+.filter-feed {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 0 0 1px var(--btn-color);
+  padding: 8px 12px;
+  position: absolute;
+  left: 38px;
 }
 
 nav ul {
