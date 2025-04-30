@@ -1,24 +1,74 @@
 import Navbar from "../components/NavBar";
 import UploadDataset from "../components/modals/UploadDataset";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../css/Home.css";
+import Card from "../components/Card";
 
 export default function Home() {
   const [isUploadDataset, setUploadDataset] = useState(false);
-  const [isActive, setActive] = useState(true);
   const [activeFilter, setActiveFilter] = useState("Growing Industry Sector");
+  const [growthSampleData, setGrowthSampleData] = useState([]);
+  const [revenueSampleData, setRevenueSampleData] = useState([]);
+  const [leastSaturatedSampleData, setLeastSaturatedSampleData] = useState([]);
+  const [title, setTitle] = useState(null);
 
-  const isFilterFeedHover =
-    localStorage.getItem("isFilterFeedHover") === "true";
+  // Fethch the sample data from the JSON files.
+  useEffect(() => {
+    fetch("Industry-Growth-Predictions.json")
+      .then((response) => response.json())
+      .then((json) => setGrowthSampleData(json))
+      .catch((error) => console.error("Error loading growth data: ", error));
+    fetch("Industry-Revenue-Predictions.json")
+      .then((response) => response.json())
+      .then((json) => setRevenueSampleData(json))
+      .catch((error) => console.error("Error loading revenue data: ", error));
+    fetch("Least-Crowded-Industry-Predictions.json")
+      .then((response) => response.json())
+      .then((json) => setLeastSaturatedSampleData(json))
+      .catch((error) =>
+        console.error("Error loading least saturated data: ", error)
+      );
+  }, []);
 
-  console.log("hover: ", isFilterFeedHover);
+  // Set the title based on the active filter.
+  useEffect(() => {
+    if (activeFilter == "Growing Industry Sector") {
+      setTitle("Top 5 Growing Industry Sectors in 2026");
+    } else if (activeFilter == "Industry Sector Revenue") {
+      setTitle("Top 5 Industry Sectors by Revenue in 2026");
+    } else {
+      setTitle(
+        "Top 5 Least Crowded Industry Sectors in 2026 (Based on Business Count)"
+      );
+    }
+  }, [activeFilter]);
 
-  // Set if the user can scroll.
+  // Set this to prevent the user from scrolling when the modal is open.
   if (isUploadDataset) {
     document.body.style.overflow = "hidden"; // Prevent the user from scrolling when the modal is open.
   } else {
     document.body.style.overflow = "auto"; // Ensure the user can scroll when the modal is close.
   }
+
+  // Function to get the sample data based on the active filter, type, and top number.
+  const sampleData = (type, topNumber, filterResult) => {
+    if (filterResult == "Growing Industry Sector") {
+      // Find the data based on the type and top number then return it to the calling function.
+      return growthSampleData.find(
+        (item) => item.type === type && item.rank === topNumber
+      );
+    } else if (filterResult == "Industry Sector Revenue") {
+      // Find the data based on the type and top number then return it to the calling function.
+      return revenueSampleData.find(
+        (item) => item.type === type && item.rank === topNumber
+      );
+    } else if (filterResult == "Least Crowded") {
+      // Find the data based on the type and top number then return it to the calling function.
+      return leastSaturatedSampleData.find(
+        (item) => item.type === type && item.rank === topNumber
+      );
+    }
+  };
 
   return (
     <>
@@ -56,276 +106,126 @@ export default function Home() {
             <div className="line">
               <div
                 className={`dot ${
-                  activeFilter == "Least Saturated" ? "active" : ""
+                  activeFilter == "Least Crowded" ? "active" : ""
                 }`}
-                onClick={() => setActiveFilter("Least Saturated")}
+                onClick={() => setActiveFilter("Least Crowded")}
               >
-                <span>Least Saturated</span>
+                <span>Least Crowded</span>
               </div>
             </div>
           </div>
-          <h1>Short-Term: Top 5 {activeFilter} for 2026</h1>
+          <h1>Short-Term Outlook: {title}</h1>
           <section className="short-term-contents">
-            {/* TOP 4 */}
-            <article
-              className="card-top-4"
-              onMouseEnter={() => setActive(false)}
-              onMouseLeave={() => setActive(true)}
-            >
-              <div className="circle"></div>
-              <div className="info-container">
-                <h1>4</h1>
-                <div className="paragraph-container">
-                  <p>
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                    Ex, deleniti. Vero architecto minima expedita ad ipsum quis
-                    esse ipsam possimus nostrum nisi obcaecati aliquid libero
-                    odio, quisquam natus, at temporibus. Lorem ipsum dolor sit
-                    amet consectetur adipisicing elit.
-                  </p>
-                </div>
-                <h1 className="industry">Information and Communication</h1>
-              </div>
-            </article>
-
-            {/* TOP 2 */}
-            <article
-              className="card-top-2"
-              onMouseEnter={() => setActive(false)}
-              onMouseLeave={() => setActive(true)}
-            >
-              <div className="circle"></div>
-              <div className="info-container">
-                <h1>2</h1>
-                <div className="paragraph-container">
-                  <p>
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                    Ex, deleniti. Vero architecto minima expedita ad ipsum quis
-                    esse ipsam possimus nostrum nisi obcaecati aliquid libero
-                    odio, quisquam natus, at temporibus. Lorem ipsum dolor sit
-                    amet consectetur adipisicing elit. Iusto, expedita cumque
-                    dolores quia a qui odit officiis ut aperiam provident autem
-                    optio sunt temporibus nihil architecto impedit officia, non
-                    dignissimos! Lorem ipsum dolor sit amet consectetur
-                    adipisicing elit. Nemo neque libero iste. Vitae atque, ex
-                    delectus deserunt similique repellendus. Vero dolore nostrum
-                    dicta officia
-                  </p>
-                </div>
-                <h1 className="industry">Information and Communication</h1>
-              </div>
-            </article>
-
-            {/* TOP 1 */}
-            <article className={`card-top-1 ${isActive ? "active" : ""}`}>
-              <div className={`circle ${isActive ? "active" : ""}`}></div>
-              <div className={`info-container ${isActive ? "active" : ""}`}>
-                <h1>1</h1>
-                <div
-                  className={`paragraph-container ${isActive ? "active" : ""}`}
-                >
-                  <p>
-                    By 2026, renewable energy is projected to achieve a growth
-                    rate of 18.5%, which marks an increase of{" "}
-                    <span className="positive">+3.5</span> percentage points
-                    from 15% in 2025, based on current historical trend
-                    analysis.
-                  </p>
-                </div>
-                <h1 className={`industry ${isActive ? "active" : ""}`}>
-                  Information and Communication
-                </h1>
-              </div>
-            </article>
-
-            {/* TOP 3 */}
-            <article
-              className="card-top-3"
-              onMouseEnter={() => setActive(false)}
-              onMouseLeave={() => setActive(true)}
-            >
-              <div className="circle"></div>
-              <div className="info-container">
-                <h1>3</h1>
-                <div className="paragraph-container">
-                  <p>
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                    Ex, deleniti. Vero architecto minima expedita ad ipsum quis
-                    esse ipsam possimus nostrum nisi obcaecati aliquid libero
-                    odio, quisquam natus, at temporibus. Lorem ipsum dolor sit
-                    amet consectetur adipisicing elit. Iusto, expedita cumque
-                    dolores quia a qui odit officiis ut aperiam provident autem
-                    optio sunt temporibus nihil architecto impedit officia, non
-                    dignissimos! Lorem ipsum dolor sit amet consectetur
-                    adipisicing elit. Nemo neque libero iste. Vitae atque, ex
-                    delectus deserunt similique repellendus. Vero dolore nostrum
-                    dicta officia, dignissimos totam non voluptatem maxime
-                    porro.
-                  </p>
-                </div>
-                <h1 className="industry">Information and Communication</h1>
-              </div>
-            </article>
-
-            {/* TOP 5 */}
-            <article
-              className="card-top-5"
-              onMouseEnter={() => setActive(false)}
-              onMouseLeave={() => setActive(true)}
-            >
-              <div className="circle"></div>
-              <div className="info-container">
-                <h1>5</h1>
-                <div className="paragraph-container">
-                  <p>
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                    Ex, deleniti. Vero architecto minima expedita ad ipsum quis
-                    esse ipsam possimus nostrum nisi obcaecati aliquid libero
-                    odio, quisquam natus, at temporibus. Lorem ipsum dolor sit
-                    amet consectetur adipisicing elit. Iusto, expedita cumque
-                    dolores quia a qui odit officiis ut aperiam provident autem
-                    optio sunt temporibus nihil architecto impedit officia, non
-                    dignissimos! Lorem ipsum dolor sit amet consectetur
-                    adipisicing elit.
-                  </p>
-                </div>
-                <h1 className="industry">Information and Communication</h1>
-              </div>
-            </article>
+            <Card
+              topNumber={4}
+              type="short-term"
+              data={sampleData("short-term", 4, activeFilter)}
+              filterResult={activeFilter}
+            />
+            <Card
+              topNumber={2}
+              type="short-term"
+              data={sampleData("short-term", 2, activeFilter)}
+              filterResult={activeFilter}
+            />
+            <Card
+              topNumber={1}
+              type="short-term"
+              data={sampleData("short-term", 1, activeFilter)}
+              filterResult={activeFilter}
+            />
+            <Card
+              topNumber={3}
+              type="short-term"
+              data={sampleData("short-term", 3, activeFilter)}
+              filterResult={activeFilter}
+            />
+            <Card
+              topNumber={5}
+              type="short-term"
+              data={sampleData("short-term", 5, activeFilter)}
+              filterResult={activeFilter}
+            />
           </section>
         </section>
 
         {/* Mid-term Trends */}
         <section className="mid-term" id="mid-term">
-          <h1>Top 5 Mid-Term Forecasted Business Industry Trends for 2028</h1>
+          <h1>Mid-Term Outlook: {title}</h1>
           <section className="mid-term-contents">
-            {/* TOP 4 */}
-            <article className="card-top-4">
-              <div className="circle"></div>
-              <div className="info-container">
-                <h1>4</h1>
-                <div className="paragraph-container">
-                  <p>
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                    Ex, deleniti. Vero architecto minima expedita ad ipsum quis
-                    esse ipsam possimus nostrum nisi obcaecati aliquid libero
-                    odio, quisquam natus, at temporibus. Lorem ipsum dolor sit
-                    amet consectetur adipisicing elit.
-                  </p>
-                </div>
-                <h1 className="industry">Information and Communication</h1>
-              </div>
-            </article>
-
-            {/* TOP 2 */}
-            <article className="card-top-2">
-              <div className="circle"></div>
-              <div className="info-container">
-                <h1>2</h1>
-                <div className="paragraph-container">
-                  <p>
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                    Ex, deleniti. Vero architecto minima expedita ad ipsum quis
-                    esse ipsam possimus nostrum nisi obcaecati aliquid libero
-                    odio, quisquam natus, at temporibus. Lorem ipsum dolor sit
-                    amet consectetur adipisicing elit. Iusto, expedita cumque
-                    dolores quia a qui odit officiis ut aperiam provident autem
-                    optio sunt temporibus nihil architecto impedit officia, non
-                    dignissimos! Lorem ipsum dolor sit amet consectetur
-                    adipisicing elit. Nemo neque libero iste. Vitae atque, ex
-                    delectus deserunt similique repellendus. Vero dolore nostrum
-                    dicta officia
-                  </p>
-                </div>
-                <h1 className="industry">Information and Communication</h1>
-              </div>
-            </article>
-
-            {/* TOP 1 */}
-            <article className="card-top-1">
-              <div className="circle"></div>
-              <div className="info-container">
-                <h1>1</h1>
-                <div className="paragraph-container">
-                  <p>
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Laborum, quis blanditiis officia provident facilis veniam
-                    molestias ullam fugiat delectus repellat vel quo recusandae,
-                    officiis consequatur labore soluta quas, possimus aut? Lorem
-                    ipsum dolor sit amet consectetur adipisicing elit. Neque
-                    voluptatum ratione ex debitis earum aspernatur impedit saepe
-                    odit corporis alias molestias cum nobis, modi distinctio
-                    commodi obcaecati aliquam quia dolorem. Lorem ipsum dolor
-                    sit amet consectetur, adipisicing elit. Placeat, modi dolor
-                    maiores sapiente officiis beatae facilis adipisci ea, iure
-                    voluptatum voluptate perspiciatis nisi? Repellat facilis
-                    cumque quas laudantium accusantium temporibus. Lorem ipsum
-                    dolor sit amet consectetur, adipisicing elit. Voluptates
-                    necessitatibus dolor, delectus, dolorem cum aperiam eveniet
-                    alias eligendi rerum ut dicta. Sit assumenda sint nostrum
-                    labore maxime ratione magnam consequuntur.
-                  </p>
-                </div>
-                <h1 className="industry">Information and Communication</h1>
-              </div>
-            </article>
-
-            {/* TOP 3 */}
-            <article className="card-top-3">
-              <div className="circle"></div>
-              <div className="info-container">
-                <h1>3</h1>
-                <div className="paragraph-container">
-                  <p>
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                    Ex, deleniti. Vero architecto minima expedita ad ipsum quis
-                    esse ipsam possimus nostrum nisi obcaecati aliquid libero
-                    odio, quisquam natus, at temporibus. Lorem ipsum dolor sit
-                    amet consectetur adipisicing elit. Iusto, expedita cumque
-                    dolores quia a qui odit officiis ut aperiam provident autem
-                    optio sunt temporibus nihil architecto impedit officia, non
-                    dignissimos! Lorem ipsum dolor sit amet consectetur
-                    adipisicing elit. Nemo neque libero iste. Vitae atque, ex
-                    delectus deserunt similique repellendus. Vero dolore nostrum
-                    dicta officia, dignissimos totam non voluptatem maxime
-                    porro.
-                  </p>
-                </div>
-                <h1 className="industry">Information and Communication</h1>
-              </div>
-            </article>
-
-            {/* TOP 5 */}
-            <article className="card-top-5">
-              <div className="circle"></div>
-              <div className="info-container">
-                <h1>5</h1>
-                <div className="paragraph-container">
-                  <p>
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                    Ex, deleniti. Vero architecto minima expedita ad ipsum quis
-                    esse ipsam possimus nostrum nisi obcaecati aliquid libero
-                    odio, quisquam natus, at temporibus. Lorem ipsum dolor sit
-                    amet consectetur adipisicing elit. Iusto, expedita cumque
-                    dolores quia a qui odit officiis ut aperiam provident autem
-                    optio sunt temporibus nihil architecto impedit officia, non
-                    dignissimos! Lorem ipsum dolor sit amet consectetur
-                    adipisicing elit.
-                  </p>
-                </div>
-                <h1 className="industry">Information and Communication</h1>
-              </div>
-            </article>
+            <Card
+              topNumber={4}
+              type="mid-term"
+              data={sampleData("mid-term", 4, activeFilter)}
+              filterResult={activeFilter}
+              color="dark"
+            />
+            <Card
+              topNumber={2}
+              type="mid-term"
+              data={sampleData("mid-term", 2, activeFilter)}
+              filterResult={activeFilter}
+              color="dark"
+            />
+            <Card
+              topNumber={1}
+              type="mid-term"
+              data={sampleData("mid-term", 1, activeFilter)}
+              filterResult={activeFilter}
+              color="dark"
+            />
+            <Card
+              topNumber={3}
+              type="mid-term"
+              data={sampleData("mid-term", 3, activeFilter)}
+              filterResult={activeFilter}
+              color="dark"
+            />
+            <Card
+              topNumber={5}
+              type="mid-term"
+              data={sampleData("mid-term", 5, activeFilter)}
+              filterResult={activeFilter}
+              color="dark"
+            />
           </section>
         </section>
 
-        <section className="graphs-visual" id="graphs-visual">
-          <h1>
-            Graphical Visualization of Forecasted Business Industry Trends
-          </h1>
-        </section>
-        <section className="about" id="about">
-          <h1>About</h1>
+        {/* Long-term Trends */}
+        <section className="long-term" id="long-term">
+          <h1>Long-Term Outlook: {title}</h1>
+          <section className="long-term-contents">
+            <Card
+              topNumber={4}
+              type="long-term"
+              data={sampleData("long-term", 4, activeFilter)}
+              filterResult={activeFilter}
+            />
+            <Card
+              topNumber={2}
+              type="long-term"
+              data={sampleData("long-term", 2, activeFilter)}
+              filterResult={activeFilter}
+            />
+            <Card
+              topNumber={1}
+              type="long-term"
+              data={sampleData("long-term", 1, activeFilter)}
+              filterResult={activeFilter}
+            />
+            <Card
+              topNumber={3}
+              type="long-term"
+              data={sampleData("long-term", 3, activeFilter)}
+              filterResult={activeFilter}
+            />
+            <Card
+              topNumber={5}
+              type="long-term"
+              data={sampleData("long-term", 5, activeFilter)}
+              filterResult={activeFilter}
+            />
+          </section>
         </section>
       </main>
     </>
