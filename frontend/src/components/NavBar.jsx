@@ -10,28 +10,43 @@ function Navbar({ showModal }) {
       <ul>
         <li
           className={activeTab === ".short-term" ? "active" : ""}
-          onClick={() => setActiveTab(".short-term")}
+          onClick={() => {
+            setActiveTab(".short-term"),
+              document
+                .querySelector("#short-term")
+                .scrollIntoView({ behavior: "smooth" });
+          }}
         >
           <a href="#short-term">Short-Term</a>
         </li>
         <li
           className={activeTab === ".mid-term" ? "active" : ""}
-          onClick={() => setActiveTab(".mid-term")}
+          onClick={() => {
+            setActiveTab(".mid-term"),
+              document
+                .querySelector("#mid-term")
+                .scrollIntoView({ behavior: "smooth" });
+          }}
         >
           <a href="#mid-term">Mid-Term</a>
         </li>
         <li
           className={activeTab === ".long-term" ? "active" : ""}
-          onClick={() => setActiveTab(".long-term")}
+          onClick={() => {
+            setActiveTab(".long-term"),
+              document
+                .querySelector("#long-term")
+                .scrollIntoView({ behavior: "smooth" });
+          }}
         >
           <a href="#long-term">Long-Term</a>
         </li>
-        <li
+        {/* <li
           className={activeTab === ".graphs-visual" ? "active" : ""}
           onClick={() => setActiveTab(".graphs-visual")}
         >
           <a href="#graphs-visual">Graphs Visual</a>
-        </li>
+        </li> */}
         <li onClick={showModal}>Upload Dataset</li>
         {/* <li
           className={activeTab === ".about" ? "active" : ""}
