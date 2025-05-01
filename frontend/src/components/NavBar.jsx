@@ -12,6 +12,24 @@ function Navbar({ showModal }) {
     });
   };
 
+  const sections = document.querySelectorAll(
+    "section.short-term, section.mid-term, section.long-term"
+  );
+  window.addEventListener("scroll", () => {
+    let current = "";
+
+    sections.forEach((section) => {
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.clientHeight;
+
+      if (window.scrollY >= sectionTop - sectionHeight / 2) {
+        current = section.getAttribute("id");
+      }
+    });
+
+    setActiveTab(`.${current}`);
+  });
+
   return (
     <nav>
       <ul>
