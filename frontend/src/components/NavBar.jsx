@@ -1,9 +1,16 @@
-// import "../css/custom-colors.css";
 import "../css/navbar.css";
 import { useState } from "react";
 
 function Navbar({ showModal }) {
   const [activeTab, setActiveTab] = useState(".short-term");
+
+  // Function to scroll to the section smoothly
+  const scrollToSection = (sectionId) => {
+    window.scrollTo({
+      top: document.querySelector(sectionId).offsetTop,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <nav>
@@ -11,49 +18,52 @@ function Navbar({ showModal }) {
         <li
           className={activeTab === ".short-term" ? "active" : ""}
           onClick={() => {
-            setActiveTab(".short-term"),
-              document
-                .querySelector("#short-term")
-                .scrollIntoView({ behavior: "smooth" });
+            setActiveTab(".short-term");
+            scrollToSection("#short-term");
           }}
         >
-          <a href="#short-term">Short-Term</a>
+          <a
+            onClick={() => {
+              setActiveTab(".short-term");
+              scrollToSection("#short-term");
+            }}
+          >
+            Short-Term
+          </a>
         </li>
         <li
           className={activeTab === ".mid-term" ? "active" : ""}
           onClick={() => {
-            setActiveTab(".mid-term"),
-              document
-                .querySelector("#mid-term")
-                .scrollIntoView({ behavior: "smooth" });
+            setActiveTab(".mid-term");
+            scrollToSection("#mid-term");
           }}
         >
-          <a href="#mid-term">Mid-Term</a>
+          <a
+            onClick={() => {
+              setActiveTab(".mid-term");
+              scrollToSection("#mid-term");
+            }}
+          >
+            Mid-Term
+          </a>
         </li>
         <li
           className={activeTab === ".long-term" ? "active" : ""}
           onClick={() => {
-            setActiveTab(".long-term"),
-              document
-                .querySelector("#long-term")
-                .scrollIntoView({ behavior: "smooth" });
+            setActiveTab(".long-term");
+            scrollToSection("#long-term");
           }}
         >
-          <a href="#long-term">Long-Term</a>
+          <a
+            onClick={() => {
+              setActiveTab(".long-term");
+              scrollToSection("#long-term");
+            }}
+          >
+            Long-Term
+          </a>
         </li>
-        {/* <li
-          className={activeTab === ".graphs-visual" ? "active" : ""}
-          onClick={() => setActiveTab(".graphs-visual")}
-        >
-          <a href="#graphs-visual">Graphs Visual</a>
-        </li> */}
         <li onClick={showModal}>Upload Dataset</li>
-        {/* <li
-          className={activeTab === ".about" ? "active" : ""}
-          onClick={() => setActiveTab(".about")}
-        >
-          <a href="#about">About</a>
-        </li> */}
       </ul>
     </nav>
   );
