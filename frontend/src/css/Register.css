@@ -1,0 +1,57 @@
+.register-page {
+  display: flex;
+  flex-direction: column;
+  width: 50vw;
+}
+
+.register-page form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.register-page form input {
+  display: flex;
+
+  padding: 12px;
+  border-radius: 40px;
+  border: 1px solid #d3d3d3;
+}
+
+.register-page form fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Style the error message */
+.register-page span {
+  font-size: 0.875rem;
+  color: red;
+}
+
+.register-page .password-errors-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.register-page button {
+  padding: 14px 16px;
+  border-radius: 40px;
+  background-color: var(--btn-color);
+  color: var(--primary-color);
+  font-size: 1rem;
+  font-weight: 600;
+  transition: ease 0.5s;
+  cursor: pointer;
+}
+
+.register-page button:hover:not(.register-page button:disabled) {
+  background-color: var(--btn-hover-color);
+}
+
+.register-page button:disabled {
+  background-color: #d3d3d3;
+  cursor: not-allowed;
+  color: #808080;
+}
