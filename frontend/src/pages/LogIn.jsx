@@ -3,8 +3,11 @@ import "../css/LogIn.css";
 import logInImage from "../assets/img/login.png";
 import logo from "../assets/img/logo.png";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function LogIn() {
+  const navigate = useNavigate();
+
   const [requiredFieldsData, setRequiredFieldsData] = useState({
     email: "",
     password: "",
@@ -64,6 +67,7 @@ function LogIn() {
           </button>
         </form>
         <a href="#">Forgot Password?</a>
+        <a onClick={() => navigate("/register")}>Create new account</a>
       </section>
     </main>
   );
