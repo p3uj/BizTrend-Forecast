@@ -3,6 +3,8 @@ import UploadDataset from "../components/modals/UploadDataset";
 import { useEffect, useState } from "react";
 import "../css/Home.css";
 import Card from "../components/Card";
+import AxiosInstance from "../components/AxiosInstance";
+import authService from "../services/authService";
 
 export default function Home() {
   const [isUploadDataset, setUploadDataset] = useState(false);
@@ -11,6 +13,17 @@ export default function Home() {
   const [revenueSampleData, setRevenueSampleData] = useState([]);
   const [leastSaturatedSampleData, setLeastSaturatedSampleData] = useState([]);
   const [title, setTitle] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  // Get the current user.
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      const getCurrentUser = await authService.getCurrrentUser();
+      setCurrentUser(getCurrentUser);
+    };
+
+    fetchCurrentUser();
+  }, []);
 
   // Fethch the sample data from the JSON files.
   useEffect(() => {

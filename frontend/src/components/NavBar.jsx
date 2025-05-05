@@ -1,12 +1,14 @@
 import "../css/navbar.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SampleProfile from "../assets/img/do.png";
 import SystemIcon from "../assets/icons/system-icon.svg";
 import { Tooltip } from "react-tooltip";
 import { useNavigate } from "react-router-dom";
+import authService from "../services/authService";
 
 function Navbar({ showModal }) {
   const navigate = useNavigate();
+  const [userRole, setUserRole] = useState(null);
 
   const [activeTab, setActiveTab] = useState(".short-term");
   const [isProfileHover, setProfileHover] = useState(false);
@@ -36,6 +38,23 @@ function Navbar({ showModal }) {
 
     setActiveTab(`.${current}`);
   });
+
+  const logout = () => {
+    authService.logout();
+    navigate("/");
+  };
+
+  // Check if the access token exist then set the corresponding user role.
+  useEffect(() => {
+    const hasAccessToken = authService.getAccessToken();
+    if (hasAccessToken) {
+      setUserRole("Admin");
+    } else {
+      setUserRole("Guest");
+    }
+  }, []);
+
+  console.log("user role: ", userRole);
 
   return (
     <nav>
@@ -106,29 +125,33 @@ function Navbar({ showModal }) {
             Long-Term
           </a>
         </li>
-        <li onClick={showModal}>Upload Dataset</li>
-        <li>
-          <img
-            src={SampleProfile}
-            alt="sample-profile"
-            onMouseEnter={() => setProfileHover(true)}
-            onMouseLeave={() => setProfileHover(false)}
-          />
+        {userRole == "Admin" && (
+          <>
+            <li onClick={showModal}>Upload Dataset</li>
+            <li>
+              <img
+                src={SampleProfile}
+                alt="sample-profile"
+                onMouseEnter={() => setProfileHover(true)}
+                onMouseLeave={() => setProfileHover(false)}
+              />
 
-          {isProfileHover && (
-            <div
-              className="profile-menu-container"
-              onMouseEnter={() => setProfileHover(true)}
-              onMouseLeave={() => setProfileHover(false)}
-            >
-              <div className="profile-menu">
-                <li>Edit Account Details</li>
-                <li>User Management</li>
-                <li onClick={() => navigate("/")}>Log Out</li>
-              </div>
-            </div>
-          )}
-        </li>
+              {isProfileHover && (
+                <div
+                  className="profile-menu-container"
+                  onMouseEnter={() => setProfileHover(true)}
+                  onMouseLeave={() => setProfileHover(false)}
+                >
+                  <div className="profile-menu">
+                    <li>Edit Account Details</li>
+                    <li>User Management</li>
+                    <li onClick={logout}>Log Out</li>
+                  </div>
+                </div>
+              )}
+            </li>
+          </>
+        )}
       </ul>
     </nav>
   );
