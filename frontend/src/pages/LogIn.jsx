@@ -1,7 +1,7 @@
 import "../css/custom-colors.css";
 import "../css/LogIn.css";
 import logInImage from "../assets/img/login.png";
-import logo from "../assets/img/logo.png";
+import logo from "../assets/img/Logo-black-color.svg";
 import { useEffect, useState } from "react";
 import { data, useNavigate } from "react-router-dom";
 import { set, useForm } from "react-hook-form";
