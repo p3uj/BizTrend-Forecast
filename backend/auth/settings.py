@@ -33,8 +33,9 @@ SECRET_KEY = 'django-insecure-$g^cu*w)aavm%z5a33m$-jt5v^l0qv22ag4)8x^qgl$h+uww2v
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [ 'localhost', 'biztrend-forecast.up.railway.app' ]
 
+CSRF_TRUSTED_ORIGINS = [ 'https://biztrend-forecast.up.railway.app' ]
 
 # Application definition
 
