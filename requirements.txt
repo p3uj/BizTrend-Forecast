@@ -13,3 +13,6 @@ lightgbm
 scikit-learn
 numpy
 tabulate
+
+gunicorn
+dj-database-url
