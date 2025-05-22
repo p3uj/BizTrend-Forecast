@@ -1,4 +1,4 @@
-import "../css/navbar.css";
+import "../css/NavBar.css";
 import { useEffect, useState } from "react";
 import SampleProfile from "../assets/img/do.png";
 import SystemIcon from "../assets/icons/system-icon.svg";
