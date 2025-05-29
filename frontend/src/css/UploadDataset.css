@@ -4,6 +4,7 @@
   width: 100vw;
   justify-content: center;
   align-items: center;
+
   position: fixed;
   z-index: 10;
 }
@@ -12,8 +13,10 @@
   display: flex;
   height: 100%;
   width: 100%;
-  /* background-color: rgba(211, 211, 211, 0.8); */
   background-color: rgba(0, 0, 0, 0.5);
+
+  position: fixed;
+  top: 0;
 }
 
 .upload-dataset-modal .content {
@@ -28,6 +31,11 @@
   box-shadow: 0 0 0 5px rgb(245, 245, 249, 0.7);
   position: absolute;
   gap: 20px;
+
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .upload-dataset-modal .content button:first-child {
@@ -63,7 +71,7 @@
   align-items: center;
   height: auto;
   width: 100%;
-  border: 1px dashed #d3d3d3;
+  border: 2px dashed #d3d3d3;
   border-radius: 40px;
   background-color: var(--primary-color);
   transition: 0.5s ease;
@@ -71,6 +79,7 @@
 
 .upload-dataset-modal .content section:hover {
   background-color: white;
+  border: 2px dashed var(--btn-color);
 }
 
 .upload-dataset-modal .upload-icon {

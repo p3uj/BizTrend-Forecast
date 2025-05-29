@@ -30,7 +30,7 @@ export default function UploadDataset({ showModal }) {
   return (
     <div className="upload-dataset-modal">
       <section className="overlay" onClick={showModal}></section>
-      <main className="content">
+      <section className="content">
         <button
           onMouseEnter={() => setCloseBthHover(true)}
           onMouseLeave={() => setCloseBthHover(false)}
@@ -80,7 +80,7 @@ export default function UploadDataset({ showModal }) {
         >
           Make Prediction
         </button>
-      </main>
+      </section>
     </div>
   );
 }
