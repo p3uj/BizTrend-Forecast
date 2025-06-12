@@ -50,7 +50,7 @@ export default function UploadDataset({ showModal }) {
             type="file"
             name="file"
             id="file"
-            accept=".xls, .xlsx"
+            accept=".csv"
             style={{ display: "none" }}
             onChange={handleFileUpload}
           />
@@ -59,7 +59,7 @@ export default function UploadDataset({ showModal }) {
             <p>
               <span>Click here</span> to upload your file.
             </p>
-            <p className="supported-format">Supported Format: xls, xlsx</p>
+            <p className="supported-format">Supported Format: csv</p>
 
             {fileSelected && (
               <div className="selected-file">
