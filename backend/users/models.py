@@ -31,13 +31,28 @@ class CustomUser(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
+class Dataset(models.Model):
+    uploaded_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    filename = models.CharField(max_length=255)
+    file_path = models.CharField(max_length=500)
+    total_rows = models.IntegerField()
+    total_sectors = models.IntegerField()
+    year_min = models.IntegerField()
+    year_max = models.IntegerField()
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.filename} - {self.uploaded_by.email}"
+
 class PredictionResult(models.Model):
     perform_by_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
     year = models.IntegerField()
     industry_sector = models.CharField(max_length=200)
     predicted_revenue = models.DecimalField(max_digits=20, decimal_places=2)
     predicted_growth_rate = models.DecimalField(max_digits=7, decimal_places=2)
     predicted_least_crowded = models.IntegerField()
+    model_performance = models.JSONField(null=True, blank=True)  # Store RMSE, MAE, R2
     created_at = models.DateTimeField(default=timezone.now(), editable=False)
 
 class Trend(models.Model):

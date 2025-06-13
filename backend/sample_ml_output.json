@@ -1,0 +1,407 @@
+{
+  "model_performance": {
+    "avg_rmse": 6023.25429281727,
+    "avg_mae": 5793.666666666667,
+    "avg_r2": -14.166688206968448
+  },
+  "predictions": {
+    "least_crowded": [
+      {
+        "Year": 2026,
+        "Industry Sector": "Education",
+        "Rank": 1,
+        "Predicted Number of Businesses": 21616.666666666668
+      },
+      {
+        "Year": 2026,
+        "Industry Sector": "Food & Beverage Services",
+        "Rank": 1,
+        "Predicted Number of Businesses": 21616.666666666668
+      },
+      {
+        "Year": 2026,
+        "Industry Sector": "Health & Social Work",
+        "Rank": 1,
+        "Predicted Number of Businesses": 21616.666666666668
+      },
+      {
+        "Year": 2026,
+        "Industry Sector": "Information & Communication",
+        "Rank": 1,
+        "Predicted Number of Businesses": 21616.666666666668
+      },
+      {
+        "Year": 2026,
+        "Industry Sector": "Manufacturing",
+        "Rank": 1,
+        "Predicted Number of Businesses": 21616.666666666668
+      },
+      {
+        "Year": 2026,
+        "Industry Sector": "Wholesale & Retail Trade",
+        "Rank": 1,
+        "Predicted Number of Businesses": 21616.666666666668
+      },
+      {
+        "Year": 2028,
+        "Industry Sector": "Education",
+        "Rank": 1,
+        "Predicted Number of Businesses": 21616.666666666668
+      },
+      {
+        "Year": 2028,
+        "Industry Sector": "Food & Beverage Services",
+        "Rank": 1,
+        "Predicted Number of Businesses": 21616.666666666668
+      },
+      {
+        "Year": 2028,
+        "Industry Sector": "Health & Social Work",
+        "Rank": 1,
+        "Predicted Number of Businesses": 21616.666666666668
+      },
+      {
+        "Year": 2028,
+        "Industry Sector": "Information & Communication",
+        "Rank": 1,
+        "Predicted Number of Businesses": 21616.666666666668
+      },
+      {
+        "Year": 2028,
+        "Industry Sector": "Manufacturing",
+        "Rank": 1,
+        "Predicted Number of Businesses": 21616.666666666668
+      },
+      {
+        "Year": 2028,
+        "Industry Sector": "Wholesale & Retail Trade",
+        "Rank": 1,
+        "Predicted Number of Businesses": 21616.666666666668
+      },
+      {
+        "Year": 2030,
+        "Industry Sector": "Education",
+        "Rank": 1,
+        "Predicted Number of Businesses": 21616.666666666668
+      },
+      {
+        "Year": 2030,
+        "Industry Sector": "Food & Beverage Services",
+        "Rank": 1,
+        "Predicted Number of Businesses": 21616.666666666668
+      },
+      {
+        "Year": 2030,
+        "Industry Sector": "Health & Social Work",
+        "Rank": 1,
+        "Predicted Number of Businesses": 21616.666666666668
+      },
+      {
+        "Year": 2030,
+        "Industry Sector": "Information & Communication",
+        "Rank": 1,
+        "Predicted Number of Businesses": 21616.666666666668
+      },
+      {
+        "Year": 2030,
+        "Industry Sector": "Manufacturing",
+        "Rank": 1,
+        "Predicted Number of Businesses": 21616.666666666668
+      },
+      {
+        "Year": 2030,
+        "Industry Sector": "Wholesale & Retail Trade",
+        "Rank": 1,
+        "Predicted Number of Businesses": 21616.666666666668
+      }
+    ],
+    "revenue": [
+      {
+        "Year": 2026,
+        "Industry Sector": "Education",
+        "Rank": 1,
+        "Predicted Revenue (PHP Millions)": 330277.77777777775
+      },
+      {
+        "Year": 2026,
+        "Industry Sector": "Food & Beverage Services",
+        "Rank": 1,
+        "Predicted Revenue (PHP Millions)": 330277.77777777775
+      },
+      {
+        "Year": 2026,
+        "Industry Sector": "Health & Social Work",
+        "Rank": 1,
+        "Predicted Revenue (PHP Millions)": 330277.77777777775
+      },
+      {
+        "Year": 2026,
+        "Industry Sector": "Information & Communication",
+        "Rank": 1,
+        "Predicted Revenue (PHP Millions)": 330277.77777777775
+      },
+      {
+        "Year": 2026,
+        "Industry Sector": "Manufacturing",
+        "Rank": 1,
+        "Predicted Revenue (PHP Millions)": 330277.77777777775
+      },
+      {
+        "Year": 2026,
+        "Industry Sector": "Wholesale & Retail Trade",
+        "Rank": 1,
+        "Predicted Revenue (PHP Millions)": 330277.77777777775
+      },
+      {
+        "Year": 2028,
+        "Industry Sector": "Education",
+        "Rank": 1,
+        "Predicted Revenue (PHP Millions)": 330277.77777777775
+      },
+      {
+        "Year": 2028,
+        "Industry Sector": "Food & Beverage Services",
+        "Rank": 1,
+        "Predicted Revenue (PHP Millions)": 330277.77777777775
+      },
+      {
+        "Year": 2028,
+        "Industry Sector": "Health & Social Work",
+        "Rank": 1,
+        "Predicted Revenue (PHP Millions)": 330277.77777777775
+      },
+      {
+        "Year": 2028,
+        "Industry Sector": "Information & Communication",
+        "Rank": 1,
+        "Predicted Revenue (PHP Millions)": 330277.77777777775
+      },
+      {
+        "Year": 2028,
+        "Industry Sector": "Manufacturing",
+        "Rank": 1,
+        "Predicted Revenue (PHP Millions)": 330277.77777777775
+      },
+      {
+        "Year": 2028,
+        "Industry Sector": "Wholesale & Retail Trade",
+        "Rank": 1,
+        "Predicted Revenue (PHP Millions)": 330277.77777777775
+      },
+      {
+        "Year": 2030,
+        "Industry Sector": "Education",
+        "Rank": 1,
+        "Predicted Revenue (PHP Millions)": 330277.77777777775
+      },
+      {
+        "Year": 2030,
+        "Industry Sector": "Food & Beverage Services",
+        "Rank": 1,
+        "Predicted Revenue (PHP Millions)": 330277.77777777775
+      },
+      {
+        "Year": 2030,
+        "Industry Sector": "Health & Social Work",
+        "Rank": 1,
+        "Predicted Revenue (PHP Millions)": 330277.77777777775
+      },
+      {
+        "Year": 2030,
+        "Industry Sector": "Information & Communication",
+        "Rank": 1,
+        "Predicted Revenue (PHP Millions)": 330277.77777777775
+      },
+      {
+        "Year": 2030,
+        "Industry Sector": "Manufacturing",
+        "Rank": 1,
+        "Predicted Revenue (PHP Millions)": 330277.77777777775
+      },
+      {
+        "Year": 2030,
+        "Industry Sector": "Wholesale & Retail Trade",
+        "Rank": 1,
+        "Predicted Revenue (PHP Millions)": 330277.77777777775
+      }
+    ],
+    "growth_rate": [
+      {
+        "Year": 2026,
+        "Industry Sector": "Education",
+        "Rank": 1,
+        "Predicted Growth Rate (%)": 8.372222238116795
+      },
+      {
+        "Year": 2026,
+        "Industry Sector": "Food & Beverage Services",
+        "Rank": 1,
+        "Predicted Growth Rate (%)": 8.372222238116795
+      },
+      {
+        "Year": 2026,
+        "Industry Sector": "Health & Social Work",
+        "Rank": 1,
+        "Predicted Growth Rate (%)": 8.372222238116795
+      },
+      {
+        "Year": 2026,
+        "Industry Sector": "Information & Communication",
+        "Rank": 1,
+        "Predicted Growth Rate (%)": 8.372222238116795
+      },
+      {
+        "Year": 2026,
+        "Industry Sector": "Manufacturing",
+        "Rank": 1,
+        "Predicted Growth Rate (%)": 8.372222238116795
+      },
+      {
+        "Year": 2026,
+        "Industry Sector": "Wholesale & Retail Trade",
+        "Rank": 1,
+        "Predicted Growth Rate (%)": 8.372222238116795
+      },
+      {
+        "Year": 2028,
+        "Industry Sector": "Education",
+        "Rank": 1,
+        "Predicted Growth Rate (%)": 8.372222238116795
+      },
+      {
+        "Year": 2028,
+        "Industry Sector": "Food & Beverage Services",
+        "Rank": 1,
+        "Predicted Growth Rate (%)": 8.372222238116795
+      },
+      {
+        "Year": 2028,
+        "Industry Sector": "Health & Social Work",
+        "Rank": 1,
+        "Predicted Growth Rate (%)": 8.372222238116795
+      },
+      {
+        "Year": 2028,
+        "Industry Sector": "Information & Communication",
+        "Rank": 1,
+        "Predicted Growth Rate (%)": 8.372222238116795
+      },
+      {
+        "Year": 2028,
+        "Industry Sector": "Manufacturing",
+        "Rank": 1,
+        "Predicted Growth Rate (%)": 8.372222238116795
+      },
+      {
+        "Year": 2028,
+        "Industry Sector": "Wholesale & Retail Trade",
+        "Rank": 1,
+        "Predicted Growth Rate (%)": 8.372222238116795
+      },
+      {
+        "Year": 2030,
+        "Industry Sector": "Education",
+        "Rank": 1,
+        "Predicted Growth Rate (%)": 8.372222238116795
+      },
+      {
+        "Year": 2030,
+        "Industry Sector": "Food & Beverage Services",
+        "Rank": 1,
+        "Predicted Growth Rate (%)": 8.372222238116795
+      },
+      {
+        "Year": 2030,
+        "Industry Sector": "Health & Social Work",
+        "Rank": 1,
+        "Predicted Growth Rate (%)": 8.372222238116795
+      },
+      {
+        "Year": 2030,
+        "Industry Sector": "Information & Communication",
+        "Rank": 1,
+        "Predicted Growth Rate (%)": 8.372222238116795
+      },
+      {
+        "Year": 2030,
+        "Industry Sector": "Manufacturing",
+        "Rank": 1,
+        "Predicted Growth Rate (%)": 8.372222238116795
+      },
+      {
+        "Year": 2030,
+        "Industry Sector": "Wholesale & Retail Trade",
+        "Rank": 1,
+        "Predicted Growth Rate (%)": 8.372222238116795
+      }
+    ]
+  },
+  "transformed_data": {
+    "growth": [
+      {
+        "id": 1,
+        "year": 2026,
+        "industrySector": "Education",
+        "predictedGrowth": 8.372222238116795,
+        "rank": 1,
+        "type": "short-term",
+        "category": "growing industry sector"
+      },
+      {
+        "id": 2,
+        "year": 2026,
+        "industrySector": "Food & Beverage Services",
+        "predictedGrowth": 8.372222238116795,
+        "rank": 1,
+        "type": "short-term",
+        "category": "growing industry sector"
+      },
+      {
+        "id": 3,
+        "year": 2026,
+        "industrySector": "Health & Social Work",
+        "predictedGrowth": 8.372222238116795,
+        "rank": 1,
+        "type": "short-term",
+        "category": "growing industry sector"
+      },
+      {
+        "id": 4,
+        "year": 2026,
+        "industrySector": "Information & Communication",
+        "predictedGrowth": 8.372222238116795,
+        "rank": 1,
+        "type": "short-term",
+        "category": "growing industry sector"
+      },
+      {
+        "id": 5,
+        "year": 2026,
+        "industrySector": "Manufacturing",
+        "predictedGrowth": 8.372222238116795,
+        "rank": 1,
+        "type": "short-term",
+        "category": "growing industry sector"
+      }
+    ],
+    "revenue": [],
+    "leastCrowded": []
+  },
+  "dataset_info": {
+    "total_rows": 36,
+    "total_columns": 5,
+    "year_range": {
+      "min": 2020,
+      "max": 2025
+    },
+    "industry_sectors": [
+      "Information & Communication",
+      "Health & Social Work",
+      "Education",
+      "Food & Beverage Services",
+      "Wholesale & Retail Trade",
+      "Manufacturing"
+    ],
+    "total_sectors": 6
+  }
+}

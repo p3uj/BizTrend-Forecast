@@ -5,6 +5,7 @@ import "../css/Home.css";
 import Card from "../components/Card";
 import AxiosInstance from "../components/AxiosInstance";
 import authService from "../services/authService";
+import predictionService from "../services/predictionService";
 
 export default function Home() {
   const [isUploadDataset, setUploadDataset] = useState(false);
@@ -14,34 +15,76 @@ export default function Home() {
   const [leastSaturatedSampleData, setLeastSaturatedSampleData] = useState([]);
   const [title, setTitle] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
+  const [userPredictions, setUserPredictions] = useState(null);
+  const [modelPerformance, setModelPerformance] = useState(null);
+  const [isUsingUserData, setIsUsingUserData] = useState(false);
 
-  // Get the current user.
+  // Get the current user and load prediction history.
   useEffect(() => {
     const fetchCurrentUser = async () => {
       const getCurrentUser = await authService.getCurrrentUser();
       setCurrentUser(getCurrentUser);
     };
 
+    const loadPredictionHistory = async () => {
+      try {
+        const result = await predictionService.getPredictions();
+        if (result.success && result.data.length > 0) {
+          // Transform database predictions to frontend format
+          const transformedData =
+            predictionService.transformDatabasePredictions(result.data);
+
+          // Set the data if we have predictions
+          if (
+            transformedData.growth.length > 0 ||
+            transformedData.revenue.length > 0 ||
+            transformedData.leastCrowded.length > 0
+          ) {
+            setUserPredictions(transformedData);
+            setIsUsingUserData(true);
+
+            // Update the data arrays with user predictions
+            if (transformedData.growth.length > 0)
+              setGrowthSampleData(transformedData.growth);
+            if (transformedData.revenue.length > 0)
+              setRevenueSampleData(transformedData.revenue);
+            if (transformedData.leastCrowded.length > 0)
+              setLeastSaturatedSampleData(transformedData.leastCrowded);
+
+            // Get model performance from the first prediction result
+            if (result.data[0].model_performance) {
+              setModelPerformance(result.data[0].model_performance);
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error loading prediction history:", error);
+      }
+    };
+
     fetchCurrentUser();
+    loadPredictionHistory();
   }, []);
 
-  // Fethch the sample data from the JSON files.
+  // Fetch the sample data from the JSON files only if no user data is available
   useEffect(() => {
-    fetch("Industry-Growth-Predictions.json")
-      .then((response) => response.json())
-      .then((json) => setGrowthSampleData(json))
-      .catch((error) => console.error("Error loading growth data: ", error));
-    fetch("Industry-Revenue-Predictions.json")
-      .then((response) => response.json())
-      .then((json) => setRevenueSampleData(json))
-      .catch((error) => console.error("Error loading revenue data: ", error));
-    fetch("Least-Crowded-Industry-Predictions.json")
-      .then((response) => response.json())
-      .then((json) => setLeastSaturatedSampleData(json))
-      .catch((error) =>
-        console.error("Error loading least saturated data: ", error)
-      );
-  }, []);
+    if (!isUsingUserData) {
+      fetch("Industry-Growth-Predictions.json")
+        .then((response) => response.json())
+        .then((json) => setGrowthSampleData(json))
+        .catch((error) => console.error("Error loading growth data: ", error));
+      fetch("Industry-Revenue-Predictions.json")
+        .then((response) => response.json())
+        .then((json) => setRevenueSampleData(json))
+        .catch((error) => console.error("Error loading revenue data: ", error));
+      fetch("Least-Crowded-Industry-Predictions.json")
+        .then((response) => response.json())
+        .then((json) => setLeastSaturatedSampleData(json))
+        .catch((error) =>
+          console.error("Error loading least saturated data: ", error)
+        );
+    }
+  }, [isUsingUserData]);
 
   // Set the title based on the active filter.
   useEffect(() => {
@@ -63,36 +106,82 @@ export default function Home() {
     document.body.style.overflow = "auto"; // Ensure the user can scroll when the modal is close.
   }
 
+  // Handle prediction completion
+  const handlePredictionComplete = (predictions, performance) => {
+    setUserPredictions(predictions);
+    setModelPerformance(performance);
+    setIsUsingUserData(true);
+
+    // Update the data arrays with user predictions
+    if (predictions.growth) setGrowthSampleData(predictions.growth);
+    if (predictions.revenue) setRevenueSampleData(predictions.revenue);
+    if (predictions.leastCrowded)
+      setLeastSaturatedSampleData(predictions.leastCrowded);
+  };
+
   // Function to get the sample data based on the active filter, type, and top number.
   const sampleData = (type, topNumber, filterResult) => {
+    let dataSource;
+
     if (filterResult == "Growing Industry Sector") {
-      // Find the data based on the type and top number then return it to the calling function.
-      return growthSampleData.find(
-        (item) => item.type === type && item.rank === topNumber
-      );
+      dataSource = growthSampleData;
     } else if (filterResult == "Industry Sector Revenue") {
-      // Find the data based on the type and top number then return it to the calling function.
-      return revenueSampleData.find(
-        (item) => item.type === type && item.rank === topNumber
-      );
+      dataSource = revenueSampleData;
     } else if (filterResult == "Least Crowded") {
-      // Find the data based on the type and top number then return it to the calling function.
-      return leastSaturatedSampleData.find(
-        (item) => item.type === type && item.rank === topNumber
-      );
+      dataSource = leastSaturatedSampleData;
     }
+
+    // Find the data based on the type and top number then return it to the calling function.
+    return dataSource.find(
+      (item) => item.type === type && item.rank === topNumber
+    );
   };
 
   return (
     <>
       {isUploadDataset && (
-        <UploadDataset showModal={() => setUploadDataset(false)} />
+        <UploadDataset
+          showModal={() => setUploadDataset(false)}
+          onPredictionComplete={handlePredictionComplete}
+        />
       )}
 
       <nav>
         <Navbar showModal={() => setUploadDataset(true)} />
       </nav>
       <main className="home">
+        {isUsingUserData && modelPerformance && (
+          <section
+            className="model-performance"
+            style={{
+              backgroundColor: "#f8f9fa",
+              padding: "20px",
+              margin: "20px 0",
+              borderRadius: "10px",
+              textAlign: "center",
+            }}
+          >
+            <h3>Model Performance (Your Data)</h3>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-around",
+                marginTop: "10px",
+              }}
+            >
+              <div>
+                <strong>RMSE:</strong> {modelPerformance.avg_rmse?.toFixed(2)}
+              </div>
+              <div>
+                <strong>MAE:</strong> {modelPerformance.avg_mae?.toFixed(2)}
+              </div>
+              <div>
+                <strong>R²:</strong> {modelPerformance.avg_r2?.toFixed(3)}
+              </div>
+            </div>
+          </section>
+        )}
+
         <section className="short-term" id="short-term">
           <div className="filter">
             <p>Filter Results</p>
