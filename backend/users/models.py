@@ -31,7 +31,13 @@ class CustomUser(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
+class Dataset(models.Model):
+    uploaded_by_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='datasets')
+    created_at = models.DateTimeField(auto_now_add=True)
+
 class PredictionResult(models.Model):
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
     perform_by_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     year = models.IntegerField()
     industry_sector = models.CharField(max_length=200)
@@ -50,3 +56,4 @@ class Trend(models.Model):
     prediction_result = models.ForeignKey(PredictionResult, on_delete=models.CASCADE)
     rank = models.IntegerField()
     type = models.CharField(max_length=10, choices=TYPE_CHOICES)
+    is_latest = models.BooleanField(default=True)
