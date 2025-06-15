@@ -3,10 +3,13 @@ import CloseIconBlack from "../../assets/icons/close-black.svg";
 import CloseIconWhite from "../../assets/icons/close-white.svg";
 import { useState } from "react";
 import UploadIcon from "../../assets/icons/upload.svg";
+import validateDataset from "../../services/datasetValidationService";
+import dataset from "../../services/datasetService";
 
 export default function UploadDataset({ showModal }) {
   const [isCloseBtnHover, setCloseBthHover] = useState(false);
   const [fileSelected, setFileSelected] = useState(null);
+  const [response, setResponse] = useState(String);
 
   console.log("file selected: ", fileSelected);
 
@@ -27,6 +30,17 @@ export default function UploadDataset({ showModal }) {
     setFileSelected(null); // Clear value of the fileSelected state.
   };
 
+  const handleSubmission = async () => {
+    const response = await validateDataset.validate(fileSelected);
+    //console.log(response);
+    setResponse(response);
+
+    if (response.valid) {
+      const postResponse = await dataset.postDataset(fileSelected);
+      console.log(postResponse);
+    }
+  };
+
   return (
     <div className="upload-dataset-modal">
       <section className="overlay" onClick={showModal}></section>
@@ -45,6 +59,13 @@ export default function UploadDataset({ showModal }) {
         <p className="reminder">
           Please make sure the dataset is complete to avoid inaccurate result.
         </p>
+
+        {response && (
+          <div>
+            <p>{response.message}</p>
+          </div>
+        )}
+
         <section>
           <input
             type="file"
@@ -77,6 +98,7 @@ export default function UploadDataset({ showModal }) {
         <button
           disabled={fileSelected === null}
           className="make-prediction-btn"
+          onClick={handleSubmission}
         >
           Make Prediction
         </button>
