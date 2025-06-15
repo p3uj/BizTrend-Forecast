@@ -32,8 +32,34 @@ class UserViewset(viewsets.ViewSet):
         queryset = User.objects.all()
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
+    
+class DatasetViewset(viewsets.ViewSet):
+    permission_classes = [permissions.AllowAny]
+    queryset = Dataset.objects.all()
+    serializer_class = DatasetSerializer
+    parser_classes = [MultiPartParser, FormParser]
+
+    def list(self, request):
+        queryset = Dataset.objects.all()
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=400)
+    
+    def retrieve(self, request, pk=None):
+        queryset = Dataset.objects.get(pk=pk)
+        serializer = self.serializer_class(queryset)
+        return Response(serializer.data)
         
 class DataValidationViewset(viewsets.ViewSet):
+    parser_classes = [MultiPartParser, FormParser]
+
     def list(self, request):
         # Generate URL for actions
         validate_url = self.reverse_action(self.validate.url_name)
@@ -47,7 +73,8 @@ class DataValidationViewset(viewsets.ViewSet):
             return Response({'error': 'No file provided'}, status=400)
         
         is_valid, message = DatasetValidation.validate(file)
+        
         if not is_valid:
-            return Response({'error': message}, status=400)
+            return Response({'valid': False, 'message': message}, status=400)
         
         return Response({'valid': True, 'message': message})
