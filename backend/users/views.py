@@ -6,6 +6,10 @@ from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
+from rest_framework.parsers import MultiPartParser, FormParser
+from .data_validation import DatasetValidation
+from rest_framework.decorators import action
+
 class RegisterViewset(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
     queryset = User.objects.all()
@@ -29,3 +33,21 @@ class UserViewset(viewsets.ViewSet):
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
         
+class DataValidationViewset(viewsets.ViewSet):
+    def list(self, request):
+        # Generate URL for actions
+        validate_url = self.reverse_action(self.validate.url_name)
+
+        return Response({'dataset validation': validate_url})
+
+    @action(detail=False, methods=['post'])
+    def validate(self, request):
+        file = request.FILES.get('file')
+        if not file:
+            return Response({'error': 'No file provided'}, status=400)
+        
+        is_valid, message = DatasetValidation.validate(file)
+        if not is_valid:
+            return Response({'error': message}, status=400)
+        
+        return Response({'valid': True, 'message': message})
