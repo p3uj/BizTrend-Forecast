@@ -38,13 +38,12 @@ class Dataset(models.Model):
 
 class PredictionResult(models.Model):
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
-    perform_by_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     year = models.IntegerField()
     industry_sector = models.CharField(max_length=200)
     predicted_revenue = models.DecimalField(max_digits=20, decimal_places=2)
     predicted_growth_rate = models.DecimalField(max_digits=7, decimal_places=2)
     predicted_least_crowded = models.IntegerField()
-    created_at = models.DateTimeField(default=timezone.now(), editable=False)
+    created_at = models.DateTimeField(default=timezone.now, editable=False)
 
 class Trend(models.Model):
     TYPE_CHOICES = [
