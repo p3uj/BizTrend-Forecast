@@ -40,12 +40,13 @@ class UserViewset(viewsets.ViewSet):
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
 
+"""
 class DatasetViewSet(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
     parser_classes = [MultiPartParser, FormParser]
 
     def create(self, request):
-        """Upload and validate dataset"""
+        # Upload and validate dataset
         try:
             print(f"=== DATASET UPLOAD DEBUG ===")
             print(f"User: {request.user}")
@@ -123,17 +124,18 @@ class DatasetViewSet(viewsets.ViewSet):
             return Response({'error': f'Internal server error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def list(self, request):
-        """Get user's uploaded datasets"""
+        # Get user's uploaded datasets
         datasets = Dataset.objects.filter(uploaded_by=request.user).order_by('-uploaded_at')
         serializer = DatasetSerializer(datasets, many=True)
         return Response(serializer.data)
-
+"""
+"""
 class PredictionViewSet(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
 
     @action(detail=False, methods=['get'])
     def get_predictions(self, request):
-        """Get user's prediction history from database"""
+        # Get user's prediction history from database
         try:
             predictions = PredictionResult.objects.filter(perform_by_user=request.user).order_by('-created_at')
 
@@ -163,7 +165,7 @@ class PredictionViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['post'])
     def make_prediction(self, request):
-        """Make ML predictions based on uploaded dataset"""
+        # Make ML predictions based on uploaded dataset
         try:
             print(f"=== PREDICTION REQUEST DEBUG ===")
             print(f"User: {request.user}")
@@ -288,8 +290,8 @@ class PredictionViewSet(viewsets.ViewSet):
             return Response({'error': f'Internal server error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def list(self, request):
-        """Get user's prediction history"""
+        # Get user's prediction history
         predictions = PredictionResult.objects.filter(perform_by_user=request.user).order_by('-created_at')
         serializer = PredictionResultSerializer(predictions, many=True)
         return Response(serializer.data)
-        
+"""

@@ -13,6 +13,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         return user
 
+"""
 class DatasetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dataset
@@ -34,4 +35,4 @@ class TrendSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trend
         fields = ['id', 'prediction_result', 'rank', 'type']
-            
+"""
