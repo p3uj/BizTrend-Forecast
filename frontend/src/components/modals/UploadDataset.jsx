@@ -7,6 +7,7 @@ import validateDataset from "../../services/datasetValidationService";
 import dataset from "../../services/datasetService";
 import predictionService from "../../services/predictionService";
 import LoadingIcon from "../../assets/icons/analysis-chart.gif";
+import { Tooltip } from "react-tooltip";
 
 export default function UploadDataset({ showModal, onPredictionComplete }) {
   const [isCloseBtnHover, setCloseBthHover] = useState(false);
@@ -15,6 +16,40 @@ export default function UploadDataset({ showModal, onPredictionComplete }) {
   const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(""); // Track current processing step
   const [isPredictionSuccess, setPredictionSuccess] = useState(false);
+
+  const datasetRequirements = (
+    <div className="dataset-requirements">
+      Must include exactly the following columns and data types:
+      <br />
+      <br />
+      <table>
+        <tr>
+          <th>Column Name</th>
+          <th>Data Type</th>
+        </tr>
+        <tr>
+          <td>Year</td>
+          <td>Integer</td>
+        </tr>
+        <tr>
+          <td>Industry Sector</td>
+          <td>String</td>
+        </tr>
+        <tr>
+          <td>Number of Businesses</td>
+          <td>Number</td>
+        </tr>
+        <tr>
+          <td>Revenue (PHP Millions)</td>
+          <td>Number</td>
+        </tr>
+        <tr>
+          <td>Growth Rate (%)</td>
+          <td>Number</td>
+        </tr>
+      </table>
+    </div>
+  );
 
   //console.log("file selected: ", fileSelected);
 
@@ -106,6 +141,14 @@ export default function UploadDataset({ showModal, onPredictionComplete }) {
   return (
     <div className="upload-dataset-modal">
       <section className="overlay" onClick={showModal}></section>
+      <Tooltip
+        id="dataset-required-info"
+        place="bottom"
+        effect="solid"
+        className="tooltip"
+      >
+        {datasetRequirements}
+      </Tooltip>
       <section className="content">
         <button
           onMouseEnter={() => setCloseBthHover(true)}
@@ -119,7 +162,11 @@ export default function UploadDataset({ showModal, onPredictionComplete }) {
         </button>
         <h2>Upload Dataset</h2>
         <p className="reminder">
-          Please make sure the dataset is complete to avoid inaccurate result.
+          Please make sure the dataset is complete to avoid inaccurate result.{" "}
+          {""}
+          <a data-tooltip-id="dataset-required-info" data-tooltip-offset={10}>
+            Hover to see Dataset Requirements.
+          </a>
         </p>
 
         {currentStep && (
