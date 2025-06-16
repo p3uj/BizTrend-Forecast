@@ -90,6 +90,16 @@ nav .tooltip {
   cursor: default;
 }
 
+.view-as-guest {
+  padding: 10px 16px;
+  border-radius: 40px;
+  background-color: var(--forecast-active-color);
+  font-weight: 600;
+
+  position: absolute;
+  right: 48px;
+}
+
 .profile-menu {
   display: flex;
   flex-direction: column;
