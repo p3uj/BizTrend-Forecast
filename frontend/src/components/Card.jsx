@@ -9,6 +9,7 @@ export default function Card({
   filterResult,
 }) {
   const [isHover, setHover] = useState(false);
+  //console.log("data:", data);
 
   // Handle the adding and removing of the active class for the card-top-1
   useEffect(() => {
@@ -55,9 +56,10 @@ export default function Card({
         <div className={`paragraph-container`}>
           {filterResult == "Growing Industry Sector" && (
             <p>
-              By {data ? data.year : "___"}, the{" "}
-              {data ? data.industrySector : "___"} sector is projected to
-              achieve a growth rate of {data ? data.predictedGrowth : "___"}
+              By {data ? data.prediction_result.year : "___"}, the{" "}
+              {data ? data.prediction_result.industry_sector : "___"} sector is
+              projected to achieve a growth rate of{" "}
+              {data ? data.prediction_result.predicted_growth_rate : "___"}
               %, which marks an increase of{" "}
               <span className="positive">+3.5</span> percentage points from 15%
               in 2025, based on current historical trend analysis.
@@ -66,28 +68,32 @@ export default function Card({
 
           {filterResult == "Industry Sector Revenue" && (
             <p>
-              By {data ? data.year : "___"}, the{" "}
-              {data ? data.industrySector : "___"} sector is expected to
-              generate approximately{" "}
-              {data ? formatNumber(data.predictedRevenue) : "___"} in revenue,
-              reflecting a 12.8% increase from ₱461 billion in 2025, based on
-              the current historical trend analysis.
+              By {data ? data.prediction_result.year : "___"}, the{" "}
+              {data ? data.prediction_result.industry_sector : "___"} sector is
+              expected to generate approximately ₱
+              {data
+                ? formatNumber(Number(data.prediction_result.predicted_revenue))
+                : "___"}{" "}
+              in revenue, reflecting a 12.8% increase from ₱461 billion in 2025,
+              based on the current historical trend analysis.
             </p>
           )}
         </div>
 
         {filterResult == "Least Crowded" && (
           <p>
-            By {data ? data.year : "___"}, the{" "}
-            {data ? data.industrySector : "___"} sector is projected to be the
-            least crowded industry, with an estimated{" "}
-            {data ? formatNumber(data.predictedNumBusinesses) : "___"}{" "}
+            By {data ? data.prediction_result.year : "___"}, the{" "}
+            {data ? data.prediction_result.industry_sector : "___"} sector is
+            projected to be the least crowded industry, with an estimated{" "}
+            {data
+              ? formatNumber(data.prediction_result.predicted_least_crowded)
+              : "___"}{" "}
             businesses in operation, reflecting an 8% increase from 12,000 in
             2025, based on the current historical trend analysis.
           </p>
         )}
         <h1 className={`industry ${topNumber == 1 ? "active" : ""}`}>
-          {data ? data.industrySector : "___"}
+          {data ? data.prediction_result.industry_sector : "___"}
         </h1>
       </div>
     </article>
