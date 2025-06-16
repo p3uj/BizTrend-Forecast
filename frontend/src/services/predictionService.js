@@ -79,7 +79,17 @@ class PredictionService {
         }
       });
 
-      return [growthTrends, revenueTrends, leastCrowdedTrends];
+      // Get unique years
+      const years = [
+        ...new Set(data.map((trend) => trend.prediction_result.year)),
+      ];
+
+      return [
+        growthTrends,
+        revenueTrends,
+        leastCrowdedTrends,
+        years.sort((a, b) => a - b),
+      ];
     } catch (error) {
       console.error("Failed to fetch latest trends:", error);
       throw error;
