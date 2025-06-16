@@ -54,7 +54,7 @@ function Navbar({ showModal }) {
     }
   }, []);
 
-  console.log("user role: ", userRole);
+  //console.log("user role: ", userRole);
 
   return (
     <nav>
@@ -77,7 +77,7 @@ function Navbar({ showModal }) {
         >
           <a
             data-tooltip-id="nav-menu-tooltip"
-            data-tooltip-content="1 year in the future"
+            data-tooltip-content="1 year ahead"
             data-tooltip-offset={30}
             onClick={() => {
               setActiveTab(".short-term");
@@ -96,7 +96,7 @@ function Navbar({ showModal }) {
         >
           <a
             data-tooltip-id="nav-menu-tooltip"
-            data-tooltip-content="3 years in the future"
+            data-tooltip-content="3 years ahead"
             data-tooltip-offset={30}
             onClick={() => {
               setActiveTab(".mid-term");
@@ -115,7 +115,7 @@ function Navbar({ showModal }) {
         >
           <a
             data-tooltip-id="nav-menu-tooltip"
-            data-tooltip-content="5 years in the future"
+            data-tooltip-content="5 years ahead"
             data-tooltip-offset={30}
             onClick={() => {
               setActiveTab(".long-term");
