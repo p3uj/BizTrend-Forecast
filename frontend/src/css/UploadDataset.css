@@ -27,7 +27,7 @@
   padding: 20px;
   border-radius: 40px;
   background-color: var(--primary-color);
-  border: 1px solid #d3d3d3;
+  border: 5px solid #d3d3d3;
   box-shadow: 0 0 0 5px rgb(245, 245, 249, 0.7);
   position: absolute;
   gap: 20px;
@@ -162,4 +162,89 @@
 .upload-dataset-modal label .supported-format {
   color: #808080;
   font-size: 0.875rem;
+}
+
+/* Response container styling */
+.response-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.current-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 10px 10px 10px;
+  border-radius: 20px;
+  gap: 20px;
+}
+
+.current-step img {
+  display: flex;
+  width: auto;
+  height: 100px;
+
+  mix-blend-mode: multiply;
+}
+
+.current-step.processing {
+  background-color: rgb(79, 70, 229, 0.1);
+  border: 1px solid rgb(79, 70, 229, 0.5);
+}
+
+.current-step.success {
+  background-color: var(--success-bg);
+  border: 1px solid var(--success-text);
+}
+
+.current-step p {
+  margin: 0;
+  color: var(--btn-color);
+  font-weight: 500;
+}
+
+.current-step.success p {
+  color: var(--success-text);
+}
+
+.response-message {
+  padding: 10px;
+  border-radius: 20px;
+}
+
+.response-message.success {
+  background-color: var(--success-bg);
+  border-left: 4px solid #4caf50;
+  color: var(--success-text);
+}
+
+.response-message.error {
+  background-color: var(--warning-bg);
+  color: var(--warning-text);
+  border: 1px solid rgb(255, 0, 0, 0.5);
+}
+
+.response-message p {
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e3f2fd;
+  border-top: 2px solid #2196f3;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
