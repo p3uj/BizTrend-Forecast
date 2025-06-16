@@ -52,7 +52,14 @@ class Trend(models.Model):
         ('long-term', 'Long-Term')
     ]
 
+    CATEGORY_CHOICES = [
+        ('least_crowded', 'Least Crowded'),
+        ('revenue', 'Revenue'),
+        ('growth_rate', 'Growth Rate')
+    ]
+
     prediction_result = models.ForeignKey(PredictionResult, on_delete=models.CASCADE)
     rank = models.IntegerField()
     type = models.CharField(max_length=10, choices=TYPE_CHOICES)
+    category = models.CharField(max_length=15, choices=CATEGORY_CHOICES)
     is_latest = models.BooleanField(default=True)
