@@ -125,7 +125,7 @@ function Navbar({ showModal }) {
             Long-Term
           </a>
         </li>
-        {userRole == "Admin" && (
+        {userRole == "Admin" ? (
           <>
             <li onClick={showModal}>Upload Dataset</li>
             <li>
@@ -151,6 +151,10 @@ function Navbar({ showModal }) {
               )}
             </li>
           </>
+        ) : (
+          <button disabled="disabled" className="view-as-guest">
+            View as Guest
+          </button>
         )}
       </ul>
     </nav>
