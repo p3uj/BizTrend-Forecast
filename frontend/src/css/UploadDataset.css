@@ -61,7 +61,7 @@
 }
 
 .upload-dataset-modal .content .reminder {
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .upload-dataset-modal .content section {
@@ -228,6 +228,31 @@
 .response-message p {
   margin: 0;
   font-weight: 500;
+}
+
+.upload-dataset-modal .tooltip {
+  border-radius: 10px;
+
+  position: absolute;
+
+  z-index: 100;
+}
+
+.dataset-requirements {
+  display: flex;
+  flex-direction: column;
+  color: white;
+}
+
+.dataset-requirements table th,
+td {
+  color: white;
+}
+
+.reminder a {
+  color: var(--btn-color);
+  font-weight: 500;
+  cursor: default;
 }
 
 /* Loading spinner */
