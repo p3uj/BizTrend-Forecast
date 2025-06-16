@@ -17,3 +17,15 @@ class DatasetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dataset
         fields = '__all__'
+
+class PredictionResultSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PredictionResult
+        fields = '__all__'
+
+class TrendSerializer(serializers.ModelSerializer):
+    prediction_result = PredictionResultSerializer(read_only=True)
+
+    class Meta:
+        model = Trend
+        fields = '__all__'
