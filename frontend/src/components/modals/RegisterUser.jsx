@@ -1,10 +1,83 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CloseIconBlack from "../../assets/icons/close-black.svg";
 import CloseIconWhite from "../../assets/icons/close-white.svg";
 import "../../css/RegisterUser.css";
+import { useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 export default function RegisterUser({ showRegisterUserModal }) {
   const [isCloseBtnHover, setCloseBthHover] = useState(false);
+  const [passwordErrors, setPasswordErrors] = useState([]);
+
+  const validationSchema = yup.object().shape({
+    firstName: yup.string().required("First name is required."),
+    lastName: yup.string().required("Last name is required."),
+    email: yup
+      .string()
+      .required("Email is required.")
+      .email("Invalid email format.")
+      .matches(/^\S+@\S+\.\S+$/, "Invalid email format."),
+    password: yup
+      .string()
+      .required("Password is required.")
+      .matches(
+        /^(?=.*\d{1})(?=.*[a-z]{1})(?=.*[A-Z]{1})(?=.*[!@#$%^&*{|}?~_=+.-]{1})(?=.*[^a-zA-Z0-9])(?!.*\s).{12,16}$/
+      ),
+    confirmPassword: yup
+      .string()
+      .required("Confirm password is required.")
+      .oneOf([yup.ref("password"), null], "Password don't match."),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+    watch,
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+    mode: "all",
+  });
+
+  const submission = (data) => {
+    console.log(data);
+  };
+
+  const watchPassword = watch("password", "");
+  useEffect(() => {
+    let errors = [];
+
+    if (watchPassword.length < 12) {
+      errors.push("- At least 12 characters.");
+    }
+
+    if (watchPassword.length > 16) {
+      errors.push("- Not exceed 16 characters.");
+    }
+
+    if (!/[0-9]/.test(watchPassword)) {
+      errors.push("- At least one number.");
+    }
+
+    if (!/[a-z]/.test(watchPassword)) {
+      errors.push("- At least one lowercase letter.");
+    }
+
+    if (!/[A-Z]/.test(watchPassword)) {
+      errors.push("- At least one uppercase letter.");
+    }
+
+    if (!/[!@#$%^&*{|}?~_=+.-]/.test(watchPassword)) {
+      errors.push("- At least one special character (!@#$%^&*{|}?~_=+.-)");
+    }
+
+    if (/\s/.test(watchPassword)) {
+      errors.push("Must not contain spaces");
+    }
+
+    setPasswordErrors(errors);
+  }, [watchPassword]);
 
   return (
     <div className="register-user-modal">
@@ -23,15 +96,19 @@ export default function RegisterUser({ showRegisterUserModal }) {
           </button>
           <h2>Register New User</h2>
         </header>
-        <form action="">
+
+        <form onSubmit={handleSubmit(submission)}>
           <fieldset>
             <label htmlFor="first-name">First Name *</label>
             <input
               type="text"
               name="first-name"
               id="first-name"
+              required
               placeholder="Enter first name..."
+              {...register("firstName")}
             />
+            {errors.firstName && <span>{errors.firstName.message}</span>}
           </fieldset>
           <fieldset>
             <label htmlFor="last-name">Last Name *</label>
@@ -39,8 +116,11 @@ export default function RegisterUser({ showRegisterUserModal }) {
               type="text"
               name="last-name"
               id="last-name"
+              required
               placeholder="Enter last name..."
+              {...register("lastName")}
             />
+            {errors.lastName && <span>{errors.lastName.message}</span>}
           </fieldset>
           <fieldset>
             <label htmlFor="email">Email *</label>
@@ -48,8 +128,11 @@ export default function RegisterUser({ showRegisterUserModal }) {
               type="email"
               name="email"
               id="email"
+              required
               placeholder="Enter email..."
+              {...register("email")}
             />
+            {errors.email && <span>{errors.email.message}</span>}
           </fieldset>
           <fieldset>
             <label htmlFor="password">Password *</label>
@@ -57,8 +140,19 @@ export default function RegisterUser({ showRegisterUserModal }) {
               type="password"
               name="password"
               id="password"
+              required
               placeholder="Enter password..."
+              {...register("password")}
             />
+
+            {passwordErrors.length !== 0 && (
+              <div className="password-errors-container">
+                <span>Password must contain the following:</span>
+                {passwordErrors.map((error, index) => (
+                  <span key={index}>{error}</span>
+                ))}
+              </div>
+            )}
           </fieldset>
           <fieldset>
             <label htmlFor="confirm-password">Confirm Password *</label>
@@ -66,16 +160,28 @@ export default function RegisterUser({ showRegisterUserModal }) {
               type="password"
               name="confirm-password"
               id="confirm-password"
+              required
               placeholder="Enter confirm password..."
+              {...register("confirmPassword")}
             />
+            {errors.confirmPassword && (
+              <span>{errors.confirmPassword.message}</span>
+            )}
           </fieldset>
           <fieldset>
-            <input type="checkbox" name="role" id="role" />
+            <input
+              type="checkbox"
+              name="role"
+              id="role"
+              {...register("role")}
+            />
             <label htmlFor="role">
               Check this if the new user is an admin.
             </label>
           </fieldset>
-          <button className="register-btn">Register</button>
+          <button className="register-btn" disabled={!isValid}>
+            Register
+          </button>
         </form>
       </section>
     </div>
