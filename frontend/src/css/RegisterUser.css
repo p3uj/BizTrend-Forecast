@@ -143,3 +143,8 @@
 .register-user-modal .register-btn:hover:not(:disabled) {
   background-color: var(--btn-hover-color);
 }
+
+.register-user-modal span {
+  font-size: 0.875rem;
+  color: red;
+}
