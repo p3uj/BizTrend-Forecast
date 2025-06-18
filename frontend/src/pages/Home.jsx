@@ -22,7 +22,7 @@ export default function Home() {
   // Get the current user.
   useEffect(() => {
     const fetchCurrentUser = async () => {
-      const getCurrentUser = await authService.getCurrrentUser();
+      const getCurrentUser = await authService.getCurrentUser();
       setCurrentUser(getCurrentUser);
     };
 
