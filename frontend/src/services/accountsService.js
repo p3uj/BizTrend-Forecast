@@ -72,6 +72,33 @@ class AccountsService {
       console.log("Failed to get users by status!", error);
     }
   }
+
+  // Change user status
+  async changeUserStatus(userId) {
+    try {
+      const response = await fetch(API_URL + "users/change_status/", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          user_id: userId,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorResponse = await response.json();
+        console.log("failed to change user status", errorResponse);
+
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.log("Failed to change user status!", error);
+    }
+  }
 }
 
 const accountsService = new AccountsService();
