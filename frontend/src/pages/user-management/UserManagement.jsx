@@ -8,6 +8,7 @@ import Alert from "../../components/modals/Alert";
 import accountsService from "../../services/accountsService";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import ConfirmStatusChange from "../../components/modals/ConfirmStatusChange";
 
 export default function UserManagement() {
   const numSkeletonLoading = 8;
@@ -19,8 +20,15 @@ export default function UserManagement() {
   const [hasNewUser, setHasNewUser] = useState(false);
   const [users, setUsers] = useState([]);
   const [isLoading, setLoading] = useState(true);
+  const [isChangeStatus, setChangeStatus] = useState(false);
+  const [userOverview, setUserOverview] = useState({
+    userId: null,
+    action: null,
+  });
+  const [isSuccessChangeStatus, setSuccessChangeStatus] = useState(false);
 
   const registrationSuccess = location.state?.registrationSuccess;
+  const changeStatusSuccess = location.state?.changeStatusSuccess;
 
   useEffect(() => {
     if (registrationSuccess) {
@@ -33,7 +41,18 @@ export default function UserManagement() {
         navigate(location.pathname, { state: { registrationSuccess: false } });
       }, 5000);
     }
-  }, [registrationSuccess]);
+
+    if (changeStatusSuccess) {
+      setSuccessChangeStatus(true);
+
+      setTimeout(() => {
+        setSuccessChangeStatus(false);
+
+        // Set the changeStatusSuccess state to false.
+        navigate(location.pathname, { state: { changeStatusSuccess: false } });
+      }, 5000);
+    }
+  }, [registrationSuccess, changeStatusSuccess]);
 
   useEffect(() => {
     setUsers([]);
@@ -71,6 +90,18 @@ export default function UserManagement() {
 
       {hasNewUser && (
         <Alert message="Registration successful!" type="success" />
+      )}
+
+      {isChangeStatus && (
+        <ConfirmStatusChange
+          isShow={() => setChangeStatus(false)}
+          action={userOverview.action}
+          userId={userOverview.userId}
+        />
+      )}
+
+      {isSuccessChangeStatus && (
+        <Alert message="User status changed successfully!" type="success" />
       )}
 
       <nav>
@@ -156,7 +187,16 @@ export default function UserManagement() {
                       </span>
                     )}
                   </section>
-                  <button>
+                  <button
+                    onClick={() => {
+                      setChangeStatus(true);
+                      setUserOverview({
+                        userId: user.id,
+                        action:
+                          user.is_active === true ? "Deactivate" : "Activate",
+                      });
+                    }}
+                  >
                     {user.is_active === true
                       ? "Deactivate Account"
                       : "Activate Account"}
