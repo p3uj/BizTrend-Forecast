@@ -1,4 +1,5 @@
 const API_URL = "http://127.0.0.1:8000/auth/";
+const API_URL_USERS = "http://127.0.0.1:8000/users/";
 
 class AuthService {
   // Login user and store tokens
@@ -24,6 +25,10 @@ class AuthService {
         localStorage.setItem("access_token", data.access);
         localStorage.setItem("refresh_token", data.refresh);
         console.log("token stored in the local storage!");
+
+        // Store the info of the current authenticated user.
+        const currentUser = await this.getCurrentUser();
+        sessionStorage.setItem("current_user", JSON.stringify(currentUser));
       } else {
         console.log("No access token in response!");
       }
@@ -36,15 +41,17 @@ class AuthService {
   }
 
   // Get current user
-  async getCurrrentUser() {
+  async getCurrentUser() {
     try {
-      const response = await fetch(API_URL + "users/me/", {
+      console.log("Getting current user...");
+      const response = await fetch(API_URL_USERS + "me/", {
         method: "GET",
         headers: this.getAuthHeader(),
       });
 
       if (!response.ok) {
-        console.log("failed to fetch curr. user");
+        const errorData = await response.json();
+        console.log("Error data: ", errorData);
         return null;
       }
 
@@ -57,13 +64,14 @@ class AuthService {
 
   // Get the access token
   getAccessToken() {
+    console.log("Got token: ", localStorage.getItem("access_token"));
     return localStorage.getItem("access_token");
   }
 
   // Get the Autorization headers
   getAuthHeader() {
     const token = this.getAccessToken();
-
+    console.log("Got token in getAuthHeader: ", token);
     return {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -75,6 +83,7 @@ class AuthService {
   logout() {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
+    sessionStorage.removeItem("current_user");
   }
 }
 
