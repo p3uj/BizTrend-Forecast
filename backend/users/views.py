@@ -47,6 +47,25 @@ class UserViewset(viewsets.ViewSet):
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
     
+    @action(detail=False, methods=['patch'])
+    def change_status(self, request):
+        """ Change user status (active/inactive) """
+        user_id = request.data.get('user_id')
+
+        if not user_id:
+            return Response({'error': 'user_id is required'}, status=400)
+
+        # Get the current status of the user and negate it
+        is_active = not User.objects.get(id=user_id).is_active
+
+        try:
+            user = User.objects.get(id=user_id)
+            user.is_active = is_active
+            user.save()
+            return Response({'message': 'User status changed successfully'})
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=404)    
+    
 class DatasetViewset(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
     queryset = Dataset.objects.all()
