@@ -2,18 +2,27 @@ import "../css/custom-colors.css";
 import "../css/LogIn.css";
 import logInImage from "../assets/img/login.png";
 import logo from "../assets/img/logo.png";
-import { useEffect, useState } from "react";
-import { data, useNavigate } from "react-router-dom";
-import { set, useForm } from "react-hook-form";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import AxiosInstance from "../components/AxiosInstance";
 import authService from "../services/authService";
+import RippleLoading from "../components/modals/loading/rippleLoading";
+import Alert from "../components/modals/Alert";
 
 function LogIn() {
   const navigate = useNavigate();
-  const [isFieldsValid, setFieldsValid] = useState(false);
+  const [isSubmitting, setSubmitting] = useState(false);
   const [isInvalidCredentials, setInvalidCredentials] = useState(null);
+
+  useEffect(() => {
+    if (isInvalidCredentials) {
+      setTimeout(() => {
+        setInvalidCredentials(false);
+      }, 5000);
+    }
+  }, [isInvalidCredentials]);
 
   const validationSchema = yup.object().shape({
     email: yup
@@ -34,12 +43,12 @@ function LogIn() {
   });
 
   const submission = async (data) => {
+    setSubmitting(true);
     try {
       const success = await authService.login(data.email, data.password);
 
       if (success) {
         console.log("Login successfully!");
-        setInvalidCredentials(false);
 
         navigate("/home");
       } else {
@@ -47,80 +56,73 @@ function LogIn() {
       }
     } catch (error) {
       console.log("login failed!", error);
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const [requiredFieldsData, setRequiredFieldsData] = useState({
-    email: "",
-    password: "",
-  });
-
-  const handleValueFields = (event) => {
-    const { name, value } = event.target; // Destructures name and value from the input event.
-    setRequiredFieldsData((prevData) => ({
-      ...prevData, // Keep all existing value
-      [name]: value, // Update the field that changed.
-    }));
-  };
-
-  // Validate the required input fields.
-  const isRequiredFieldValid =
-    requiredFieldsData.email.includes("@") && requiredFieldsData.password != "";
-
   return (
-    <main className="login-page">
-      <section className="left-panel">
-        <img src={logInImage} alt="log-in" />
-      </section>
-      <section className="right-panel">
-        {isInvalidCredentials != null && isInvalidCredentials && (
-          <span>Invalid Credentials!</span>
-        )}
-        <img src={logo} alt="logo" />
-        <form onSubmit={handleSubmit(submission)}>
-          <fieldset>
-            <label htmlFor="email">Email:</label>
+    <>
+      {isInvalidCredentials && (
+        <Alert message="Invalid credentials." type="danger" />
+      )}
 
-            {/* Display error for invalid email format if the email does not have '@' */}
-            {/* {!requiredFieldsData.email.includes("@") &&
+      <main className="login-page">
+        <section className="left-panel">
+          <img src={logInImage} alt="log-in" />
+        </section>
+        <section className="right-panel">
+          <img src={logo} alt="logo" />
+          <form onSubmit={handleSubmit(submission)}>
+            <fieldset>
+              <label htmlFor="email">Email:</label>
+
+              {/* Display error for invalid email format if the email does not have '@' */}
+              {/* {!requiredFieldsData.email.includes("@") &&
               requiredFieldsData.email != "" && <span>Invalid format.</span>} */}
-            {errors.email && <span>{errors.email.message}</span>}
+              {errors.email && <span>{errors.email.message}</span>}
 
-            <input
-              type="email"
-              name="email"
-              id="email"
-              required
-              placeholder="Enter email"
-              // onChange={handleValueFields}
-              {...register("email")}
-            />
-          </fieldset>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                required
+                placeholder="Enter email"
+                // onChange={handleValueFields}
+                {...register("email")}
+              />
+            </fieldset>
 
-          <fieldset>
-            <label htmlFor="password">Password:</label>
+            <fieldset>
+              <label htmlFor="password">Password:</label>
 
-            {errors.password && <span>{errors.password.message}</span>}
+              {errors.password && <span>{errors.password.message}</span>}
 
-            <input
-              type="password"
-              name="password"
-              id="password"
-              required
-              placeholder="Enter password"
-              // onChange={handleValueFields}
-              {...register("password")}
-            />
-          </fieldset>
+              <input
+                type="password"
+                name="password"
+                id="password"
+                required
+                placeholder="Enter password"
+                // onChange={handleValueFields}
+                {...register("password")}
+              />
+            </fieldset>
 
-          <button type="submit" disabled={!isValid}>
-            Log In
-          </button>
-        </form>
-        <a href="#">Forgot Password?</a>
-        <a onClick={() => navigate("/register")}>Create new account</a>
-      </section>
-    </main>
+            <button
+              type="submit"
+              disabled={!isValid || isSubmitting}
+              className="submit-button"
+            >
+              {isSubmitting && <RippleLoading />}
+              {isSubmitting ? "Verifying..." : "Log In"}
+            </button>
+          </form>
+          <a href="#">Forgot Password?</a>
+          <a onClick={() => navigate("/register")}>Create new account</a>
+        </section>
+      </main>
+    </>
   );
 }
 
