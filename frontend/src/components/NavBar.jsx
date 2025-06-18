@@ -11,7 +11,11 @@ function Navbar({ showModal }) {
   const location = useLocation();
 
   const [userRole, setUserRole] = useState(
-    localStorage.getItem("access_token") ? "Admin" : "Guest"
+    sessionStorage.getItem("current_user")
+      ? JSON.parse(sessionStorage.getItem("current_user")).is_superuser
+        ? "Admin"
+        : "User"
+      : "Guest"
   );
   const [activeTab, setActiveTab] = useState(".short-term");
   const [isProfileHover, setProfileHover] = useState(false);
@@ -133,7 +137,7 @@ function Navbar({ showModal }) {
             Long-Term
           </a>
         </li>
-        {userRole == "Admin" ? (
+        {userRole == "Admin" || userRole == "User" ? (
           <>
             <li onClick={showModal}>Upload Dataset</li>
             <li className={activeTab === "profile" ? "active" : ""}>
@@ -146,20 +150,26 @@ function Navbar({ showModal }) {
 
               {isProfileHover && (
                 <div
-                  className="profile-menu-container"
+                  className={`profile-menu-container ${userRole}`}
                   onMouseEnter={() => setProfileHover(true)}
                   onMouseLeave={() => setProfileHover(false)}
                 >
                   <div className="profile-menu">
                     <li>Edit Account Details</li>
-                    <li
-                      onClick={() => {
-                        navigate("/user-management");
-                        setActiveTab("profile");
-                      }}
-                    >
-                      User Management
-                    </li>
+
+                    {/* Render only if the current user is superuser */}
+                    {JSON.parse(sessionStorage.getItem("current_user"))
+                      .is_superuser && (
+                      <li
+                        onClick={() => {
+                          navigate("/user-management");
+                          setActiveTab("profile");
+                        }}
+                      >
+                        User Management
+                      </li>
+                    )}
+
                     <li onClick={logout}>Log Out</li>
                   </div>
                 </div>
