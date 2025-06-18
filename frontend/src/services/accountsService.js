@@ -1,4 +1,5 @@
 const API_URL = "http://127.0.0.1:8000/";
+const API_URL_QUERY = "http://127.0.0.1:8000/users/list_by_status/?is_active=";
 
 class AccountsService {
   // Register new account
@@ -27,6 +28,48 @@ class AccountsService {
       return response;
     } catch (error) {
       console.log("Failed to register!", error);
+    }
+  }
+
+  // Get all users
+  async getAllUsers() {
+    try {
+      const response = await fetch(API_URL + "users/", {
+        method: "GET",
+      });
+
+      if (!response.ok) {
+        const errorResponse = await response.json();
+        console.log("failed to fetch all users");
+
+        return errorResponse;
+      }
+
+      const data = await response.json();
+      return Array.from(data);
+    } catch (error) {
+      console.log("Failed to get all users!", error);
+    }
+  }
+
+  // Get users by isActive
+  async getUsersByisActive(status) {
+    try {
+      const response = await fetch(API_URL_QUERY + status, {
+        method: "GET",
+      });
+
+      if (!response.ok) {
+        const errorResponse = await response.json();
+        console.log("failed to fetch is_active users");
+
+        return errorResponse;
+      }
+
+      const data = await response.json();
+      return Array.from(data);
+    } catch (error) {
+      console.log("Failed to get users by status!", error);
     }
   }
 }
