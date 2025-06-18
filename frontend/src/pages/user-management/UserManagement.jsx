@@ -1,17 +1,42 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../../components/NavBar";
 import "../../css/UserManagement.css";
 import SampleProfile from "../../assets/img/do.png";
 import RegisterUser from "../../components/modals/RegisterUser";
+import { useLocation, useNavigate } from "react-router-dom";
+import Alert from "../../components/modals/Alert";
 
 export default function UserManagement() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [activeTab, setActiveTab] = useState("All");
   const [isAddUser, setAddUser] = useState(false);
+  const [hasNewUser, setHasNewUser] = useState(false);
+
+  const registrationSuccess = location.state?.registrationSuccess;
+
+  useEffect(() => {
+    if (registrationSuccess) {
+      setHasNewUser(true);
+
+      setTimeout(() => {
+        setHasNewUser(false);
+
+        // Set the regsitrationSuccess state to false.
+        navigate(location.pathname, { state: { registrationSuccess: false } });
+      }, 5000);
+    }
+  }, [registrationSuccess]);
 
   return (
     <>
       {isAddUser && (
         <RegisterUser showRegisterUserModal={() => setAddUser(false)} />
+      )}
+
+      {hasNewUser && (
+        <Alert message="Registration successful!" type="success" />
       )}
 
       <nav>
