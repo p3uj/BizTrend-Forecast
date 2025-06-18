@@ -5,14 +5,20 @@ import SampleProfile from "../../assets/img/do.png";
 import RegisterUser from "../../components/modals/RegisterUser";
 import { useLocation, useNavigate } from "react-router-dom";
 import Alert from "../../components/modals/Alert";
+import accountsService from "../../services/accountsService";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export default function UserManagement() {
+  const numSkeletonLoading = 8;
   const location = useLocation();
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState("All");
   const [isAddUser, setAddUser] = useState(false);
   const [hasNewUser, setHasNewUser] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [isLoading, setLoading] = useState(true);
 
   const registrationSuccess = location.state?.registrationSuccess;
 
@@ -28,6 +34,34 @@ export default function UserManagement() {
       }, 5000);
     }
   }, [registrationSuccess]);
+
+  useEffect(() => {
+    setUsers([]);
+    setLoading(true);
+    const fetchUsers = async () => {
+      if (activeTab === "All") {
+        const users = await accountsService.getAllUsers();
+        setUsers(users);
+        setLoading(false);
+
+        console.log("Users All:", users);
+      } else if (activeTab === "Active") {
+        const users = await accountsService.getUsersByisActive(1);
+        setUsers(users);
+        setLoading(false);
+
+        console.log("Users Active:", users);
+      } else if (activeTab === "Inactive") {
+        const users = await accountsService.getUsersByisActive(0);
+        setUsers(users);
+        setLoading(false);
+
+        console.log("Users Inactive:", users);
+      }
+    };
+
+    fetchUsers();
+  }, [activeTab]);
 
   return (
     <>
@@ -51,7 +85,9 @@ export default function UserManagement() {
         </section>
         <section>
           <div className="table-header">
-            <h2>All Users (8)</h2>
+            <h2>
+              {activeTab} Users ({users.length})
+            </h2>
             <ul>
               <li
                 className={activeTab === "All" ? "active" : ""}
@@ -74,124 +110,62 @@ export default function UserManagement() {
             </ul>
           </div>
         </section>
-        <section className="grid-container">
-          <article className="grid-item-1">
-            <img src={SampleProfile} alt="Profile" />
-            <h2>Mary Grace Piattos</h2>
-            <section className="status-and-role">
-              <span className="status" data-status={"active"}>
-                <div className="dot"></div>
-                <p>Active</p>
-              </span>
-              <span className="role" data-role={"admin"}>
-                <div className="dot"></div>
-                <p>Admin</p>
-              </span>
-            </section>
-            <button>Deactivate Account</button>
-          </article>
-          <article className="grid-item-2">
-            <img src={SampleProfile} alt="Profile" />
-            <h2>Jay Kamote</h2>
-            <section className="status-and-role">
-              <span className="status" data-status={"inactive"}>
-                <div className="dot"></div>
-                <p>Inactive</p>
-              </span>
-            </section>
-            <button>Activate Account</button>
-          </article>
-          <article className="grid-item-3">
-            <img src={SampleProfile} alt="Profile" />
-            <h2>Mary Grace Piattos</h2>
-            <section className="status-and-role">
-              <span className="status" data-status={"active"}>
-                <div className="dot"></div>
-                <p>Active</p>
-              </span>
-              <span className="role" data-role={"admin"}>
-                <div className="dot"></div>
-                <p>Admin</p>
-              </span>
-            </section>
-            <button>Make Inactive</button>
-          </article>
-          <article className="grid-item-4">
-            <img src={SampleProfile} alt="Profile" />
-            <h2>Mary Grace Piattos</h2>
-            <section className="status-and-role">
-              <span className="status" data-status={"active"}>
-                <div className="dot"></div>
-                <p>Active</p>
-              </span>
-              <span className="role" data-role={"admin"}>
-                <div className="dot"></div>
-                <p>Admin</p>
-              </span>
-            </section>
-            <button>Make Inactive</button>
-          </article>
-          <article className="grid-item-5">
-            <img src={SampleProfile} alt="Profile" />
-            <h2>Mary Grace Piattos</h2>
-            <section className="status-and-role">
-              <span className="status" data-status={"active"}>
-                <div className="dot"></div>
-                <p>Active</p>
-              </span>
-              <span className="role" data-role={"admin"}>
-                <div className="dot"></div>
-                <p>Admin</p>
-              </span>
-            </section>
-            <button>Make Inactive</button>
-          </article>
-          <article className="grid-item-6">
-            <img src={SampleProfile} alt="Profile" />
-            <h2>Mary Grace Piattos</h2>
-            <section className="status-and-role">
-              <span className="status" data-status={"active"}>
-                <div className="dot"></div>
-                <p>Active</p>
-              </span>
-              <span className="role" data-role={"admin"}>
-                <div className="dot"></div>
-                <p>Admin</p>
-              </span>
-            </section>
-            <button>Make Inactive</button>
-          </article>
-          <article className="grid-item-7">
-            <img src={SampleProfile} alt="Profile" />
-            <h2>Mary Grace Piattos</h2>
-            <section className="status-and-role">
-              <span className="status" data-status={"active"}>
-                <div className="dot"></div>
-                <p>Active</p>
-              </span>
-              <span className="role" data-role={"admin"}>
-                <div className="dot"></div>
-                <p>Admin</p>
-              </span>
-            </section>
-            <button>Make Inactive</button>
-          </article>
-          <article className="grid-item-8">
-            <img src={SampleProfile} alt="Profile" />
-            <h2>Mary Grace Piattos</h2>
-            <section className="status-and-role">
-              <span className="status" data-status={"active"}>
-                <div className="dot"></div>
-                <p>Active</p>
-              </span>
-              <span className="role" data-role={"admin"}>
-                <div className="dot"></div>
-                <p>Admin</p>
-              </span>
-            </section>
-            <button>Make Inactive</button>
-          </article>
-        </section>
+
+        {isLoading && (
+          <section className="grid-container">
+            {Array.from({ length: numSkeletonLoading }).map((_, index) => (
+              <article className="user-container" key={index}>
+                <Skeleton height={40} width={40} circle />
+                <Skeleton height={20} width={100} />
+                <section className="status-and-role">
+                  <Skeleton height={20} width={60} />
+                  <Skeleton height={20} width={60} />
+                </section>
+                <Skeleton height={40} width={200} borderRadius={40} />
+              </article>
+            ))}
+          </section>
+        )}
+
+        {!isLoading && users.length == 0 && <p>No users found.</p>}
+
+        {users.length > 0 && (
+          <section className="grid-container">
+            {users.map((user, index) => {
+              return (
+                <article className="user-container" key={index}>
+                  <img src={SampleProfile} alt="Profile" />
+                  <h2>
+                    {user.first_name} {user.last_name}
+                  </h2>
+                  <section className="status-and-role">
+                    <span
+                      className="status"
+                      data-status={
+                        user.is_active === true ? "active" : "inactive"
+                      }
+                    >
+                      <div className="dot"></div>
+                      <p>{user.is_active === true ? "Active" : "Inactive"}</p>
+                    </span>
+
+                    {user.is_superuser === true && (
+                      <span className="role" data-role={"admin"}>
+                        <div className="dot"></div>
+                        <p>Admin</p>
+                      </span>
+                    )}
+                  </section>
+                  <button>
+                    {user.is_active === true
+                      ? "Deactivate Account"
+                      : "Activate Account"}
+                  </button>
+                </article>
+              );
+            })}
+          </section>
+        )}
       </main>
     </>
   );
