@@ -8,14 +8,15 @@ import dataset from "../../services/datasetService";
 import predictionService from "../../services/predictionService";
 import LoadingIcon from "../../assets/icons/analysis-chart.gif";
 import { Tooltip } from "react-tooltip";
+import RippleLoading from "./loading/rippleLoading";
 
 export default function UploadDataset({ showModal, onPredictionComplete }) {
   const [isCloseBtnHover, setCloseBthHover] = useState(false);
   const [fileSelected, setFileSelected] = useState(null);
   const [response, setResponse] = useState(String);
-  const [isLoading, setIsLoading] = useState(false);
-  const [currentStep, setCurrentStep] = useState(""); // Track current processing step
+  const [currentStep, setCurrentStep] = useState("");
   const [isPredictionSuccess, setPredictionSuccess] = useState(false);
+  const [isSubmitting, setSubmitting] = useState(false);
 
   const datasetRequirements = (
     <div className="dataset-requirements">
@@ -73,8 +74,7 @@ export default function UploadDataset({ showModal, onPredictionComplete }) {
 
   const handleSubmission = async () => {
     setPredictionSuccess(false);
-    setIsLoading(true);
-    //setCurrentStep("Validating dataset...");
+    setSubmitting(true);
 
     try {
       // Step 1: Validate dataset
@@ -101,9 +101,11 @@ export default function UploadDataset({ showModal, onPredictionComplete }) {
           //console.log("Prediction response:", predictionResponse);
 
           if (predictionResponse.success) {
+            setPredictionSuccess(true);
             setCurrentStep(
               `Successfully generated ${predictionResponse.predictions_count} predictions for your dataset!`
             );
+
             setResponse({
               success: true,
               valid: true,
@@ -117,6 +119,7 @@ export default function UploadDataset({ showModal, onPredictionComplete }) {
 
             // Auto-close modal after 2 seconds
             setTimeout(() => {
+              setPredictionSuccess(false);
               showModal();
             }, 2000);
           } else {
@@ -134,7 +137,7 @@ export default function UploadDataset({ showModal, onPredictionComplete }) {
       });
       setCurrentStep("");
     } finally {
-      setIsLoading(false);
+      setSubmitting(false);
     }
   };
 
@@ -176,9 +179,6 @@ export default function UploadDataset({ showModal, onPredictionComplete }) {
             }`}
           >
             <img src={LoadingIcon} alt="" />
-            {/* {isLoading && <PropagateLoader color="#4f46e5" />} */}
-            {/* {isLoading && <PuffLoader color="#4f46e5" />} */}
-            {/* {isLoading && <BounceLoader color="#4f46e5" />} */}
             <p>{currentStep}</p>
           </div>
         )}
@@ -226,11 +226,12 @@ export default function UploadDataset({ showModal, onPredictionComplete }) {
         )}
 
         <button
-          disabled={fileSelected === null || isLoading}
-          className="make-prediction-btn"
+          disabled={fileSelected === null || isSubmitting}
+          className="submit-button"
           onClick={handleSubmission}
         >
-          {isLoading ? "Processing..." : "Make Prediction"}
+          {isSubmitting && <RippleLoading />}
+          {isSubmitting ? "Processing..." : "Make Prediction"}
         </button>
       </section>
     </div>
