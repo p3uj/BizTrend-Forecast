@@ -16,7 +16,7 @@ class RegisterViewset(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
-
+    
     def create(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
@@ -31,7 +31,19 @@ class UserViewset(viewsets.ViewSet):
     serializer_class = RegisterSerializer
 
     def list(self, request):
-        queryset = User.objects.all()
+        queryset = User.objects.all().order_by('first_name')
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def list_by_status(self, request):
+        """ Get all users by status (active/inactive) """
+        is_active = request.query_params.get('is_active')
+
+        if not is_active:
+            return Response({'error': 'is_active parameter is required'}, status=400)
+
+        queryset = User.objects.filter(is_active=is_active).order_by('first_name')
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
     
