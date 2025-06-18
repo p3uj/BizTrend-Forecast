@@ -26,7 +26,7 @@ class RegisterViewset(viewsets.ViewSet):
             return Response(serializer.errors, status=400)
         
 class UserViewset(viewsets.ViewSet):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
 
@@ -64,7 +64,18 @@ class UserViewset(viewsets.ViewSet):
             user.save()
             return Response({'message': 'User status changed successfully'})
         except User.DoesNotExist:
-            return Response({'error': 'User not found'}, status=404)    
+            return Response({'error': 'User not found'}, status=404)
+        
+    @action(detail=False, methods=['get'])
+    def me(self, request):
+        """ Get current user """
+        user = request.user
+        
+        if not user.is_authenticated:
+            return Response({'error': 'User is not authenticated'}, status=401)
+
+        serializer = self.serializer_class(user)
+        return Response(serializer.data)
     
 class DatasetViewset(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
