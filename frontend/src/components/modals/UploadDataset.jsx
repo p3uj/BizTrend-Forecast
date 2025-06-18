@@ -165,8 +165,8 @@ export default function UploadDataset({ showModal, onPredictionComplete }) {
         </button>
         <h2>Upload Dataset</h2>
         <p className="reminder">
-          Please make sure the dataset is complete to avoid inaccurate result.{" "}
-          {""}
+          Please make sure the dataset is correct and complete to avoid
+          inaccurate result. {""}
           <a data-tooltip-id="dataset-required-info" data-tooltip-offset={10}>
             Hover to see Dataset Requirements.
           </a>
