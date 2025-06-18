@@ -13,6 +13,7 @@
   --forecast-active-color: #ffd700;
   --forecast-inactive-color: #ffe34c;
 
+  /* Alert */
   --warning-bg: #ffe0db;
   --warning-text: #ff3e1d;
   --success-bg: #e8f9df;
