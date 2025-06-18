@@ -5,7 +5,9 @@ nav {
   width: 100%;
 
   background-color: var(--primary-dark-color);
-  box-shadow: 0px 0px 80px 30px rgba(43, 43, 63, 0.3);
+  /* border-bottom: 1px solid rgba(43, 43, 63, 1); */
+  /* box-shadow: 0px 0px 80px 30px rgba(43, 43, 63, 0.3); */
+  box-shadow: 0px 0px 10px 5px rgba(43, 43, 63, 0.3);
 
   position: fixed;
   top: 0;
@@ -86,6 +88,19 @@ nav .profile-menu-container {
   position: absolute;
   right: 48px;
   bottom: -145px;
+
+  cursor: default;
+}
+
+nav .profile-menu-container.User {
+  display: flex;
+  width: fit-content;
+  height: fit-content;
+  padding-top: 30px;
+
+  position: absolute;
+  right: 48px;
+  top: 39px;
 
   cursor: default;
 }
