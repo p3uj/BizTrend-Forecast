@@ -27,6 +27,11 @@
   background-color: var(--btn-hover-color);
 }
 
+.password-errors-container {
+  display: flex;
+  flex-direction: column;
+}
+
 .loading-ripple {
   height: 20px;
   position: relative;
