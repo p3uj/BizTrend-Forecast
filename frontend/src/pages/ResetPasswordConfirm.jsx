@@ -4,16 +4,17 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import RippleLoading from "../components/modals/loading/rippleLoading";
 import authService from "../services/authService";
 import Alert from "../components/modals/Alert";
 
-export default function ResetPasswordConfirm({ match }) {
+export default function ResetPasswordConfirm() {
   const navigate = useNavigate();
+  const { uid, token } = useParams();
   const [isSubmitting, setSubmitting] = useState(false);
   const [passwordErrors, setPasswordErrors] = useState([]);
-  const [isChangePasswordSuccess, setChangePasswordSuccess] = useState(null);
+  const [responseStatus, setResponseStatus] = useState(null);
 
   const validationSchema = yup.object().shape({
     password: yup
@@ -43,31 +44,26 @@ export default function ResetPasswordConfirm({ match }) {
   const submission = async (data) => {
     setSubmitting(true);
 
-    // Get the uid and token from the url
-    const uid = match.params.uid;
-    const token = match.params.token;
-
     const response = await authService.resetPasswordConfirm(
       uid,
       token,
       data.password
     );
 
-    if (response) {
-      setSubmitting(false);
-      setChangePasswordSuccess(true);
-    }
+    console.log("response response:", response);
+    setResponseStatus(response);
+    setSubmitting(false);
 
     console.log(data);
   };
 
   useEffect(() => {
-    if (isChangePasswordSuccess) {
+    if (responseStatus != null) {
       setTimeout(() => {
-        setChangePasswordSuccess(false);
+        setResponseStatus(null);
       }, 5000);
     }
-  }, [isChangePasswordSuccess]);
+  }, [responseStatus]);
 
   const watchPassword = watch("password", "");
   useEffect(() => {
@@ -104,9 +100,20 @@ export default function ResetPasswordConfirm({ match }) {
     setPasswordErrors(errors);
   }, [watchPassword]);
 
+  console.log("change password:", responseStatus);
+
   return (
     <>
-      {}
+      {responseStatus === 204 && (
+        <Alert message="Password changed successfully!" type="success" />
+      )}
+
+      {responseStatus != 204 && responseStatus != null && (
+        <Alert
+          message="Unable to change password. Please try again."
+          type="danger"
+        />
+      )}
 
       <main className="reset-password">
         <section className="left-panel">
