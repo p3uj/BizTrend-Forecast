@@ -26,7 +26,7 @@ class RegisterViewset(viewsets.ViewSet):
             return Response(serializer.errors, status=400)
         
 class UserViewset(viewsets.ViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAdminUser] # Only the admin user can access the list, list_by_status, and change_status endpoints
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
 
@@ -66,7 +66,7 @@ class UserViewset(viewsets.ViewSet):
         except User.DoesNotExist:
             return Response({'error': 'User not found'}, status=404)
         
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def me(self, request):
         """ Get current user """
         user = request.user
