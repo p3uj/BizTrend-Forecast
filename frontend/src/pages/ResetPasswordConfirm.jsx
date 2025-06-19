@@ -6,11 +6,14 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import RippleLoading from "../components/modals/loading/rippleLoading";
+import authService from "../services/authService";
+import Alert from "../components/modals/Alert";
 
-export default function ResetPasswordConfirm() {
+export default function ResetPasswordConfirm({ match }) {
   const navigate = useNavigate();
   const [isSubmitting, setSubmitting] = useState(false);
   const [passwordErrors, setPasswordErrors] = useState([]);
+  const [isChangePasswordSuccess, setChangePasswordSuccess] = useState(null);
 
   const validationSchema = yup.object().shape({
     password: yup
@@ -40,8 +43,31 @@ export default function ResetPasswordConfirm() {
   const submission = async (data) => {
     setSubmitting(true);
 
+    // Get the uid and token from the url
+    const uid = match.params.uid;
+    const token = match.params.token;
+
+    const response = await authService.resetPasswordConfirm(
+      uid,
+      token,
+      data.password
+    );
+
+    if (response) {
+      setSubmitting(false);
+      setChangePasswordSuccess(true);
+    }
+
     console.log(data);
   };
+
+  useEffect(() => {
+    if (isChangePasswordSuccess) {
+      setTimeout(() => {
+        setChangePasswordSuccess(false);
+      }, 5000);
+    }
+  }, [isChangePasswordSuccess]);
 
   const watchPassword = watch("password", "");
   useEffect(() => {
@@ -79,62 +105,66 @@ export default function ResetPasswordConfirm() {
   }, [watchPassword]);
 
   return (
-    <main className="reset-password">
-      <section className="left-panel">
-        <img src={ForgotPassIllustration} alt="log-in" />
-      </section>
-      <section className="right-panel">
-        <h1>Set-Up New Password</h1>
-        <p>Set a new password for your account.</p>
-        <form onSubmit={handleSubmit(submission)}>
-          <fieldset>
-            <label htmlFor="password">New Password:</label>
+    <>
+      {}
 
-            <input
-              type="password"
-              name="password"
-              id="password"
-              placeholder="Enter new password..."
-              {...register("password")}
-            />
-          </fieldset>
+      <main className="reset-password">
+        <section className="left-panel">
+          <img src={ForgotPassIllustration} alt="log-in" />
+        </section>
+        <section className="right-panel">
+          <h1>Set-Up New Password</h1>
+          <p>Set a new password for your account.</p>
+          <form onSubmit={handleSubmit(submission)}>
+            <fieldset>
+              <label htmlFor="password">New Password:</label>
 
-          {passwordErrors.length !== 0 && (
-            <div className="password-errors-container">
-              <span>Password must contain the following:</span>
-              {passwordErrors.map((error, index) => (
-                <span key={index}>{error}</span>
-              ))}
-            </div>
-          )}
+              <input
+                type="password"
+                name="password"
+                id="password"
+                placeholder="Enter new password..."
+                {...register("password")}
+              />
+            </fieldset>
 
-          <fieldset>
-            <label htmlFor="confirm-password">Confirm Password:</label>
-
-            <input
-              type="password"
-              name="confirm-password"
-              id="confirm-password"
-              placeholder="Enter confirm password..."
-              {...register("confirmPassword")}
-            />
-
-            {errors.confirmPassword && (
-              <span>{errors.confirmPassword.message}</span>
+            {passwordErrors.length !== 0 && (
+              <div className="password-errors-container">
+                <span>Password must contain the following:</span>
+                {passwordErrors.map((error, index) => (
+                  <span key={index}>{error}</span>
+                ))}
+              </div>
             )}
-          </fieldset>
 
-          <button
-            type="submit"
-            disabled={!isValid || isSubmitting}
-            className="submit-button"
-          >
-            {isSubmitting && <RippleLoading />}
-            {isSubmitting ? "Submitting..." : "Submit"}
-          </button>
-          <a onClick={() => navigate("/login")}>Back to Log In</a>
-        </form>
-      </section>
-    </main>
+            <fieldset>
+              <label htmlFor="confirm-password">Confirm Password:</label>
+
+              <input
+                type="password"
+                name="confirm-password"
+                id="confirm-password"
+                placeholder="Enter confirm password..."
+                {...register("confirmPassword")}
+              />
+
+              {errors.confirmPassword && (
+                <span>{errors.confirmPassword.message}</span>
+              )}
+            </fieldset>
+
+            <button
+              type="submit"
+              disabled={!isValid || isSubmitting}
+              className="submit-button"
+            >
+              {isSubmitting && <RippleLoading />}
+              {isSubmitting ? "Submitting..." : "Submit"}
+            </button>
+            <a onClick={() => navigate("/login")}>Back to Log In</a>
+          </form>
+        </section>
+      </main>
+    </>
   );
 }
