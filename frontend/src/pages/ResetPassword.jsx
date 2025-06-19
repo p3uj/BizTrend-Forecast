@@ -12,7 +12,7 @@ import Alert from "../components/modals/Alert";
 export default function ResetPassword() {
   const navigate = useNavigate();
   const [isSubmitting, setSubmitting] = useState(false);
-  const [isResponseSuccess, setResponseSuccess] = useState(null);
+  const [isRequestSent, setRequestSent] = useState(null);
 
   const validationSchema = yup.object().shape({
     email: yup
@@ -35,22 +35,22 @@ export default function ResetPassword() {
     setSubmitting(true);
 
     const response = await authService.resetPassword(data.email);
-    setResponseSuccess(response);
+    setRequestSent(response);
 
     setSubmitting(false);
   };
 
   useEffect(() => {
-    if (isResponseSuccess) {
+    if (isRequestSent) {
       setTimeout(() => {
-        setResponseSuccess(false);
+        setRequestSent(false);
       }, 5000);
     }
-  }, [isResponseSuccess]);
+  }, [isRequestSent]);
 
   return (
     <>
-      {isResponseSuccess && (
+      {isRequestSent && (
         <Alert
           message="If that email address is in our database, 
           we will send you an email to reset your password."
