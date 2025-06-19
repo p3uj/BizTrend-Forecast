@@ -118,7 +118,7 @@ function LogIn() {
               {isSubmitting ? "Verifying..." : "Log In"}
             </button>
           </form>
-          <a href="#">Forgot Password?</a>
+          <a onClick={() => navigate("/reset-password")}>Forgot Password?</a>
           <a onClick={() => navigate("/register")}>Create new account</a>
         </section>
       </main>
