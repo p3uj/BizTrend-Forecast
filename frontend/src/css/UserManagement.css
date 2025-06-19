@@ -68,6 +68,10 @@
   color: var(--secondary-dark-color);
 }
 
+.user-management .table-header h2 span {
+  color: #808080;
+}
+
 .user-management .table-header ul {
   display: flex;
   flex-direction: row;
