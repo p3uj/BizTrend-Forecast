@@ -12,7 +12,7 @@ import Alert from "../components/modals/Alert";
 export default function ResetPassword() {
   const navigate = useNavigate();
   const [isSubmitting, setSubmitting] = useState(false);
-  const [isRequestSent, setRequestSent] = useState(null);
+  const [responseStatus, setResponseStatus] = useState(null);
 
   const validationSchema = yup.object().shape({
     email: yup
@@ -35,26 +35,35 @@ export default function ResetPassword() {
     setSubmitting(true);
 
     const response = await authService.resetPassword(data.email);
-    setRequestSent(response);
+    setResponseStatus(response);
 
-    setSubmitting(false);
+    setSubmitting(null);
   };
 
   useEffect(() => {
-    if (isRequestSent) {
+    if (responseStatus != null) {
       setTimeout(() => {
-        setRequestSent(false);
+        setResponseStatus(null);
       }, 5000);
     }
-  }, [isRequestSent]);
+  }, [responseStatus]);
+
+  console.log("responseStatus:", responseStatus);
 
   return (
     <>
-      {isRequestSent && (
+      {responseStatus === 204 && (
         <Alert
           message="If that email address is in our database, 
           we will send you an email to reset your password."
           type="success"
+        />
+      )}
+
+      {responseStatus != 204 && responseStatus != null && (
+        <Alert
+          message="Unable to sent reset password. Please try again."
+          type="danger"
         />
       )}
 
