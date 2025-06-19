@@ -117,7 +117,7 @@ export default function UserManagement() {
         <section>
           <div className="table-header">
             <h2>
-              {activeTab} Users ({users.length})
+              {activeTab} Users {!isLoading && <span>({users.length})</span>}
             </h2>
             <ul>
               <li
