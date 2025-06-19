@@ -40,6 +40,29 @@ class AuthService {
     }
   }
 
+  // Reset Password
+  async resetPassword(email) {
+    try {
+      const response = await fetch(API_URL + "users/reset_password/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        console.log("Reset password response:", response.status);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.log("Failed to reset password!", error);
+    }
+  }
+
   // Get current user
   async getCurrentUser() {
     try {
