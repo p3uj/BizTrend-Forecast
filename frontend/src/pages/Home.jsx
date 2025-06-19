@@ -5,54 +5,56 @@ import "../css/Home.css";
 import Card from "../components/Card";
 import AxiosInstance from "../components/AxiosInstance";
 import authService from "../services/authService";
+import predictionService from "../services/predictionService";
+import CardSkeletonLoading from "../components/loading/CardSkeletonLoading";
 
 export default function Home() {
   const [isUploadDataset, setUploadDataset] = useState(false);
   const [activeFilter, setActiveFilter] = useState("Growing Industry Sector");
-  const [growthSampleData, setGrowthSampleData] = useState([]);
-  const [revenueSampleData, setRevenueSampleData] = useState([]);
-  const [leastSaturatedSampleData, setLeastSaturatedSampleData] = useState([]);
+  const [growthRateData, setGrowthRateData] = useState([]);
+  const [revenueData, setRevenueData] = useState([]);
+  const [leastCrowdedData, setLeastCrowdedData] = useState([]);
+  const [years, setYears] = useState([]);
   const [title, setTitle] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
+  const [isLoading, setLoading] = useState(true);
 
   // Get the current user.
   useEffect(() => {
     const fetchCurrentUser = async () => {
-      const getCurrentUser = await authService.getCurrrentUser();
+      const getCurrentUser = await authService.getCurrentUser();
       setCurrentUser(getCurrentUser);
     };
 
     fetchCurrentUser();
   }, []);
 
-  // Fethch the sample data from the JSON files.
   useEffect(() => {
-    fetch("Industry-Growth-Predictions.json")
-      .then((response) => response.json())
-      .then((json) => setGrowthSampleData(json))
-      .catch((error) => console.error("Error loading growth data: ", error));
-    fetch("Industry-Revenue-Predictions.json")
-      .then((response) => response.json())
-      .then((json) => setRevenueSampleData(json))
-      .catch((error) => console.error("Error loading revenue data: ", error));
-    fetch("Least-Crowded-Industry-Predictions.json")
-      .then((response) => response.json())
-      .then((json) => setLeastSaturatedSampleData(json))
-      .catch((error) =>
-        console.error("Error loading least saturated data: ", error)
-      );
-  }, []);
+    const fetchLatestTrends = async () => {
+      try {
+        const latestTrends = await predictionService.getLatestTrends();
+        console.log("Latest trends:", latestTrends);
+        setGrowthRateData(latestTrends[0]);
+        setRevenueData(latestTrends[1]);
+        setLeastCrowdedData(latestTrends[2]);
+        setYears(latestTrends[3]);
+        setLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch latest trends:", error);
+      }
+    };
+
+    fetchLatestTrends();
+  });
 
   // Set the title based on the active filter.
   useEffect(() => {
     if (activeFilter == "Growing Industry Sector") {
-      setTitle("Top 5 Growing Industry Sectors in 2026");
+      setTitle("Top 5 Growing Industry Sectors in");
     } else if (activeFilter == "Industry Sector Revenue") {
-      setTitle("Top 5 Industry Sectors by Revenue in 2026");
+      setTitle("Top 5 Industry Sectors by Revenue in");
     } else {
-      setTitle(
-        "Top 5 Least Crowded Industry Sectors in 2026 (Based on Business Count)"
-      );
+      setTitle("Top 5 Least Crowded Industry Sectors in");
     }
   }, [activeFilter]);
 
@@ -66,18 +68,15 @@ export default function Home() {
   // Function to get the sample data based on the active filter, type, and top number.
   const sampleData = (type, topNumber, filterResult) => {
     if (filterResult == "Growing Industry Sector") {
-      // Find the data based on the type and top number then return it to the calling function.
-      return growthSampleData.find(
+      return growthRateData.find(
         (item) => item.type === type && item.rank === topNumber
       );
     } else if (filterResult == "Industry Sector Revenue") {
-      // Find the data based on the type and top number then return it to the calling function.
-      return revenueSampleData.find(
+      return revenueData.find(
         (item) => item.type === type && item.rank === topNumber
       );
     } else if (filterResult == "Least Crowded") {
-      // Find the data based on the type and top number then return it to the calling function.
-      return leastSaturatedSampleData.find(
+      return leastCrowdedData.find(
         (item) => item.type === type && item.rank === topNumber
       );
     }
@@ -86,7 +85,10 @@ export default function Home() {
   return (
     <>
       {isUploadDataset && (
-        <UploadDataset showModal={() => setUploadDataset(false)} />
+        <UploadDataset
+          showModal={() => setUploadDataset(false)}
+          //onPredictionComplete={handlePredictionComplete}
+        />
       )}
 
       <nav>
@@ -127,117 +129,148 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <h1>Short-Term Outlook: {title}</h1>
+          <h1>
+            Short-Term Outlook: {title} {years.length > 0 ? years[0] : "🔮"}
+          </h1>
           <section className="short-term-contents">
-            <Card
-              topNumber={4}
-              type="short-term"
-              data={sampleData("short-term", 4, activeFilter)}
-              filterResult={activeFilter}
-            />
-            <Card
-              topNumber={2}
-              type="short-term"
-              data={sampleData("short-term", 2, activeFilter)}
-              filterResult={activeFilter}
-            />
-            <Card
-              topNumber={1}
-              type="short-term"
-              data={sampleData("short-term", 1, activeFilter)}
-              filterResult={activeFilter}
-            />
-            <Card
-              topNumber={3}
-              type="short-term"
-              data={sampleData("short-term", 3, activeFilter)}
-              filterResult={activeFilter}
-            />
-            <Card
-              topNumber={5}
-              type="short-term"
-              data={sampleData("short-term", 5, activeFilter)}
-              filterResult={activeFilter}
-            />
+            {/* Display Skeleton Loading if data is not yet loaded */}
+            {isLoading && <CardSkeletonLoading />}
+
+            {/* Display Cards if data is already loaded */}
+            {!isLoading && (
+              <>
+                <Card
+                  topNumber={4}
+                  type="short-term"
+                  data={sampleData("short-term", 4, activeFilter)}
+                  filterResult={activeFilter}
+                />
+                <Card
+                  topNumber={2}
+                  type="short-term"
+                  data={sampleData("short-term", 2, activeFilter)}
+                  filterResult={activeFilter}
+                />
+                <Card
+                  topNumber={1}
+                  type="short-term"
+                  data={sampleData("short-term", 1, activeFilter)}
+                  filterResult={activeFilter}
+                />
+                <Card
+                  topNumber={3}
+                  type="short-term"
+                  data={sampleData("short-term", 3, activeFilter)}
+                  filterResult={activeFilter}
+                />
+                <Card
+                  topNumber={5}
+                  type="short-term"
+                  data={sampleData("short-term", 5, activeFilter)}
+                  filterResult={activeFilter}
+                />
+              </>
+            )}
           </section>
         </section>
 
         {/* Mid-term Trends */}
         <section className="mid-term" id="mid-term">
-          <h1>Mid-Term Outlook: {title}</h1>
+          <h1>
+            Mid-Term Outlook: {title} {years.length > 0 ? years[1] : "🔮"}
+          </h1>
           <section className="mid-term-contents">
-            <Card
-              topNumber={4}
-              type="mid-term"
-              data={sampleData("mid-term", 4, activeFilter)}
-              filterResult={activeFilter}
-              color="dark"
-            />
-            <Card
-              topNumber={2}
-              type="mid-term"
-              data={sampleData("mid-term", 2, activeFilter)}
-              filterResult={activeFilter}
-              color="dark"
-            />
-            <Card
-              topNumber={1}
-              type="mid-term"
-              data={sampleData("mid-term", 1, activeFilter)}
-              filterResult={activeFilter}
-              color="dark"
-            />
-            <Card
-              topNumber={3}
-              type="mid-term"
-              data={sampleData("mid-term", 3, activeFilter)}
-              filterResult={activeFilter}
-              color="dark"
-            />
-            <Card
-              topNumber={5}
-              type="mid-term"
-              data={sampleData("mid-term", 5, activeFilter)}
-              filterResult={activeFilter}
-              color="dark"
-            />
+            {/* Display Skeleton Loading if data is not yet loaded */}
+            {isLoading && <CardSkeletonLoading />}
+
+            {/* Display Cards if data is already loaded */}
+            {!isLoading && (
+              <>
+                <Card
+                  topNumber={4}
+                  type="mid-term"
+                  data={sampleData("mid-term", 4, activeFilter)}
+                  filterResult={activeFilter}
+                  color="dark"
+                />
+                <Card
+                  topNumber={2}
+                  type="mid-term"
+                  data={sampleData("mid-term", 2, activeFilter)}
+                  filterResult={activeFilter}
+                  color="dark"
+                />
+                <Card
+                  topNumber={1}
+                  type="mid-term"
+                  data={sampleData("mid-term", 1, activeFilter)}
+                  filterResult={activeFilter}
+                  color="dark"
+                />
+                <Card
+                  topNumber={3}
+                  type="mid-term"
+                  data={sampleData("mid-term", 3, activeFilter)}
+                  filterResult={activeFilter}
+                  color="dark"
+                />
+                <Card
+                  topNumber={5}
+                  type="mid-term"
+                  data={sampleData("mid-term", 5, activeFilter)}
+                  filterResult={activeFilter}
+                  color="dark"
+                />
+              </>
+            )}
           </section>
         </section>
 
         {/* Long-term Trends */}
         <section className="long-term" id="long-term">
-          <h1>Long-Term Outlook: {title}</h1>
+          <h1>
+            Long-Term Outlook: {title} {years.length > 0 ? years[2] : "🔮"}{" "}
+            (Based on Business Count)
+          </h1>
           <section className="long-term-contents">
-            <Card
-              topNumber={4}
-              type="long-term"
-              data={sampleData("long-term", 4, activeFilter)}
-              filterResult={activeFilter}
-            />
-            <Card
-              topNumber={2}
-              type="long-term"
-              data={sampleData("long-term", 2, activeFilter)}
-              filterResult={activeFilter}
-            />
-            <Card
-              topNumber={1}
-              type="long-term"
-              data={sampleData("long-term", 1, activeFilter)}
-              filterResult={activeFilter}
-            />
-            <Card
-              topNumber={3}
-              type="long-term"
-              data={sampleData("long-term", 3, activeFilter)}
-              filterResult={activeFilter}
-            />
-            <Card
-              topNumber={5}
-              type="long-term"
-              data={sampleData("long-term", 5, activeFilter)}
-              filterResult={activeFilter}
-            />
+            {/* Display Skeleton Loading if data is not yet loaded */}
+            {isLoading && <CardSkeletonLoading />}
+
+            {/* Display Cards if data is already loaded */}
+            {!isLoading && (
+              <>
+                <Card
+                  topNumber={4}
+                  type="long-term"
+                  data={sampleData("long-term", 4, activeFilter)}
+                  filterResult={activeFilter}
+                />
+                <Card
+                  topNumber={2}
+                  type="long-term"
+                  data={sampleData("long-term", 2, activeFilter)}
+                  filterResult={activeFilter}
+                />
+                <Card
+                  topNumber={1}
+                  type="long-term"
+                  data={sampleData("long-term", 1, activeFilter)}
+                  filterResult={activeFilter}
+                />
+                <Card
+                  topNumber={3}
+                  type="long-term"
+                  data={sampleData("long-term", 3, activeFilter)}
+                  filterResult={activeFilter}
+                />
+                <Card
+                  topNumber={5}
+                  type="long-term"
+                  data={sampleData("long-term", 5, activeFilter)}
+                  filterResult={activeFilter}
+                />
+              </>
+            )}
           </section>
         </section>
       </main>

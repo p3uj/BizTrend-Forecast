@@ -26,10 +26,10 @@ function LandingPage() {
         <br />
         <div className="buttons-group extra-style">
           <button className="admin-btn" onClick={() => navigate("/login")}>
-            Admin User
+            Registered User
           </button>
           <button className="guest-btn" onClick={() => navigate("/home")}>
-            Guest User
+            Guest
           </button>
         </div>
       </section>

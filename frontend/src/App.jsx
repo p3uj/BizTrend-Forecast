@@ -4,6 +4,7 @@ import LoginPage from "./pages/LogIn";
 import HomePage from "./pages/Home";
 import RegisterPage from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoutes";
+import UserManagement from "./pages/user-management/UserManagement";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/home" element={<HomePage />} />
 
         <Route element={<ProtectedRoute />}>
+          <Route path="/user-management" element={<UserManagement />} />
           {/* <Route path="/home" element={<HomePage />} /> */}
         </Route>
       </Routes>

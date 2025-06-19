@@ -3,13 +3,20 @@ import { useEffect, useState } from "react";
 import SampleProfile from "../assets/img/do.png";
 import SystemIcon from "../assets/icons/system-icon.svg";
 import { Tooltip } from "react-tooltip";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import authService from "../services/authService";
 
 function Navbar({ showModal }) {
   const navigate = useNavigate();
-  const [userRole, setUserRole] = useState(null);
+  const location = useLocation();
 
+  const [userRole, setUserRole] = useState(
+    sessionStorage.getItem("current_user")
+      ? JSON.parse(sessionStorage.getItem("current_user")).is_superuser
+        ? "Admin"
+        : "User"
+      : "Guest"
+  );
   const [activeTab, setActiveTab] = useState(".short-term");
   const [isProfileHover, setProfileHover] = useState(false);
 
@@ -44,17 +51,7 @@ function Navbar({ showModal }) {
     navigate("/");
   };
 
-  // Check if the access token exist then set the corresponding user role.
-  useEffect(() => {
-    const hasAccessToken = authService.getAccessToken();
-    if (hasAccessToken) {
-      setUserRole("Admin");
-    } else {
-      setUserRole("Guest");
-    }
-  }, []);
-
-  console.log("user role: ", userRole);
+  //console.log("user role: ", userRole);
 
   return (
     <nav>
@@ -71,13 +68,18 @@ function Navbar({ showModal }) {
         <li
           className={activeTab === ".short-term" ? "active" : ""}
           onClick={() => {
+            {
+              location.pathname.startsWith("/user-management")
+                ? navigate("/home")
+                : null;
+            }
             setActiveTab(".short-term");
             scrollToSection("#short-term");
           }}
         >
           <a
             data-tooltip-id="nav-menu-tooltip"
-            data-tooltip-content="1 year in the future"
+            data-tooltip-content="1 year ahead"
             data-tooltip-offset={30}
             onClick={() => {
               setActiveTab(".short-term");
@@ -90,13 +92,18 @@ function Navbar({ showModal }) {
         <li
           className={activeTab === ".mid-term" ? "active" : ""}
           onClick={() => {
+            {
+              location.pathname.startsWith("/user-management")
+                ? navigate("/home")
+                : null;
+            }
             setActiveTab(".mid-term");
             scrollToSection("#mid-term");
           }}
         >
           <a
             data-tooltip-id="nav-menu-tooltip"
-            data-tooltip-content="3 years in the future"
+            data-tooltip-content="3 years ahead"
             data-tooltip-offset={30}
             onClick={() => {
               setActiveTab(".mid-term");
@@ -109,13 +116,18 @@ function Navbar({ showModal }) {
         <li
           className={activeTab === ".long-term" ? "active" : ""}
           onClick={() => {
+            {
+              location.pathname.startsWith("/user-management")
+                ? navigate("/home")
+                : null;
+            }
             setActiveTab(".long-term");
             scrollToSection("#long-term");
           }}
         >
           <a
             data-tooltip-id="nav-menu-tooltip"
-            data-tooltip-content="5 years in the future"
+            data-tooltip-content="5 years ahead"
             data-tooltip-offset={30}
             onClick={() => {
               setActiveTab(".long-term");
@@ -125,10 +137,10 @@ function Navbar({ showModal }) {
             Long-Term
           </a>
         </li>
-        {userRole == "Admin" && (
+        {userRole == "Admin" || userRole == "User" ? (
           <>
             <li onClick={showModal}>Upload Dataset</li>
-            <li>
+            <li className={activeTab === "profile" ? "active" : ""}>
               <img
                 src={SampleProfile}
                 alt="sample-profile"
@@ -138,19 +150,36 @@ function Navbar({ showModal }) {
 
               {isProfileHover && (
                 <div
-                  className="profile-menu-container"
+                  className={`profile-menu-container ${userRole}`}
                   onMouseEnter={() => setProfileHover(true)}
                   onMouseLeave={() => setProfileHover(false)}
                 >
                   <div className="profile-menu">
                     <li>Edit Account Details</li>
-                    <li>User Management</li>
+
+                    {/* Render only if the current user is superuser */}
+                    {JSON.parse(sessionStorage.getItem("current_user"))
+                      .is_superuser && (
+                      <li
+                        onClick={() => {
+                          navigate("/user-management");
+                          setActiveTab("profile");
+                        }}
+                      >
+                        User Management
+                      </li>
+                    )}
+
                     <li onClick={logout}>Log Out</li>
                   </div>
                 </div>
               )}
             </li>
           </>
+        ) : (
+          <button disabled="disabled" className="view-as-guest">
+            View as Guest
+          </button>
         )}
       </ul>
     </nav>

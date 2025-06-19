@@ -70,27 +70,6 @@
   outline-offset: 2px;
 }
 
-.login-page button {
-  padding: 14px 16px;
-  border-radius: 40px;
-  background-color: var(--btn-color);
-  color: var(--primary-color);
-  font-size: 1rem;
-  font-weight: 600;
-  transition: ease 0.5s;
-  cursor: pointer;
-}
-
-.login-page button:hover:not(.login-page button:disabled) {
-  background-color: var(--btn-hover-color);
-}
-
-.login-page button:disabled {
-  background-color: #d3d3d3;
-  cursor: not-allowed;
-  color: #808080;
-}
-
 .login-page a {
   align-self: center;
   color: var(--btn-color);

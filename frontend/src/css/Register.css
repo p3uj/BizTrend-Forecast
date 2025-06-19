@@ -30,7 +30,7 @@
   color: red;
 }
 
-.register-page .password-errors-container {
+.password-errors-container {
   display: flex;
   flex-direction: column;
 }

@@ -8,5 +8,11 @@ pytz
 sqlparse
 psycopg2-binary
 python-dotenv
+pandas
+lightgbm
+scikit-learn
+numpy
+tabulate
+
 gunicorn
 dj-database-url

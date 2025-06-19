@@ -143,8 +143,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'build/static')
+    # Only include build/static if the directory exists (for production builds)
+    os.path.join(BASE_DIR, 'build/static') if os.path.exists(os.path.join(BASE_DIR, 'build/static')) else None
 ]
+# Remove None values from STATICFILES_DIRS
+STATICFILES_DIRS = [path for path in STATICFILES_DIRS if path is not None]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 REST_FRAMEWORK = {
