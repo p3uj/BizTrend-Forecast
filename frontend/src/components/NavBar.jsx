@@ -69,7 +69,8 @@ function Navbar({ showModal }) {
           className={activeTab === ".short-term" ? "active" : ""}
           onClick={() => {
             {
-              location.pathname.startsWith("/user-management")
+              location.pathname.startsWith("/user-management") ||
+              location.pathname.startsWith("/account")
                 ? navigate("/home")
                 : null;
             }
@@ -155,7 +156,9 @@ function Navbar({ showModal }) {
                   onMouseLeave={() => setProfileHover(false)}
                 >
                   <div className="profile-menu">
-                    <li>Edit Account Details</li>
+                    <li onClick={() => navigate("/account")}>
+                      Edit Account Details
+                    </li>
 
                     {/* Render only if the current user is superuser */}
                     {JSON.parse(sessionStorage.getItem("current_user"))
