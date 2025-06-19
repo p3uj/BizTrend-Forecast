@@ -144,14 +144,20 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    # Only include build/static if the directory exists (for production builds)
-    os.path.join(BASE_DIR, 'build/static') if os.path.exists(os.path.join(BASE_DIR, 'build/static')) else None
-]
-# Remove None values from STATICFILES_DIRS
-STATICFILES_DIRS = [path for path in STATICFILES_DIRS if path is not None]
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/static/'
+STATICFILES_DIRS = []
+
+# Add build/static to STATICFILES_DIRS if it exists
+build_static_path = os.path.join(BASE_DIR, 'build/static')
+if os.path.exists(build_static_path):
+    STATICFILES_DIRS.append(build_static_path)
+
+# Add assets directory for Vite build assets
+build_assets_path = os.path.join(BASE_DIR, 'build/assets')
+if os.path.exists(build_assets_path):
+    STATICFILES_DIRS.append(build_assets_path)
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 REST_FRAMEWORK = {
     # 'DEFAULT_PERMISSION_CLASSES': [
