@@ -1,0 +1,119 @@
+.account-details {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  padding: 90px 38px 20px 38px;
+
+  background-color: var(--primary-color);
+}
+
+.account-details .title-page {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 40px;
+
+  background-color: white;
+  box-shadow: 0 4px 20px 2px rgb(211, 211, 211, 0.5);
+}
+
+.account-details .title-page h1 {
+  margin-left: 20px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--secondary-dark-color);
+}
+
+.account-details .title-page h4 {
+  font-size: 0.875rem;
+  color: var(--secondary-color);
+}
+
+.account-details .title-page .profile-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  padding: 10px;
+  border-radius: 40px;
+
+  gap: 10px;
+
+  background-color: var(--primary-dark-color);
+  box-shadow: 0 4px 20px 2px rgb(211, 211, 211, 0.5);
+}
+
+.account-details .title-page img {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+
+  box-shadow: 0 0 0 2px var(--primary-dark-color), 0 0 0 4px var(--btn-color);
+
+  transition: ease 0.5s;
+}
+
+.account-details section:nth-last-child(1) {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 20px;
+  /* background-color: red; */
+}
+
+.account-details section:nth-last-child(1) section:not(.left-panel) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  width: 100%;
+  gap: 20px;
+  /* background-color: red; */
+}
+
+.account-details .left-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 20px;
+  background-color: red;
+}
+
+.account-details .left-panel form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 20px;
+  background-color: red;
+}
+
+.account-details .left-panel form fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background-color: red;
+}
+
+.account-details .left-panel img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+
+  box-shadow: 0 0 0 2px var(--primary-dark-color), 0 0 0 4px var(--btn-color);
+
+  transition: ease 0.5s;
+}
