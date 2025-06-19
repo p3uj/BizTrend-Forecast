@@ -5,6 +5,7 @@ import HomePage from "./pages/Home";
 import RegisterPage from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import UserManagement from "./pages/user-management/UserManagement";
+import AccountDetails from "./pages/AccountDetails";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/home" element={<HomePage />} />
+        <Route path="/account" element={<AccountDetails />} />
 
         <Route element={<ProtectedRoute />}>
           <Route path="/user-management" element={<UserManagement />} />
