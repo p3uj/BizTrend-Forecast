@@ -3,14 +3,16 @@ import ForgotPassIllustration from "../assets/img/forgot_password.png";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import RippleLoading from "../components/modals/loading/rippleLoading";
+import authService from "../services/authService";
+import Alert from "../components/modals/Alert";
 
 export default function ResetPassword() {
   const navigate = useNavigate();
   const [isSubmitting, setSubmitting] = useState(false);
-  const [isInvalidCredentials, setInvalidCredentials] = useState(null);
+  const [isResponseSuccess, setResponseSuccess] = useState(null);
 
   const validationSchema = yup.object().shape({
     email: yup
@@ -32,45 +34,66 @@ export default function ResetPassword() {
   const submission = async (data) => {
     setSubmitting(true);
 
-    console.log(data);
+    const response = await authService.resetPassword(data.email);
+    setResponseSuccess(response);
+
+    setSubmitting(false);
   };
 
+  useEffect(() => {
+    if (isResponseSuccess) {
+      setTimeout(() => {
+        setResponseSuccess(false);
+      }, 5000);
+    }
+  }, [isResponseSuccess]);
+
   return (
-    <main className="reset-password">
-      <section className="left-panel">
-        <img src={ForgotPassIllustration} alt="log-in" />
-      </section>
-      <section className="right-panel">
-        <h1>Password Reset</h1>
-        <p>
-          Enter your email address and we will send you a link to reset your
-          password.
-        </p>
-        <form onSubmit={handleSubmit(submission)}>
-          <fieldset>
-            <label htmlFor="email">Email:</label>
-            <input
-              type="email"
-              name="email"
-              id="email"
-              placeholder="Enter email..."
-              {...register("email")}
-            />
+    <>
+      {isResponseSuccess && (
+        <Alert
+          message="If that email address is in our database, 
+          we will send you an email to reset your password."
+          type="success"
+        />
+      )}
 
-            {errors.email && <span>{errors.email.message}</span>}
-          </fieldset>
+      <main className="reset-password">
+        <section className="left-panel">
+          <img src={ForgotPassIllustration} alt="log-in" />
+        </section>
+        <section className="right-panel">
+          <h1>Password Reset</h1>
+          <p>
+            Enter your email address and we will send you a link to reset your
+            password.
+          </p>
+          <form onSubmit={handleSubmit(submission)}>
+            <fieldset>
+              <label htmlFor="email">Email:</label>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                placeholder="Enter email..."
+                {...register("email")}
+              />
 
-          <button
-            type="submit"
-            disabled={!isValid || isSubmitting}
-            className="submit-button"
-          >
-            {isSubmitting && <RippleLoading />}
-            {isSubmitting ? "Submitting..." : "Sent Reset Link"}
-          </button>
-          <a onClick={() => navigate("/login")}>Back to Log In</a>
-        </form>
-      </section>
-    </main>
+              {errors.email && <span>{errors.email.message}</span>}
+            </fieldset>
+
+            <button
+              type="submit"
+              disabled={!isValid || isSubmitting}
+              className="submit-button"
+            >
+              {isSubmitting && <RippleLoading />}
+              {isSubmitting ? "Submitting..." : "Sent Reset Link"}
+            </button>
+            <a onClick={() => navigate("/login")}>Back to Log In</a>
+          </form>
+        </section>
+      </main>
+    </>
   );
 }
