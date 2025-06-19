@@ -63,6 +63,33 @@ class AuthService {
     }
   }
 
+  // Change password froom reset password request
+  async resetPasswordConfirm(uid, token, password) {
+    try {
+      const response = await fetch(API_URL + `users/reset_password_confirm/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          uid: uid,
+          token: token,
+          new_password: password,
+        }),
+      });
+
+      if (!response.ok) {
+        console.log("Reset password confirm response:", response.status);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.log("Failed to reset password confirm!", error);
+    }
+  }
+
   // Get current user
   async getCurrentUser() {
     try {
