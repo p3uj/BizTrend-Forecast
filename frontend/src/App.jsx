@@ -6,6 +6,8 @@ import RegisterPage from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import UserManagement from "./pages/user-management/UserManagement";
 import AccountDetails from "./pages/AccountDetails";
+import ResetPassword from "./pages/ResetPassword";
+import ResetPasswordConfirm from "./pages/ResetPasswordConfirm";
 
 function App() {
   return (
@@ -16,6 +18,11 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/account" element={<AccountDetails />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route
+          path="/password/reset/confirm/:uid/:token"
+          element={<ResetPasswordConfirm />}
+        />
 
         <Route element={<ProtectedRoute />}>
           <Route path="/user-management" element={<UserManagement />} />
