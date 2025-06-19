@@ -29,7 +29,7 @@ function LandingPage() {
             Registered User
           </button>
           <button className="guest-btn" onClick={() => navigate("/home")}>
-            Guest
+            Guest User
           </button>
         </div>
       </section>
