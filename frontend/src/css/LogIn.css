@@ -74,6 +74,8 @@
   align-self: center;
   color: var(--btn-color);
   margin-top: 10px;
+
+  cursor: pointer;
 }
 
 .login-page a:hover {
