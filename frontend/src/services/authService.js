@@ -53,13 +53,14 @@ class AuthService {
       });
 
       if (!response.ok) {
-        console.log("Reset password response:", response.status);
-        return false;
+        console.log("Reset password response:", response);
+        return response.status;
       }
 
-      return true;
+      return response.status;
     } catch (error) {
       console.log("Failed to reset password!", error);
+      return error;
     }
   }
 
@@ -81,12 +82,13 @@ class AuthService {
 
       if (!response.ok) {
         console.log("Reset password confirm response:", response.status);
-        return false;
+        return response.status;
       }
 
-      return true;
+      return response.status;
     } catch (error) {
       console.log("Failed to reset password confirm!", error);
+      return error;
     }
   }
 
