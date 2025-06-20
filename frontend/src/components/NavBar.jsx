@@ -66,7 +66,11 @@ function Navbar({ showModal }) {
           <img src={SystemIcon} alt="system-icon" />
         </li>
         <li
-          className={activeTab === ".short-term" ? "active" : ""}
+          className={
+            activeTab === ".short-term" && location.pathname.startsWith("/home")
+              ? "active"
+              : ""
+          }
           onClick={() => {
             {
               location.pathname.startsWith("/user-management") ||
@@ -94,7 +98,8 @@ function Navbar({ showModal }) {
           className={activeTab === ".mid-term" ? "active" : ""}
           onClick={() => {
             {
-              location.pathname.startsWith("/user-management")
+              location.pathname.startsWith("/user-management") ||
+              location.pathname.startsWith("/account")
                 ? navigate("/home")
                 : null;
             }
@@ -118,7 +123,8 @@ function Navbar({ showModal }) {
           className={activeTab === ".long-term" ? "active" : ""}
           onClick={() => {
             {
-              location.pathname.startsWith("/user-management")
+              location.pathname.startsWith("/user-management") ||
+              location.pathname.startsWith("/account")
                 ? navigate("/home")
                 : null;
             }
@@ -141,12 +147,18 @@ function Navbar({ showModal }) {
         {userRole == "Admin" || userRole == "User" ? (
           <>
             <li onClick={showModal}>Upload Dataset</li>
-            <li className={activeTab === "profile" ? "active" : ""}>
+            <li>
               <img
                 src={SampleProfile}
                 alt="sample-profile"
                 onMouseEnter={() => setProfileHover(true)}
                 onMouseLeave={() => setProfileHover(false)}
+                className={
+                  location.pathname.includes("/user-management") ||
+                  location.pathname.includes("/account")
+                    ? "active"
+                    : ""
+                }
               />
 
               {isProfileHover && (
@@ -156,7 +168,15 @@ function Navbar({ showModal }) {
                   onMouseLeave={() => setProfileHover(false)}
                 >
                   <div className="profile-menu">
-                    <li onClick={() => navigate("/account")}>
+                    <li
+                      onClick={() => {
+                        navigate("/account");
+                        setActiveTab("profile");
+                      }}
+                      className={
+                        location.pathname.startsWith("/account") ? "active" : ""
+                      }
+                    >
                       Edit Account Details
                     </li>
 
@@ -168,6 +188,11 @@ function Navbar({ showModal }) {
                           navigate("/user-management");
                           setActiveTab("profile");
                         }}
+                        className={
+                          location.pathname.startsWith("/user-management")
+                            ? "active"
+                            : ""
+                        }
                       >
                         User Management
                       </li>
