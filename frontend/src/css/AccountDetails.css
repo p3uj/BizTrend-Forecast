@@ -102,6 +102,11 @@
   gap: 20px;
 }
 
+.account-details .right-panel fieldset input {
+  background-color: rgb(211, 211, 211, 0.5);
+  color: rgb(51, 65, 85, 0.5);
+}
+
 .account-details .left-panel img {
   width: 100px;
   height: 100px;
