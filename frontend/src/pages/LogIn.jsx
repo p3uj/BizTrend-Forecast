@@ -119,7 +119,6 @@ function LogIn() {
             </button>
           </form>
           <a onClick={() => navigate("/reset-password")}>Forgot Password?</a>
-          <a onClick={() => navigate("/register")}>Create new account</a>
         </section>
       </main>
     </>
