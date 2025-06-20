@@ -60,9 +60,7 @@ export default function Card({
               {data ? data.prediction_result.industry_sector : "___"} sector is
               projected to achieve a growth rate of{" "}
               {data ? data.prediction_result.predicted_growth_rate : "___"}
-              %, which marks an increase of{" "}
-              <span className="positive">+3.5</span> percentage points from 15%
-              in 2025, based on current historical trend analysis.
+              %, based on current historical trend analysis.
             </p>
           )}
 
@@ -74,8 +72,7 @@ export default function Card({
               {data
                 ? formatNumber(Number(data.prediction_result.predicted_revenue))
                 : "___"}{" "}
-              in revenue, reflecting a 12.8% increase from ₱461 billion in 2025,
-              based on the current historical trend analysis.
+              in revenue, based on the current historical trend analysis.
             </p>
           )}
         </div>
@@ -88,8 +85,8 @@ export default function Card({
             {data
               ? formatNumber(data.prediction_result.predicted_least_crowded)
               : "___"}{" "}
-            businesses in operation, reflecting an 8% increase from 12,000 in
-            2025, based on the current historical trend analysis.
+            businesses in operation, based on the current historical trend
+            analysis.
           </p>
         )}
         <h1 className={`industry ${topNumber == 1 ? "active" : ""}`}>
