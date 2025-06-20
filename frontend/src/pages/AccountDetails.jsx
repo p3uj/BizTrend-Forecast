@@ -1,8 +1,23 @@
 import Navbar from "../components/NavBar";
 import "../css/AccountDetails.css";
 import SampleProfile from "../assets/img/do.png";
+import { useState } from "react";
 
 export default function AccountDetails() {
+  const [userInfo, setUserInfo] = useState({
+    firstName: JSON.parse(sessionStorage.getItem("current_user")).first_name,
+    lastName: JSON.parse(sessionStorage.getItem("current_user")).last_name,
+    email: JSON.parse(sessionStorage.getItem("current_user")).email,
+    is_superuser: JSON.parse(sessionStorage.getItem("current_user"))
+      .is_superuser,
+  });
+
+  const maskEmail = (email) => {
+    const [user, domain] = email.split("@");
+    const maskedUser = user[0] + "*".repeat(user.length - 1);
+    return `${maskedUser}@${domain}`;
+  };
+
   return (
     <>
       <nav>
@@ -13,7 +28,9 @@ export default function AccountDetails() {
           <div className="title-page">
             <h1>Account Profile</h1>
             <div className="profile-container">
-              <h4>Mary Grace Piattos</h4>
+              <h4>
+                {userInfo.firstName} {userInfo.lastName}
+              </h4>
               <img src={SampleProfile} alt="" />
             </div>
           </div>
@@ -25,16 +42,28 @@ export default function AccountDetails() {
             <form action="">
               <fieldset>
                 <label htmlFor="first-name">First name</label>
-                <input type="text" name="first-name" id="first-name" />
+                <input
+                  type="text"
+                  name="first-name"
+                  id="first-name"
+                  defaultValue={userInfo.firstName}
+                />
               </fieldset>
               <fieldset>
                 <label htmlFor="last-name">Last name</label>
-                <input type="text" name="last-name" id="last-name" />
+                <input
+                  type="text"
+                  name="last-name"
+                  id="last-name"
+                  defaultValue={userInfo.lastName}
+                />
               </fieldset>
-              <button type="submit">Save Changes</button>
+              <button type="submit" className="submit-button">
+                Save Changes
+              </button>
             </form>
           </section>
-          <section>
+          <section className="right-panel">
             <h2>Account Overview</h2>
             <fieldset>
               <label htmlFor="email">Email:</label>
@@ -42,7 +71,7 @@ export default function AccountDetails() {
                 type="text"
                 name="email"
                 id="email"
-                placeholder="m*****@gmail.com"
+                value={maskEmail(userInfo.email)}
                 disabled
               />
             </fieldset>
@@ -52,7 +81,7 @@ export default function AccountDetails() {
                 type="text"
                 name="role"
                 id="role"
-                placeholder="User"
+                value={userInfo.is_superuser ? "Admin" : "User"}
                 disabled
               />
             </fieldset>
