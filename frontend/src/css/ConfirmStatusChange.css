@@ -39,7 +39,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
 
-  gap: 10px;
+  gap: 15px;
 }
 
 .confirm-status-change-modal .content .close-btn {
@@ -68,11 +68,16 @@
 .confirm-status-change-modal .content img:nth-child(2) {
   padding: 8px;
   height: 50px;
-  width: 60px;
+  width: 50px;
 
   background-color: rgba(255, 59, 48, 0.08);
 
   border-radius: 10px;
+}
+
+.confirm-status-change-modal .content p {
+  font-size: 1rem;
+  color: var(--secondary-dark-color);
 }
 
 .confirm-status-change-modal .content .group-buttons {
