@@ -124,7 +124,6 @@
   transition: ease 0.5s;
 }
 
-.account-details .left-panel button:nth-last-child(2),
 .account-details .left-panel label:nth-of-type(1):not(fieldset label) {
   display: flex;
   justify-content: center;
@@ -143,7 +142,10 @@
   transition: ease 0.5s;
 }
 
-.account-details .left-panel button:nth-last-child(2):hover,
+.account-details .left-panel button:nth-of-type(1):not(form button) {
+  width: fit-content;
+}
+
 .account-details .left-panel label:nth-of-type(1):not(fieldset label):hover {
   background-color: var(--btn-color);
   color: var(--primary-color);
