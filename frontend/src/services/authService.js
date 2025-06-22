@@ -124,8 +124,8 @@ class AuthService {
     const token = this.getAccessToken();
 
     return {
-      // "Content-Type": "application/json",
-      // Accept: "application/json",
+      "Content-Type": "application/json",
+      Accept: "application/json",
       Authorization: token ? `JWT ${token}` : "",
     };
   }
