@@ -1,6 +1,6 @@
 import "../css/navbar.css";
 import { useEffect, useState } from "react";
-import SampleProfile from "../assets/img/do.png";
+import DefaultProfile from "../assets/img/default-profile.svg";
 import SystemIcon from "../assets/icons/system-icon.svg";
 import { Tooltip } from "react-tooltip";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -9,6 +9,10 @@ import authService from "../services/authService";
 function Navbar({ showModal }) {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [userProfile, setUserProfile] = useState({
+    profile: JSON.parse(sessionStorage.getItem("current_user")).profile_picture,
+  });
 
   const [userRole, setUserRole] = useState(
     sessionStorage.getItem("current_user")
@@ -149,7 +153,11 @@ function Navbar({ showModal }) {
             <li onClick={showModal}>Upload Dataset</li>
             <li>
               <img
-                src={SampleProfile}
+                src={
+                  userProfile.profile
+                    ? `http://127.0.0.1:8000/${userProfile.profile}`
+                    : DefaultProfile
+                }
                 alt="sample-profile"
                 onMouseEnter={() => setProfileHover(true)}
                 onMouseLeave={() => setProfileHover(false)}
