@@ -35,6 +35,30 @@ class UserViewset(viewsets.ViewSet):
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
     
+    def update(self, request, pk=None):
+        try:
+            user = User.objects.get(pk=pk)
+            serializer = self.serializer_class(user, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            else:
+                return Response(serializer.errors, status=400)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=404)
+    
+    def partial_update(self, request, pk=None):
+        try:
+            user = User.objects.get(pk=pk)
+            serializer = self.serializer_class(user, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            else:
+                return Response(serializer.errors, status=400)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=404)
+    
     @action(detail=False, methods=['get'])
     def list_by_status(self, request):
         """ Get all users by status (active/inactive) """
