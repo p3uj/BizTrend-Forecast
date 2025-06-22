@@ -102,6 +102,11 @@
   gap: 20px;
 }
 
+.account-details .left-panel form:nth-of-type(1) {
+  display: flex;
+  align-items: center;
+}
+
 .account-details .right-panel fieldset input {
   background-color: rgb(211, 211, 211, 0.5);
   color: rgb(51, 65, 85, 0.5);
@@ -119,7 +124,8 @@
   transition: ease 0.5s;
 }
 
-.account-details .left-panel button:nth-last-child(2) {
+.account-details .left-panel button:nth-last-child(2),
+.account-details .left-panel label:nth-of-type(1):not(fieldset label) {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -137,7 +143,8 @@
   transition: ease 0.5s;
 }
 
-.account-details .left-panel button:nth-last-child(2):hover {
+.account-details .left-panel button:nth-last-child(2):hover,
+.account-details .left-panel label:nth-of-type(1):not(fieldset label):hover {
   background-color: var(--btn-color);
   color: var(--primary-color);
 }
