@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Navbar from "../../components/NavBar";
 import "../../css/UserManagement.css";
-import SampleProfile from "../../assets/img/do.png";
+import DefaultProfile from "../../assets/img/default-profile.svg";
 import RegisterUser from "../../components/modals/RegisterUser";
 import { useLocation, useNavigate } from "react-router-dom";
 import Alert from "../../components/modals/Alert";
@@ -165,7 +165,14 @@ export default function UserManagement() {
             {users.map((user, index) => {
               return (
                 <article className="user-container" key={index}>
-                  <img src={SampleProfile} alt="Profile" />
+                  <img
+                    src={
+                      user.profile_picture
+                        ? `http://127.0.0.1:8000/${user.profile_picture}`
+                        : DefaultProfile
+                    }
+                    alt="Profile"
+                  />
                   <h2>
                     {user.first_name} {user.last_name}
                   </h2>
