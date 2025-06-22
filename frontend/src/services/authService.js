@@ -95,7 +95,7 @@ class AuthService {
   // Get current user
   async getCurrentUser() {
     try {
-      console.log("Getting current user...");
+      // console.log("Getting current user...");
       const response = await fetch(API_URL_USERS + "me/", {
         method: "GET",
         headers: this.getAuthHeader(),
@@ -116,17 +116,16 @@ class AuthService {
 
   // Get the access token
   getAccessToken() {
-    console.log("Got token: ", localStorage.getItem("access_token"));
     return localStorage.getItem("access_token");
   }
 
   // Get the Autorization headers
   getAuthHeader() {
     const token = this.getAccessToken();
-    console.log("Got token in getAuthHeader: ", token);
+
     return {
-      "Content-Type": "application/json",
-      Accept: "application/json",
+      // "Content-Type": "application/json",
+      // Accept: "application/json",
       Authorization: token ? `JWT ${token}` : "",
     };
   }
