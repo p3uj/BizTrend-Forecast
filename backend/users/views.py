@@ -26,16 +26,24 @@ class RegisterViewset(viewsets.ViewSet):
             return Response(serializer.errors, status=400)
         
 class UserViewset(viewsets.ViewSet):
-    permission_classes = [permissions.IsAdminUser] # Only the admin user can access the list, list_by_status, and change_status endpoints
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
+
+    def get_permissions(self):
+        if self.action in ['update', 'partial_update', 'me']:
+            permission_classes = [permissions.IsAuthenticated]
+        elif self.action in ['list', 'list_by_status', 'change_status']:
+            permission_classes = [permissions.IsAdminUser]
+        else:
+            permission_classes = [permissions.AllowAny]
+        return super().get_permissions()
 
     def list(self, request):
         queryset = User.objects.all().order_by('first_name')
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
     
-    def update(self, request, pk=None):
+    def update(self, request, pk=None, permission_classes=[permissions.IsAuthenticated]):
         try:
             user = User.objects.get(pk=pk)
             serializer = self.serializer_class(user, data=request.data, partial=True)
@@ -47,7 +55,7 @@ class UserViewset(viewsets.ViewSet):
         except User.DoesNotExist:
             return Response({'error': 'User not found'}, status=404)
     
-    def partial_update(self, request, pk=None):
+    def partial_update(self, request, pk=None, permission_classes=[permissions.IsAuthenticated]):
         try:
             user = User.objects.get(pk=pk)
             serializer = self.serializer_class(user, data=request.data, partial=True)
@@ -90,7 +98,7 @@ class UserViewset(viewsets.ViewSet):
         except User.DoesNotExist:
             return Response({'error': 'User not found'}, status=404)
         
-    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
+    @action(detail=False, methods=['get'])
     def me(self, request):
         """ Get current user """
         user = request.user
