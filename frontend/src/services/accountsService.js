@@ -65,9 +65,13 @@ class AccountsService {
     formData.append("profile_picture", profilePicture);
 
     try {
+      const token = authService.getAccessToken();
+
       const response = await fetch(API_URL + "users/" + userId + "/", {
         method: "PATCH",
-        headers: authService.getAuthHeader(),
+        headers: {
+          Authorization: token ? `JWT ${token}` : "",
+        },
         body: formData,
       });
 
