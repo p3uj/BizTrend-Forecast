@@ -1,6 +1,6 @@
 import Navbar from "../components/NavBar";
 import "../css/AccountDetails.css";
-import SampleProfile from "../assets/img/do.png";
+import DefaultProfile from "../assets/img/default-profile.svg";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -12,8 +12,6 @@ import authService from "../services/authService";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-import Image from "../../../backend/profile_pictures/708e74b232a8b32bc86d14314197b84f.jpg";
-
 export default function AccountDetails() {
   const [userInfo, setUserInfo] = useState({
     id: JSON.parse(sessionStorage.getItem("current_user")).id,
@@ -24,13 +22,14 @@ export default function AccountDetails() {
       .is_superuser,
     profile: JSON.parse(sessionStorage.getItem("current_user")).profile_picture,
   });
-  const [isUpdateSuccess, setUpdateSuccess] = useState(false);
+  const [isUpdateSuccess, setUpdateSuccess] = useState(null);
   const [hasChange, setHasChange] = useState(false);
   const [isSubmitting, setSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState(null);
   const [changeProfileResStatus, setChangeProfileResStatus] = useState(null);
   const [isSubmittingProfile, setSubmittingProfile] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
 
   const maskEmail = (email) => {
     const [user, domain] = email.split("@");
@@ -42,20 +41,50 @@ export default function AccountDetails() {
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
       setFile(file);
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPreviewImage(e.target.result);
+      };
+      reader.readAsDataURL(file);
     } else {
       setFile(null);
+      setPreviewImage(null);
     }
   };
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-  } = useForm({
-    // resolver: yupResolver(validationSchema),
+  const { register, handleSubmit, watch } = useForm({
+    defaultValues: {
+      firstName: userInfo.firstName,
+      lastName: userInfo.lastName,
+    },
     mode: "all",
   });
+
+  const watchFirstName = watch("firstName", "");
+  const watchLastName = watch("lastName", "");
+  useEffect(() => {
+    // Trim values to eliminate leading/trailing whitespace
+    const trimmedFirstName = watchFirstName.trim();
+    const trimmedLastName = watchLastName.trim();
+
+    // Ensure both fields contain meaningful content
+    const isFirstNameValid = trimmedFirstName !== "";
+    const isLastNameValid = trimmedLastName !== "";
+
+    // Check if the trimmed values differ from the original user info
+    const hasFirstNameChanged = trimmedFirstName !== userInfo.firstName;
+    const hasLastNameChanged = trimmedLastName !== userInfo.lastName;
+
+    // Only flag change if both fields are non-empty and at least one has changed
+    const shouldFlagChange =
+      isFirstNameValid &&
+      isLastNameValid &&
+      (hasFirstNameChanged || hasLastNameChanged);
+
+    // Update hasChange state based on evaluation
+    setHasChange(shouldFlagChange);
+  }, [watchFirstName, watchLastName, userInfo]);
 
   const submission = async (data) => {
     setIsLoading(true);
@@ -73,13 +102,13 @@ export default function AccountDetails() {
 
       if (!response === 200) {
         console.log("failed to update user info", response);
-        setUpdateSuccess(false);
+        setUpdateSuccess(response);
       } else {
         console.log("going to update user info...");
         // Update the current user stored in the session storage
         updateUserInfo();
         setIsLoading(false);
-        setUpdateSuccess(true);
+        setUpdateSuccess(response);
       }
     } catch (error) {
       console.log("Failed to update user info!", error);
@@ -110,17 +139,24 @@ export default function AccountDetails() {
   };
 
   useEffect(() => {
-    if (isUpdateSuccess) {
+    if (isUpdateSuccess != null) {
       setTimeout(() => {
-        setUpdateSuccess(false);
+        setUpdateSuccess(null);
       }, 5000);
     }
   }, [isUpdateSuccess]);
 
   return (
     <>
-      {isUpdateSuccess && (
+      {isUpdateSuccess === 200 && (
         <Alert message={"Successfully Updated!"} type={"success"} />
+      )}
+
+      {isUpdateSuccess != 200 && isUpdateSuccess != null && (
+        <Alert
+          message={"Unable to update information. Please try again!"}
+          type={"danger"}
+        />
       )}
 
       {changeProfileResStatus === 200 && (
@@ -136,16 +172,14 @@ export default function AccountDetails() {
           <div className="title-page">
             <h1>Account Profile</h1>
             <div className="profile-container">
-              <h4>
-                {isLoading ? (
-                  <Skeleton height={20} width={100} />
-                ) : (
-                  userInfo.firstName + " " + userInfo.lastName
-                )}
-              </h4>
+              <h4>{userInfo.firstName + " " + userInfo.lastName}</h4>
               <img
-                src={userInfo.profile ? userInfo.profile : SampleProfile}
-                alt=""
+                src={
+                  userInfo.profile
+                    ? `http://127.0.0.1:8000/${userInfo.profile}`
+                    : DefaultProfile
+                }
+                alt="profile-picture"
               />
             </div>
           </div>
@@ -153,7 +187,13 @@ export default function AccountDetails() {
         <section>
           <section className="left-panel">
             <img
-              src={userInfo.profile ? userInfo.profile : SampleProfile}
+              src={
+                previewImage
+                  ? previewImage
+                  : userInfo.profile
+                  ? `http://127.0.0.1:8000/${userInfo.profile}`
+                  : DefaultProfile
+              }
               alt=""
             />
 
@@ -174,48 +214,41 @@ export default function AccountDetails() {
               <button
                 onClick={() => changeProfileSubmission(userInfo.id, file)}
                 disabled={isSubmittingProfile}
+                className="submit-button"
               >
                 {isSubmittingProfile && <RippleLoading />}
-                Save Profile Change
+                {isSubmittingProfile ? "Saving..." : "Save Profile Change"}
               </button>
             )}
 
             <form action={handleSubmit(submission)}>
               <fieldset>
                 <label htmlFor="first-name">First name</label>
-                {isLoading ? (
-                  <Skeleton height={40} width={200} borderRadius={40} />
-                ) : (
-                  <input
-                    type="text"
-                    name="first-name"
-                    id="first-name"
-                    defaultValue={userInfo.firstName}
-                    {...register("firstName")}
-                  />
-                )}
+                <input
+                  type="text"
+                  name="first-name"
+                  id="first-name"
+                  defaultValue={userInfo.firstName}
+                  {...register("firstName")}
+                />
               </fieldset>
               <fieldset>
                 <label htmlFor="last-name">Last name</label>
-                {isLoading ? (
-                  <Skeleton height={40} width={200} borderRadius={40} />
-                ) : (
-                  <input
-                    type="text"
-                    name="last-name"
-                    id="last-name"
-                    defaultValue={userInfo.lastName}
-                    {...register("lastName")}
-                  />
-                )}
+                <input
+                  type="text"
+                  name="last-name"
+                  id="last-name"
+                  defaultValue={userInfo.lastName}
+                  {...register("lastName")}
+                />
               </fieldset>
               <button
                 type="submit"
                 className="submit-button"
-                disabled={isSubmitting}
+                disabled={!hasChange || isSubmitting}
               >
                 {isSubmitting && <RippleLoading />}
-                Save Changes
+                Save Change
               </button>
             </form>
           </section>
