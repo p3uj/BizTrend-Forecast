@@ -73,8 +73,8 @@ export default function ResetPasswordConfirm() {
       errors.push("- At least 12 characters.");
     }
 
-    if (watchPassword.length > 16) {
-      errors.push("- Not exceed 16 characters.");
+    if (watchPassword.length > 64) {
+      errors.push("- Not exceed 64 characters.");
     }
 
     if (!/[0-9]/.test(watchPassword)) {
