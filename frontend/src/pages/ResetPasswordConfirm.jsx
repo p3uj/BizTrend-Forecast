@@ -21,9 +21,9 @@ export default function ResetPasswordConfirm() {
       .string()
       .required("Password is required.")
       .min(12)
-      .max(16)
+      .max(64)
       .matches(
-        /^(?=.*\d{1})(?=.*[a-z]{1})(?=.*[A-Z]{1})(?=.*[!@#$%^&*{|}?~_=+.-]{1})(?=.*[^a-zA-Z0-9])(?!.*\s).{12,16}$/
+        /^(?=.*\d{1})(?=.*[a-z]{1})(?=.*[A-Z]{1})(?=.*[!@#$%^&*{|}?~_=+.-]{1})(?=.*[^a-zA-Z0-9])(?!.*\s).{12,64}$/
       ),
     confirmPassword: yup
       .string()
@@ -99,8 +99,6 @@ export default function ResetPasswordConfirm() {
 
     setPasswordErrors(errors);
   }, [watchPassword]);
-
-  console.log("change password:", responseStatus);
 
   return (
     <>
