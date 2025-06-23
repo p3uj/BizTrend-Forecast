@@ -11,6 +11,7 @@ import Alert from "../components/modals/Alert";
 import authService from "../services/authService";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import websocketService from "../services/websocketService";
 
 export default function AccountDetails() {
   const [userInfo, setUserInfo] = useState({
@@ -136,6 +137,16 @@ export default function AccountDetails() {
   const updateUserInfo = async () => {
     const getCurrentUser = await authService.getCurrentUser();
     sessionStorage.setItem("current_user", JSON.stringify(getCurrentUser));
+
+    // Update local state with new user info
+    setUserInfo({
+      id: getCurrentUser.id,
+      firstName: getCurrentUser.first_name,
+      lastName: getCurrentUser.last_name,
+      email: getCurrentUser.email,
+      is_superuser: getCurrentUser.is_superuser,
+      profile: getCurrentUser.profile_picture,
+    });
   };
 
   useEffect(() => {
@@ -145,6 +156,42 @@ export default function AccountDetails() {
       }, 5000);
     }
   }, [isUpdateSuccess]);
+
+  // Set up WebSocket event listeners for real-time profile updates
+  useEffect(() => {
+    const currentUserId = JSON.parse(sessionStorage.getItem("current_user")).id;
+
+    const handleProfileUpdated = (data) => {
+      console.log("Profile updated via WebSocket:", data);
+      // Only update if it's the current user's profile
+      if (data.user_id === currentUserId) {
+        updateUserInfo();
+        setUpdateSuccess(200);
+      }
+    };
+
+    const handleUserUpdated = (data) => {
+      console.log("User updated via WebSocket:", data);
+      // Only update if it's the current user
+      if (data.user_id === currentUserId) {
+        updateUserInfo();
+        setUpdateSuccess(200);
+      }
+    };
+
+    // Register WebSocket event listeners
+    websocketService.onProfileUpdated(handleProfileUpdated);
+    websocketService.onUserUpdated(handleUserUpdated);
+
+    // Cleanup on component unmount
+    return () => {
+      websocketService.removeEventListener(
+        "profile_updated",
+        handleProfileUpdated
+      );
+      websocketService.removeEventListener("user_updated", handleUserUpdated);
+    };
+  }, []);
 
   return (
     <>
@@ -176,7 +223,7 @@ export default function AccountDetails() {
               <img
                 src={
                   userInfo.profile
-                    ? `http://127.0.0.1:8000/${userInfo.profile}`
+                    ? `http://127.0.0.1:8000${userInfo.profile}`
                     : DefaultProfile
                 }
                 alt="profile-picture"
@@ -191,7 +238,7 @@ export default function AccountDetails() {
                 previewImage
                   ? previewImage
                   : userInfo.profile
-                  ? `http://127.0.0.1:8000/${userInfo.profile}`
+                  ? `http://127.0.0.1:8000${userInfo.profile}`
                   : DefaultProfile
               }
               alt=""

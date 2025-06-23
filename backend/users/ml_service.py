@@ -7,6 +7,9 @@ from django.db import models
 from .models import Dataset, PredictionResult, Trend
 import os
 from django.conf import settings
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+from datetime import datetime
 
 
 class MLPredictionService:
@@ -21,6 +24,23 @@ class MLPredictionService:
         self.model_gro = None
         self.sector_cats = None
         self.forecast_horizons = [1, 3, 5]
+        self.channel_layer = get_channel_layer()
+
+    def broadcast_update(self, message_type, message, **kwargs):
+        """Broadcast real-time updates via WebSocket"""
+        if self.channel_layer:
+            try:
+                async_to_sync(self.channel_layer.group_send)(
+                    'predictions',
+                    {
+                        'type': message_type,
+                        'message': message,
+                        'timestamp': datetime.now().isoformat(),
+                        **kwargs
+                    }
+                )
+            except Exception as e:
+                print(f"Failed to broadcast WebSocket message: {e}")
     
     def load_and_preprocess_data(self, file_path):
         """Load and preprocess the dataset from file path."""
@@ -285,6 +305,13 @@ class MLPredictionService:
         Returns the saved prediction results.
         """
         try:
+            # Broadcast prediction started
+            self.broadcast_update(
+                'prediction_started',
+                'Starting ML prediction generation...',
+                dataset_id=dataset_id
+            )
+
             # Get dataset file path
             dataset = Dataset.objects.get(id=dataset_id)
             file_path = dataset.file.path
@@ -293,9 +320,26 @@ class MLPredictionService:
             if not os.path.exists(file_path):
                 raise Exception(f"Dataset file not found: {file_path}")
 
-            # Run ML pipeline
+            # Run ML pipeline with progress updates
+            self.broadcast_update(
+                'prediction_started',
+                'Loading and preprocessing data...',
+                dataset_id=dataset_id
+            )
             df = self.load_and_preprocess_data(file_path)
+
+            self.broadcast_update(
+                'prediction_started',
+                'Training ML models...',
+                dataset_id=dataset_id
+            )
             X = self.train_models(df)
+
+            self.broadcast_update(
+                'prediction_started',
+                'Generating forecasts...',
+                dataset_id=dataset_id
+            )
             final_forecast = self.generate_forecasts(df, X)
             ranked_forecasts = self.create_ranked_forecasts(final_forecast)
 
@@ -304,8 +348,22 @@ class MLPredictionService:
             print(f"Base year from original dataset: {base_year}")
             print(f"Forecast horizons: {self.forecast_horizons}")
 
+            self.broadcast_update(
+                'prediction_started',
+                'Saving predictions to database...',
+                dataset_id=dataset_id
+            )
+
             # Save to database (only prediction results)
             saved_predictions = self.save_predictions_to_database(dataset_id, ranked_forecasts, base_year)
+
+            # Broadcast completion with updated data
+            self.broadcast_update(
+                'prediction_completed',
+                f'Successfully generated and saved {len(saved_predictions)} predictions',
+                dataset_id=dataset_id,
+                predictions_count=len(saved_predictions)
+            )
 
             return {
                 'success': True,
@@ -315,6 +373,20 @@ class MLPredictionService:
             }
 
         except Dataset.DoesNotExist:
-            raise Exception(f"Dataset with ID {dataset_id} not found")
+            error_msg = f"Dataset with ID {dataset_id} not found"
+            self.broadcast_update(
+                'prediction_error',
+                'Dataset not found',
+                error=error_msg,
+                dataset_id=dataset_id
+            )
+            raise Exception(error_msg)
         except Exception as e:
-            raise Exception(f"ML prediction pipeline failed: {str(e)}")
+            error_msg = f"ML prediction pipeline failed: {str(e)}"
+            self.broadcast_update(
+                'prediction_error',
+                'Failed to generate predictions',
+                error=error_msg,
+                dataset_id=dataset_id
+            )
+            raise Exception(error_msg)

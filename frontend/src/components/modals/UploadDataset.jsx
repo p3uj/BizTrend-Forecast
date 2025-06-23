@@ -1,7 +1,7 @@
 import "../../css/UploadDataset.css";
 import CloseIconBlack from "../../assets/icons/close-black.svg";
 import CloseIconWhite from "../../assets/icons/close-white.svg";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import UploadIcon from "../../assets/icons/upload.svg";
 import validateDataset from "../../services/datasetValidationService";
 import dataset from "../../services/datasetService";
@@ -9,6 +9,7 @@ import predictionService from "../../services/predictionService";
 import LoadingIcon from "../../assets/icons/analysis-chart.gif";
 import { Tooltip } from "react-tooltip";
 import RippleLoading from "./loading/rippleLoading";
+import websocketService from "../../services/websocketService";
 
 export default function UploadDataset({ showModal, onPredictionComplete }) {
   const [isCloseBtnHover, setCloseBthHover] = useState(false);
@@ -16,7 +17,71 @@ export default function UploadDataset({ showModal, onPredictionComplete }) {
   const [response, setResponse] = useState(String);
   const [currentStep, setCurrentStep] = useState("");
   const [isPredictionSuccess, setPredictionSuccess] = useState(false);
+  const [realTimeUpdates, setRealTimeUpdates] = useState([]);
   const [isSubmitting, setSubmitting] = useState(false);
+
+  // Set up WebSocket event listeners for real-time updates
+  useEffect(() => {
+    const handleDatasetUploaded = (data) => {
+      console.log("Dataset uploaded via WebSocket:", data);
+      setRealTimeUpdates((prev) => [
+        ...prev,
+        `Dataset uploaded: ${data.message}`,
+      ]);
+    };
+
+    const handlePredictionStarted = (data) => {
+      console.log("Prediction started via WebSocket:", data);
+      setCurrentStep(data.message);
+      setRealTimeUpdates((prev) => [...prev, `Progress: ${data.message}`]);
+    };
+
+    const handlePredictionCompleted = (data) => {
+      console.log("Prediction completed via WebSocket:", data);
+      setPredictionSuccess(true);
+      setCurrentStep(data.message);
+      setRealTimeUpdates((prev) => [...prev, `Completed: ${data.message}`]);
+
+      // Auto-close modal after 2 seconds
+      setTimeout(() => {
+        setPredictionSuccess(false);
+        showModal();
+      }, 2000);
+    };
+
+    const handlePredictionError = (data) => {
+      console.log("Prediction error via WebSocket:", data);
+      setCurrentStep(`Error: ${data.message}`);
+      setRealTimeUpdates((prev) => [...prev, `Error: ${data.error}`]);
+      setSubmitting(false);
+    };
+
+    // Register WebSocket event listeners
+    websocketService.onDatasetUploaded(handleDatasetUploaded);
+    websocketService.onPredictionStarted(handlePredictionStarted);
+    websocketService.onPredictionCompleted(handlePredictionCompleted);
+    websocketService.onPredictionError(handlePredictionError);
+
+    // Cleanup on component unmount
+    return () => {
+      websocketService.removeEventListener(
+        "dataset_uploaded",
+        handleDatasetUploaded
+      );
+      websocketService.removeEventListener(
+        "prediction_started",
+        handlePredictionStarted
+      );
+      websocketService.removeEventListener(
+        "prediction_completed",
+        handlePredictionCompleted
+      );
+      websocketService.removeEventListener(
+        "prediction_error",
+        handlePredictionError
+      );
+    };
+  }, [showModal]);
 
   const datasetRequirements = (
     <div className="dataset-requirements">

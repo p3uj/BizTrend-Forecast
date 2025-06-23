@@ -11,16 +11,55 @@ from .data_validation import DatasetValidation
 from rest_framework.decorators import action
 from .ml_service import MLPredictionService
 from rest_framework import status
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+from datetime import datetime
+
+
+def broadcast_websocket_update(message_type, message, **kwargs):
+    """Helper function to broadcast WebSocket updates"""
+    channel_layer = get_channel_layer()
+    if channel_layer:
+        try:
+            async_to_sync(channel_layer.group_send)(
+                'predictions',
+                {
+                    'type': message_type,
+                    'message': message,
+                    'timestamp': datetime.now().isoformat(),
+                    **kwargs
+                }
+            )
+        except Exception as e:
+            print(f"Failed to broadcast WebSocket message: {e}")
+
 
 class RegisterViewset(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
-    
+
     def create(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            user = serializer.save()
+
+            # Broadcast user creation notification
+            broadcast_websocket_update(
+                'user_created',
+                f'New user "{user.first_name} {user.last_name}" has been registered',
+                user_id=user.id,
+                user_data={
+                    'id': user.id,
+                    'email': user.email,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                    'is_active': user.is_active,
+                    'is_superuser': user.is_superuser,
+                    'date_created': user.date_created.isoformat() if user.date_created else None
+                }
+            )
+
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=400)
@@ -46,9 +85,41 @@ class UserViewset(viewsets.ViewSet):
     def update(self, request, pk=None, permission_classes=[permissions.IsAuthenticated]):
         try:
             user = User.objects.get(pk=pk)
+            old_data = {
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email
+            }
+
             serializer = self.serializer_class(user, data=request.data, partial=True)
             if serializer.is_valid():
-                serializer.save()
+                updated_user = serializer.save()
+
+                # Determine what fields were updated
+                updated_fields = []
+                if old_data['first_name'] != updated_user.first_name:
+                    updated_fields.append('first_name')
+                if old_data['last_name'] != updated_user.last_name:
+                    updated_fields.append('last_name')
+                if old_data['email'] != updated_user.email:
+                    updated_fields.append('email')
+
+                # Broadcast user update notification
+                broadcast_websocket_update(
+                    'user_updated',
+                    f'User "{updated_user.first_name} {updated_user.last_name}" has been updated',
+                    user_id=updated_user.id,
+                    updated_fields=updated_fields,
+                    user_data={
+                        'id': updated_user.id,
+                        'email': updated_user.email,
+                        'first_name': updated_user.first_name,
+                        'last_name': updated_user.last_name,
+                        'is_active': updated_user.is_active,
+                        'is_superuser': updated_user.is_superuser
+                    }
+                )
+
                 return Response(serializer.data)
             else:
                 return Response(serializer.errors, status=400)
@@ -58,9 +129,33 @@ class UserViewset(viewsets.ViewSet):
     def partial_update(self, request, pk=None, permission_classes=[permissions.IsAuthenticated]):
         try:
             user = User.objects.get(pk=pk)
+            old_data = {
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email
+            }
+
             serializer = self.serializer_class(user, data=request.data, partial=True)
             if serializer.is_valid():
-                serializer.save()
+                updated_user = serializer.save()
+
+                # Determine what fields were updated
+                updated_fields = []
+                if old_data['first_name'] != updated_user.first_name:
+                    updated_fields.append('first_name')
+                if old_data['last_name'] != updated_user.last_name:
+                    updated_fields.append('last_name')
+                if old_data['email'] != updated_user.email:
+                    updated_fields.append('email')
+
+                # Broadcast profile update notification
+                broadcast_websocket_update(
+                    'profile_updated',
+                    f'Profile updated for "{updated_user.first_name} {updated_user.last_name}"',
+                    user_id=updated_user.id,
+                    updated_fields=updated_fields
+                )
+
                 return Response(serializer.data)
             else:
                 return Response(serializer.errors, status=400)
@@ -87,13 +182,24 @@ class UserViewset(viewsets.ViewSet):
         if not user_id:
             return Response({'error': 'user_id is required'}, status=400)
 
-        # Get the current status of the user and negate it
-        is_active = not User.objects.get(id=user_id).is_active
-
         try:
             user = User.objects.get(id=user_id)
-            user.is_active = is_active
+            # Get the current status of the user and negate it
+            old_status = user.is_active
+            new_status = not old_status
+
+            user.is_active = new_status
             user.save()
+
+            # Broadcast user status change notification
+            status_text = "activated" if new_status else "deactivated"
+            broadcast_websocket_update(
+                'user_status_changed',
+                f'User "{user.first_name} {user.last_name}" has been {status_text}',
+                user_id=user.id,
+                status=new_status
+            )
+
             return Response({'message': 'User status changed successfully'})
         except User.DoesNotExist:
             return Response({'error': 'User not found'}, status=404)
@@ -123,7 +229,15 @@ class DatasetViewset(viewsets.ViewSet):
     def create(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            dataset = serializer.save()
+
+            # Broadcast dataset upload notification
+            broadcast_websocket_update(
+                'dataset_uploaded',
+                f'Dataset "{dataset.file.name}" uploaded successfully',
+                dataset_id=dataset.id
+            )
+
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=400)

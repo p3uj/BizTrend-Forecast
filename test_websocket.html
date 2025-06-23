@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Test</title>
+</head>
+<body>
+    <h1>WebSocket Connection Test</h1>
+    <div id="status">Disconnected</div>
+    <div id="messages"></div>
+    <button onclick="connect()">Connect</button>
+    <button onclick="disconnect()">Disconnect</button>
+    <button onclick="sendPing()">Send Ping</button>
+
+    <script>
+        let socket = null;
+
+        function connect() {
+            if (socket) {
+                socket.close();
+            }
+
+            socket = new WebSocket('ws://127.0.0.1:8000/ws/predictions/');
+
+            socket.onopen = function(event) {
+                document.getElementById('status').textContent = 'Connected';
+                addMessage('Connected to WebSocket');
+            };
+
+            socket.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                addMessage('Received: ' + JSON.stringify(data, null, 2));
+            };
+
+            socket.onclose = function(event) {
+                document.getElementById('status').textContent = 'Disconnected';
+                addMessage('Disconnected from WebSocket');
+            };
+
+            socket.onerror = function(error) {
+                addMessage('Error: ' + error);
+            };
+        }
+
+        function disconnect() {
+            if (socket) {
+                socket.close();
+                socket = null;
+            }
+        }
+
+        function sendPing() {
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                socket.send(JSON.stringify({
+                    type: 'ping',
+                    message: 'Test ping'
+                }));
+            } else {
+                addMessage('WebSocket is not connected');
+            }
+        }
+
+        function addMessage(message) {
+            const messagesDiv = document.getElementById('messages');
+            const messageElement = document.createElement('div');
+            messageElement.textContent = new Date().toLocaleTimeString() + ': ' + message;
+            messagesDiv.appendChild(messageElement);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+    </script>
+</body>
+</html>

@@ -11,7 +11,9 @@ function Navbar({ showModal }) {
   const location = useLocation();
 
   const [userProfile, setUserProfile] = useState({
-    profile: JSON.parse(sessionStorage.getItem("current_user")).profile_picture,
+    profile: JSON.parse(sessionStorage.getItem("current_user"))
+      ? JSON.parse(sessionStorage.getItem("current_user")).profile_picture
+      : null,
   });
 
   const [userRole, setUserRole] = useState(
@@ -155,7 +157,7 @@ function Navbar({ showModal }) {
               <img
                 src={
                   userProfile.profile
-                    ? `http://127.0.0.1:8000/${userProfile.profile}`
+                    ? `http://127.0.0.1:8000${userProfile.profile}`
                     : DefaultProfile
                 }
                 alt="sample-profile"

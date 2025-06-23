@@ -9,6 +9,7 @@ import accountsService from "../../services/accountsService";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import ConfirmStatusChange from "../../components/modals/ConfirmStatusChange";
+import websocketService from "../../services/websocketService";
 
 export default function UserManagement() {
   const numSkeletonLoading = 8;
@@ -29,6 +30,31 @@ export default function UserManagement() {
 
   const registrationSuccess = location.state?.registrationSuccess;
   const changeStatusSuccess = location.state?.changeStatusSuccess;
+
+  // Function to fetch users based on active tab
+  const fetchUsers = async () => {
+    setUsers([]);
+    setLoading(true);
+
+    try {
+      let fetchedUsers;
+      if (activeTab === "All") {
+        fetchedUsers = await accountsService.getAllUsers();
+      } else if (activeTab === "Active") {
+        fetchedUsers = await accountsService.getUsersByisActive(1);
+      } else if (activeTab === "Inactive") {
+        fetchedUsers = await accountsService.getUsersByisActive(0);
+      }
+
+      setUsers(fetchedUsers || []);
+      console.log(`Users ${activeTab}:`, fetchedUsers);
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+      setUsers([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (registrationSuccess) {
@@ -54,31 +80,48 @@ export default function UserManagement() {
     }
   }, [registrationSuccess, changeStatusSuccess]);
 
+  // Set up WebSocket event listeners for real-time user management
   useEffect(() => {
-    setUsers([]);
-    setLoading(true);
-    const fetchUsers = async () => {
-      if (activeTab === "All") {
-        const users = await accountsService.getAllUsers();
-        setUsers(users);
-        setLoading(false);
-
-        console.log("Users All:", users);
-      } else if (activeTab === "Active") {
-        const users = await accountsService.getUsersByisActive(1);
-        setUsers(users);
-        setLoading(false);
-
-        console.log("Users Active:", users);
-      } else if (activeTab === "Inactive") {
-        const users = await accountsService.getUsersByisActive(0);
-        setUsers(users);
-        setLoading(false);
-
-        console.log("Users Inactive:", users);
-      }
+    const handleUserCreated = (data) => {
+      console.log("User created via WebSocket:", data);
+      setHasNewUser(true);
+      setTimeout(() => setHasNewUser(false), 5000);
+      // Refresh user list
+      fetchUsers();
     };
 
+    const handleUserUpdated = (data) => {
+      console.log("User updated via WebSocket:", data);
+      // Refresh user list to show updated data
+      fetchUsers();
+    };
+
+    const handleUserStatusChanged = (data) => {
+      console.log("User status changed via WebSocket:", data);
+      setSuccessChangeStatus(true);
+      setTimeout(() => setSuccessChangeStatus(false), 5000);
+      // Refresh user list to show status change
+      fetchUsers();
+    };
+
+    // Register WebSocket event listeners
+    websocketService.onUserCreated(handleUserCreated);
+    websocketService.onUserUpdated(handleUserUpdated);
+    websocketService.onUserStatusChanged(handleUserStatusChanged);
+
+    // Cleanup on component unmount
+    return () => {
+      websocketService.removeEventListener("user_created", handleUserCreated);
+      websocketService.removeEventListener("user_updated", handleUserUpdated);
+      websocketService.removeEventListener(
+        "user_status_changed",
+        handleUserStatusChanged
+      );
+    };
+  }, []);
+
+  // Fetch users when activeTab changes
+  useEffect(() => {
     fetchUsers();
   }, [activeTab]);
 
@@ -168,7 +211,7 @@ export default function UserManagement() {
                   <img
                     src={
                       user.profile_picture
-                        ? `http://127.0.0.1:8000/${user.profile_picture}`
+                        ? `http://127.0.0.1:8000${user.profile_picture}`
                         : DefaultProfile
                     }
                     alt="Profile"
