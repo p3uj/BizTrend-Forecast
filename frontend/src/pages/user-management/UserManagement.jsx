@@ -24,6 +24,7 @@ export default function UserManagement() {
   const [isChangeStatus, setChangeStatus] = useState(false);
   const [userOverview, setUserOverview] = useState({
     userId: null,
+    userName: null,
     action: null,
   });
   const [isSuccessChangeStatus, setSuccessChangeStatus] = useState(false);
@@ -140,6 +141,7 @@ export default function UserManagement() {
           isShow={() => setChangeStatus(false)}
           action={userOverview.action}
           userId={userOverview.userId}
+          userName={userOverview.userName}
         />
       )}
 
@@ -242,6 +244,7 @@ export default function UserManagement() {
                       setChangeStatus(true);
                       setUserOverview({
                         userId: user.id,
+                        userName: `${user.first_name} ${user.last_name}`,
                         action:
                           user.is_active === true ? "Deactivate" : "Activate",
                       });
