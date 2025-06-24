@@ -14,6 +14,8 @@ class RegisterSerializer(serializers.ModelSerializer):
                   'last_name',
                   'is_active',
                   'profile_picture',
+                  'date_created',
+                  'date_updated'
                   )
         extra_kwargs = { 'password': {'write_only':True} }
 
