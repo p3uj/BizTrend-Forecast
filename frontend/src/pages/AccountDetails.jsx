@@ -3,8 +3,6 @@ import "../css/AccountDetails.css";
 import DefaultProfile from "../assets/img/default-profile.svg";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
 import accountsService from "../services/accountsService";
 import RippleLoading from "../components/modals/loading/rippleLoading";
 import Alert from "../components/modals/Alert";
@@ -12,16 +10,20 @@ import authService from "../services/authService";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import websocketService from "../services/websocketService";
+import dateRelated from "../utils/dateRelated";
 
 export default function AccountDetails() {
+  const savedUser = JSON.parse(sessionStorage.getItem("current_user")) || null;
+  const account_date_created =
+    sessionStorage.getItem("account_created_date") || null;
+
   const [userInfo, setUserInfo] = useState({
-    id: JSON.parse(sessionStorage.getItem("current_user")).id,
-    firstName: JSON.parse(sessionStorage.getItem("current_user")).first_name,
-    lastName: JSON.parse(sessionStorage.getItem("current_user")).last_name,
-    email: JSON.parse(sessionStorage.getItem("current_user")).email,
-    is_superuser: JSON.parse(sessionStorage.getItem("current_user"))
-      .is_superuser,
-    profile: JSON.parse(sessionStorage.getItem("current_user")).profile_picture,
+    id: savedUser?.id || null,
+    firstName: savedUser?.first_name || "",
+    lastName: savedUser?.last_name || "",
+    email: savedUser?.email || "",
+    is_superuser: savedUser?.is_superuser || null,
+    profile: savedUser?.profile_picture || null,
   });
   const [isUpdateSuccess, setUpdateSuccess] = useState(null);
   const [hasChange, setHasChange] = useState(false);
@@ -31,6 +33,7 @@ export default function AccountDetails() {
   const [changeProfileResStatus, setChangeProfileResStatus] = useState(null);
   const [isSubmittingProfile, setSubmittingProfile] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const [isUpdatingSessionStorage, setUpdatingSessionStorage] = useState(false);
 
   const maskEmail = (email) => {
     const [user, domain] = email.split("@");
@@ -91,7 +94,7 @@ export default function AccountDetails() {
     setIsLoading(true);
     setSubmitting(true);
 
-    console.log("data:", data);
+    // console.log("data:", data);
     try {
       const response = await accountsService.updateUserInfo(
         JSON.parse(sessionStorage.getItem("current_user")).id,
@@ -131,13 +134,22 @@ export default function AccountDetails() {
       updateUserInfo();
       setChangeProfileResStatus(response);
       setSubmittingProfile(false);
+      setFile(null);
+      setPreviewImage(null);
     }
   };
 
   const updateUserInfo = async () => {
+    setUpdatingSessionStorage(true);
     const getCurrentUser = await authService.getCurrentUser();
-    sessionStorage.setItem("current_user", JSON.stringify(getCurrentUser));
 
+    // Create a copy without 'date_created'
+    const { date_created, ...filteredUser } = getCurrentUser;
+
+    // Update current_user in the session storage.
+    sessionStorage.setItem("current_user", JSON.stringify(filteredUser));
+
+    console.log("updating user info in session storage!");
     // Update local state with new user info
     setUserInfo({
       id: getCurrentUser.id,
@@ -147,6 +159,8 @@ export default function AccountDetails() {
       is_superuser: getCurrentUser.is_superuser,
       profile: getCurrentUser.profile_picture,
     });
+    console.log("Successfully updated the user info in the session storage!");
+    setUpdatingSessionStorage(false);
   };
 
   useEffect(() => {
@@ -233,16 +247,25 @@ export default function AccountDetails() {
         </section>
         <section>
           <section className="left-panel">
-            <img
-              src={
-                previewImage
-                  ? previewImage
-                  : userInfo.profile
-                  ? `http://127.0.0.1:8000${userInfo.profile}`
-                  : DefaultProfile
-              }
-              alt=""
-            />
+            {isUpdatingSessionStorage ? (
+              <Skeleton
+                height={100}
+                width={100}
+                circle
+                style={{ borderRadius: "50%" }}
+              />
+            ) : (
+              <img
+                src={
+                  previewImage
+                    ? previewImage
+                    : userInfo.profile
+                    ? `http://127.0.0.1:8000${userInfo.profile}`
+                    : DefaultProfile
+                }
+                alt=""
+              />
+            )}
 
             <input
               type="file"
@@ -271,32 +294,65 @@ export default function AccountDetails() {
             <form action={handleSubmit(submission)}>
               <fieldset>
                 <label htmlFor="first-name">First name</label>
-                <input
-                  type="text"
-                  name="first-name"
-                  id="first-name"
-                  defaultValue={userInfo.firstName}
-                  {...register("firstName")}
-                />
+
+                {isUpdatingSessionStorage ? (
+                  <div style={{ width: "100%" }}>
+                    <Skeleton
+                      height={44}
+                      style={{ borderRadius: "40px", width: "100%" }}
+                    />
+                  </div>
+                ) : (
+                  <input
+                    type="text"
+                    name="first-name"
+                    id="first-name"
+                    defaultValue={userInfo.firstName}
+                    {...register("firstName")}
+                  />
+                )}
               </fieldset>
               <fieldset>
                 <label htmlFor="last-name">Last name</label>
-                <input
-                  type="text"
-                  name="last-name"
-                  id="last-name"
-                  defaultValue={userInfo.lastName}
-                  {...register("lastName")}
-                />
+
+                {isUpdatingSessionStorage ? (
+                  <div style={{ width: "100%" }}>
+                    <Skeleton
+                      height={44}
+                      style={{ borderRadius: "40px", width: "100%" }}
+                    />
+                  </div>
+                ) : (
+                  <input
+                    type="text"
+                    name="last-name"
+                    id="last-name"
+                    defaultValue={userInfo.lastName}
+                    {...register("lastName")}
+                  />
+                )}
               </fieldset>
-              <button
-                type="submit"
-                className="submit-button"
-                disabled={!hasChange || isSubmitting}
-              >
-                {isSubmitting && <RippleLoading />}
-                Save Change
-              </button>
+
+              {isUpdatingSessionStorage ? (
+                <div style={{ width: "100%" }}>
+                  <Skeleton
+                    height={44}
+                    style={{
+                      borderRadius: "40px",
+                      width: "100%",
+                    }}
+                  />
+                </div>
+              ) : (
+                <button
+                  type="submit"
+                  className="submit-button"
+                  disabled={!hasChange || isSubmitting}
+                >
+                  {isSubmitting && <RippleLoading />}
+                  Save Change
+                </button>
+              )}
             </form>
           </section>
           <section className="right-panel">
@@ -327,9 +383,23 @@ export default function AccountDetails() {
                 type="text"
                 name="date-created"
                 id="date-created"
-                placeholder="2024-01-01"
+                value={
+                  account_date_created != null
+                    ? dateRelated.formatDateWithTime(account_date_created)
+                    : ""
+                }
                 disabled
               />
+              {/* {isUpdatingSessionStorage ? (
+                <div style={{ width: "100%" }}>
+                  <Skeleton
+                    height={44}
+                    style={{ borderRadius: "40px", width: "100%" }}
+                  />
+                </div>
+              ) : (
+
+              )} */}
             </fieldset>
           </section>
         </section>
