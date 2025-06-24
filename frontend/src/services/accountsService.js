@@ -23,7 +23,9 @@ class AccountsService {
       });
 
       if (!response.ok) {
-        return response;
+        const errorResponse = await response.json();
+        // console.log(errorResponse.email[0]);
+        return { status: response.status, message: errorResponse.email[0] };
       }
 
       //   const data = await response.json();
