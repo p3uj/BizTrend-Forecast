@@ -160,6 +160,17 @@ export default function AccountDetails() {
       profile: getCurrentUser.profile_picture,
     });
     console.log("Successfully updated the user info in the session storage!");
+
+    // Dispatch custom event to notify other components (like NavBar) about the profile update
+    const profileUpdateEvent = new CustomEvent("userProfileUpdated", {
+      detail: {
+        user: filteredUser,
+        timestamp: new Date().toISOString(),
+      },
+    });
+    window.dispatchEvent(profileUpdateEvent);
+    console.log("Dispatched userProfileUpdated event");
+
     setUpdatingSessionStorage(false);
   };
 

@@ -5,6 +5,7 @@ import SystemIcon from "../assets/icons/system-icon.svg";
 import { Tooltip } from "react-tooltip";
 import { useLocation, useNavigate } from "react-router-dom";
 import authService from "../services/authService";
+import websocketService from "../services/websocketService";
 
 function Navbar({ showModal }) {
   const navigate = useNavigate();
@@ -16,6 +17,16 @@ function Navbar({ showModal }) {
       : null,
   });
 
+  // Debug: Log initial profile state
+  useEffect(() => {
+    console.log("NavBar: Initial userProfile state:", userProfile);
+  }, []);
+
+  // Debug: Log profile state changes
+  useEffect(() => {
+    console.log("NavBar: userProfile state changed:", userProfile);
+  }, [userProfile]);
+
   const [userRole, setUserRole] = useState(
     sessionStorage.getItem("current_user")
       ? JSON.parse(sessionStorage.getItem("current_user")).is_superuser
@@ -25,6 +36,96 @@ function Navbar({ showModal }) {
   );
   const [activeTab, setActiveTab] = useState(".short-term");
   const [isProfileHover, setProfileHover] = useState(false);
+
+  // Function to update user profile from session storage
+  const updateUserProfile = () => {
+    console.log("NavBar: updateUserProfile called");
+    const currentUser = JSON.parse(sessionStorage.getItem("current_user"));
+    console.log("NavBar: Current user from session storage:", currentUser);
+    if (currentUser) {
+      console.log(
+        "NavBar: Updating profile state with:",
+        currentUser.profile_picture
+      );
+      setUserProfile({
+        profile: currentUser.profile_picture,
+      });
+      setUserRole(currentUser.is_superuser ? "Admin" : "User");
+    }
+  };
+
+  // Set up WebSocket event listeners for real-time profile updates
+  useEffect(() => {
+    const currentUser = JSON.parse(sessionStorage.getItem("current_user"));
+    if (!currentUser) return;
+
+    const currentUserId = currentUser.id;
+
+    // Ensure WebSocket is connected
+    if (
+      !websocketService.getConnectionStatus().isConnected &&
+      !websocketService.getConnectionStatus().isConnecting
+    ) {
+      console.log("NavBar: Connecting to WebSocket...");
+      websocketService.connect();
+    }
+
+    const handleProfileUpdated = (data) => {
+      console.log("NavBar: Profile updated via WebSocket:", data);
+      // Only update if it's the current user's profile
+      if (data.user_id === currentUserId) {
+        updateUserProfile();
+      }
+    };
+
+    const handleUserUpdated = (data) => {
+      console.log("NavBar: User updated via WebSocket:", data);
+      // Only update if it's the current user
+      if (data.user_id === currentUserId) {
+        updateUserProfile();
+      }
+    };
+
+    // Register WebSocket event listeners
+    websocketService.onProfileUpdated(handleProfileUpdated);
+    websocketService.onUserUpdated(handleUserUpdated);
+
+    // Also listen for storage changes as a backup
+    const handleStorageChange = (e) => {
+      console.log("NavBar: Storage change detected:", e.key);
+      if (e.key === "current_user") {
+        console.log(
+          "NavBar: current_user changed in storage, updating profile"
+        );
+        updateUserProfile();
+      }
+    };
+
+    // Add storage event listener
+    window.addEventListener("storage", handleStorageChange);
+
+    // Also add a custom event listener for same-tab storage changes
+    const handleCustomStorageChange = () => {
+      console.log("NavBar: Custom storage change event received");
+      updateUserProfile();
+    };
+
+    window.addEventListener("userProfileUpdated", handleCustomStorageChange);
+
+    // Cleanup on component unmount
+    return () => {
+      websocketService.removeEventListener(
+        "profile_updated",
+        handleProfileUpdated
+      );
+      websocketService.removeEventListener("user_updated", handleUserUpdated);
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener(
+        "userProfileUpdated",
+        handleCustomStorageChange
+      );
+    };
+  }, []);
 
   // Function to scroll to the section smoothly
   const scrollToSection = (sectionId) => {

@@ -88,7 +88,8 @@ class UserViewset(viewsets.ViewSet):
             old_data = {
                 'first_name': user.first_name,
                 'last_name': user.last_name,
-                'email': user.email
+                'email': user.email,
+                'profile_picture': str(user.profile_picture) if user.profile_picture else None
             }
 
             serializer = self.serializer_class(user, data=request.data, partial=True)
@@ -103,6 +104,8 @@ class UserViewset(viewsets.ViewSet):
                     updated_fields.append('last_name')
                 if old_data['email'] != updated_user.email:
                     updated_fields.append('email')
+                if old_data['profile_picture'] != (str(updated_user.profile_picture) if updated_user.profile_picture else None):
+                    updated_fields.append('profile_picture')
 
                 # Broadcast user update notification
                 broadcast_websocket_update(
@@ -116,7 +119,8 @@ class UserViewset(viewsets.ViewSet):
                         'first_name': updated_user.first_name,
                         'last_name': updated_user.last_name,
                         'is_active': updated_user.is_active,
-                        'is_superuser': updated_user.is_superuser
+                        'is_superuser': updated_user.is_superuser,
+                        'profile_picture': str(updated_user.profile_picture) if updated_user.profile_picture else None
                     }
                 )
 
@@ -132,7 +136,8 @@ class UserViewset(viewsets.ViewSet):
             old_data = {
                 'first_name': user.first_name,
                 'last_name': user.last_name,
-                'email': user.email
+                'email': user.email,
+                'profile_picture': str(user.profile_picture) if user.profile_picture else None
             }
 
             serializer = self.serializer_class(user, data=request.data, partial=True)
@@ -147,6 +152,8 @@ class UserViewset(viewsets.ViewSet):
                     updated_fields.append('last_name')
                 if old_data['email'] != updated_user.email:
                     updated_fields.append('email')
+                if old_data['profile_picture'] != (str(updated_user.profile_picture) if updated_user.profile_picture else None):
+                    updated_fields.append('profile_picture')
 
                 # Broadcast profile update notification
                 broadcast_websocket_update(
