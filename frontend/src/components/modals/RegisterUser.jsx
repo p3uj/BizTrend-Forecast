@@ -17,7 +17,7 @@ export default function RegisterUser({ showRegisterUserModal }) {
   const [isCloseBtnHover, setCloseBthHover] = useState(false);
   const [passwordErrors, setPasswordErrors] = useState([]);
   const [isSubmitting, setSubmitting] = useState(false);
-  const [isRegistrationFailed, setRegistrationFailed] = useState(false);
+  const [registrationResponse, setRegistrationResponse] = useState(null);
 
   const validationSchema = yup.object().shape({
     firstName: yup.string().required("First name is required."),
@@ -61,8 +61,10 @@ export default function RegisterUser({ showRegisterUserModal }) {
         data.isAdmin
       );
 
+      console.log("response received:", postAccountResponse);
+
       if (!postAccountResponse.ok) {
-        setRegistrationFailed(true);
+        setRegistrationResponse(postAccountResponse);
       } else {
         navigate("/user-management", { state: { registrationSuccess: true } });
         showRegisterUserModal();
@@ -112,20 +114,17 @@ export default function RegisterUser({ showRegisterUserModal }) {
   }, [watchPassword]);
 
   useEffect(() => {
-    if (isRegistrationFailed) {
+    if (registrationResponse != null) {
       setTimeout(() => {
-        setRegistrationFailed(false);
+        setRegistrationResponse(null);
       }, 5000);
     }
-  }, [isRegistrationFailed]);
+  }, [registrationResponse]);
 
   return (
     <>
-      {isRegistrationFailed && (
-        <Alert
-          message={"Registration failed. Please try again."}
-          type={"danger"}
-        />
+      {registrationResponse != null && registrationResponse.status != 201 && (
+        <Alert message={registrationResponse.message} type={"danger"} />
       )}
 
       <div className="register-user-modal">
