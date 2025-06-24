@@ -28,7 +28,16 @@ class AuthService {
 
         // Store the info of the current authenticated user.
         const currentUser = await this.getCurrentUser();
-        sessionStorage.setItem("current_user", JSON.stringify(currentUser));
+
+        // Create a copy without 'date_created'
+        const { date_created, ...filteredUser } = currentUser;
+        sessionStorage.setItem("current_user", JSON.stringify(filteredUser));
+
+        // Store the constant value of account date created
+        sessionStorage.setItem(
+          "account_created_date",
+          currentUser.date_created
+        );
       } else {
         console.log("No access token in response!");
       }
@@ -135,6 +144,7 @@ class AuthService {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     sessionStorage.removeItem("current_user");
+    sessionStorage.removeItem("account_created_date");
   }
 }
 
