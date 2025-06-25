@@ -184,7 +184,10 @@ export default function AccountDetails() {
 
   // Set up WebSocket event listeners for real-time profile updates
   useEffect(() => {
-    const currentUserId = JSON.parse(sessionStorage.getItem("current_user")).id;
+    const currentUserData = JSON.parse(sessionStorage.getItem("current_user"));
+    const currentUserId = currentUserData
+      ? JSON.parse(sessionStorage.getItem("current_user")).id
+      : null;
 
     const handleProfileUpdated = (data) => {
       console.log("Profile updated via WebSocket:", data);
@@ -374,7 +377,7 @@ export default function AccountDetails() {
                 type="text"
                 name="email"
                 id="email"
-                value={maskEmail(userInfo.email)}
+                value={userInfo.email != "" ? maskEmail(userInfo.email) : ""}
                 disabled
               />
             </fieldset>
