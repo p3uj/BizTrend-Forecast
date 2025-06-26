@@ -37,11 +37,17 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'biztrend-forecast.up.railway.app',
+    'backend-production-57cd.up.railway.app',  # Your backend domain
     os.getenv('RAILWAY_PUBLIC_DOMAIN', ''),
 ]
 
+# In production, allow all hosts for Railway
+if ENVIRONMENT == 'production':
+    ALLOWED_HOSTS.append('*')
+
 CSRF_TRUSTED_ORIGINS = [
     'https://biztrend-forecast.up.railway.app',
+    'https://backend-production-57cd.up.railway.app',
     f"https://{os.getenv('RAILWAY_PUBLIC_DOMAIN', '')}",
 ]
 
