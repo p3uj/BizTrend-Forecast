@@ -28,7 +28,16 @@ class AuthService {
 
         // Store the info of the current authenticated user.
         const currentUser = await this.getCurrentUser();
-        sessionStorage.setItem("current_user", JSON.stringify(currentUser));
+
+        // Create a copy without 'date_created'
+        const { date_created, ...filteredUser } = currentUser;
+        sessionStorage.setItem("current_user", JSON.stringify(filteredUser));
+
+        // Store the constant value of account date created
+        sessionStorage.setItem(
+          "account_created_date",
+          currentUser.date_created
+        );
       } else {
         console.log("No access token in response!");
       }
@@ -40,10 +49,62 @@ class AuthService {
     }
   }
 
+  // Reset Password
+  async resetPassword(email) {
+    try {
+      const response = await fetch(API_URL + "users/reset_password/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        console.log("Reset password response:", response);
+        return response.status;
+      }
+
+      return response.status;
+    } catch (error) {
+      console.log("Failed to reset password!", error);
+      return error;
+    }
+  }
+
+  // Change password froom reset password request
+  async resetPasswordConfirm(uid, token, password) {
+    try {
+      const response = await fetch(API_URL + `users/reset_password_confirm/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          uid: uid,
+          token: token,
+          new_password: password,
+        }),
+      });
+
+      if (!response.ok) {
+        console.log("Reset password confirm response:", response.status);
+        return response.status;
+      }
+
+      return response.status;
+    } catch (error) {
+      console.log("Failed to reset password confirm!", error);
+      return error;
+    }
+  }
+
   // Get current user
   async getCurrentUser() {
     try {
-      console.log("Getting current user...");
+      // console.log("Getting current user...");
       const response = await fetch(API_URL_USERS + "me/", {
         method: "GET",
         headers: this.getAuthHeader(),
@@ -64,14 +125,13 @@ class AuthService {
 
   // Get the access token
   getAccessToken() {
-    console.log("Got token: ", localStorage.getItem("access_token"));
     return localStorage.getItem("access_token");
   }
 
   // Get the Autorization headers
   getAuthHeader() {
     const token = this.getAccessToken();
-    console.log("Got token in getAuthHeader: ", token);
+
     return {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -84,6 +144,7 @@ class AuthService {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     sessionStorage.removeItem("current_user");
+    sessionStorage.removeItem("account_created_date");
   }
 }
 

@@ -7,6 +7,7 @@ import AxiosInstance from "../components/AxiosInstance";
 import authService from "../services/authService";
 import predictionService from "../services/predictionService";
 import CardSkeletonLoading from "../components/loading/CardSkeletonLoading";
+import websocketService from "../services/websocketService";
 
 export default function Home() {
   const [isUploadDataset, setUploadDataset] = useState(false);
@@ -18,6 +19,25 @@ export default function Home() {
   const [title, setTitle] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [isLoading, setLoading] = useState(true);
+  const [isWebSocketConnected, setWebSocketConnected] = useState(false);
+  const [lastUpdateTime, setLastUpdateTime] = useState(null);
+
+  // Function to fetch latest trends data
+  const fetchLatestTrends = async () => {
+    try {
+      const latestTrends = await predictionService.getLatestTrends();
+      console.log("Latest trends:", latestTrends);
+      setGrowthRateData(latestTrends[0]);
+      setRevenueData(latestTrends[1]);
+      setLeastCrowdedData(latestTrends[2]);
+      setYears(latestTrends[3]);
+      setLoading(false);
+      setLastUpdateTime(new Date().toLocaleTimeString());
+    } catch (error) {
+      console.error("Failed to fetch latest trends:", error);
+      setLoading(false);
+    }
+  };
 
   // Get the current user.
   useEffect(() => {
@@ -29,23 +49,63 @@ export default function Home() {
     fetchCurrentUser();
   }, []);
 
+  // Initialize WebSocket connection and fetch initial data
   useEffect(() => {
-    const fetchLatestTrends = async () => {
-      try {
-        const latestTrends = await predictionService.getLatestTrends();
-        console.log("Latest trends:", latestTrends);
-        setGrowthRateData(latestTrends[0]);
-        setRevenueData(latestTrends[1]);
-        setLeastCrowdedData(latestTrends[2]);
-        setYears(latestTrends[3]);
-        setLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch latest trends:", error);
-      }
+    // Connect to WebSocket
+    websocketService.connect();
+
+    // Set up WebSocket event listeners
+    const handleConnectionEstablished = (data) => {
+      console.log("WebSocket connected:", data.message);
+      setWebSocketConnected(true);
     };
 
+    const handleConnectionLost = (data) => {
+      console.log("WebSocket disconnected:", data.message);
+      setWebSocketConnected(false);
+    };
+
+    const handlePredictionCompleted = (data) => {
+      console.log("Prediction completed:", data);
+      // Automatically refresh data when predictions are completed
+      fetchLatestTrends();
+    };
+
+    const handleDatasetUploaded = (data) => {
+      console.log("Dataset uploaded:", data);
+      // You can add additional handling here if needed
+    };
+
+    // Register event listeners
+    websocketService.onConnectionEstablished(handleConnectionEstablished);
+    websocketService.onConnectionLost(handleConnectionLost);
+    websocketService.onPredictionCompleted(handlePredictionCompleted);
+    websocketService.onDatasetUploaded(handleDatasetUploaded);
+
+    // Fetch initial data
     fetchLatestTrends();
-  });
+
+    // Cleanup on component unmount
+    return () => {
+      websocketService.removeEventListener(
+        "connection_established",
+        handleConnectionEstablished
+      );
+      websocketService.removeEventListener(
+        "connection_lost",
+        handleConnectionLost
+      );
+      websocketService.removeEventListener(
+        "prediction_completed",
+        handlePredictionCompleted
+      );
+      websocketService.removeEventListener(
+        "dataset_uploaded",
+        handleDatasetUploaded
+      );
+      websocketService.disconnect();
+    };
+  }, []);
 
   // Set the title based on the active filter.
   useEffect(() => {

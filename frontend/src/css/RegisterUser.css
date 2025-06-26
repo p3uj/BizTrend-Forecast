@@ -74,37 +74,11 @@
 }
 
 .register-user-modal .content form {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-
-  padding: 20px 20px 20px 20px;
+  padding: 20px;
   margin-bottom: 25px;
 
-  gap: 15px;
-  overflow: auto;
-}
-
-.register-user-modal .content form fieldset {
-  display: flex;
-  flex-direction: column;
   gap: 5px;
-}
-
-.register-user-modal .content form label {
-  font-size: 1rem;
-  font-weight: 400;
-  color: var(--secondary-dark-color);
-}
-
-.register-user-modal .content form input {
-  display: flex;
-  height: 44px;
-  padding: 20px;
-  background-color: var(--secondary-color);
-  border-radius: 40px;
-  border: 1px solid #d3d3d3;
+  overflow: auto;
 }
 
 .register-user-modal .content form fieldset:last-of-type {

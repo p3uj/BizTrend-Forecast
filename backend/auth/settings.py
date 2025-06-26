@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'djoser',
+    'channels',
     'users',
     # 'knox',
 ]
@@ -89,19 +90,24 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'auth.wsgi.application'
+ASGI_APPLICATION = 'auth.asgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.parse(os.getenv('DATABASE_URL'))
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+    }
 }
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#     }
-# }
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'forecastbiztrend@gmail.com'
+EMAIL_HOST_PASSWORD = 'ehrkcfuprddgkarl'
+EMAIL_USE_TLS = True
 
 # POSTGRES_LOCALLY = False
 # if ENVIRONMENT == 'production' or POSTGRES_LOCALLY == True:
@@ -141,14 +147,20 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    # Only include build/static if the directory exists (for production builds)
-    os.path.join(BASE_DIR, 'build/static') if os.path.exists(os.path.join(BASE_DIR, 'build/static')) else None
-]
-# Remove None values from STATICFILES_DIRS
-STATICFILES_DIRS = [path for path in STATICFILES_DIRS if path is not None]
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/static/'
+STATICFILES_DIRS = []
+
+# Add build/static to STATICFILES_DIRS if it exists
+build_static_path = os.path.join(BASE_DIR, 'build/static')
+if os.path.exists(build_static_path):
+    STATICFILES_DIRS.append(build_static_path)
+
+# Add assets directory for Vite build assets
+build_assets_path = os.path.join(BASE_DIR, 'build/assets')
+if os.path.exists(build_assets_path):
+    STATICFILES_DIRS.append(build_assets_path)
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 REST_FRAMEWORK = {
     # 'DEFAULT_PERMISSION_CLASSES': [
@@ -174,8 +186,8 @@ DJOSER = {
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE': True,
     'USERNAME_CHANGED_EMAIL_CONFIRMATION': False,
-    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': False,
-    'SEND_CONFIRMATION_EMAIL': False,
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
+    'SEND_CONFIRMATION_EMAIL': True,
     'SET_USERNAME_RETYPE': False,
     'SET_PASSWORD_RETYPE': True,
     'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
@@ -192,7 +204,28 @@ DJOSER = {
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Channels Configuration
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
+
+# Uncomment below and comment above for Redis in production
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [('127.0.0.1', 6379)],
+#         },
+#     },
+# }

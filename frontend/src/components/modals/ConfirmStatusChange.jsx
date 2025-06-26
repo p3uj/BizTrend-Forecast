@@ -8,7 +8,12 @@ import accountsService from "../../services/accountsService";
 import { useNavigate } from "react-router-dom";
 import RippleLoading from "./loading/rippleLoading";
 
-export default function ConfirmStatusChange({ isShow, action, userId }) {
+export default function ConfirmStatusChange({
+  isShow,
+  action,
+  userId,
+  userName,
+}) {
   let icon;
   const navigate = useNavigate();
 
@@ -58,8 +63,11 @@ export default function ConfirmStatusChange({ isShow, action, userId }) {
         <img src={icon} alt="icon" data-action={action} />
         <h2>{action} Account</h2>
         <p>
-          Are you sure you want to {action.toLowerCase()} the account of this
-          user?
+          Are you sure you want to {action.toLowerCase()}{" "}
+          {userId != JSON.parse(sessionStorage.getItem("current_user")).id
+            ? `${userName}'s`
+            : "your"}{" "}
+          account?
         </p>
         <div className="group-buttons">
           <button className="submit-button" onClick={isShow}>

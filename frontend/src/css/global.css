@@ -25,6 +25,48 @@
 
 .submit-button:hover:not(:disabled) {
   background-color: var(--btn-hover-color);
+
+  transform: scale(1.05);
+  transition: 0.5s ease;
+}
+
+.password-errors-container {
+  display: flex;
+  flex-direction: column;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 25px;
+}
+
+fieldset {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 8px;
+}
+
+label {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--secondary-dark-color);
+}
+
+fieldset input {
+  display: flex;
+  height: 44px;
+  padding: 20px;
+  background-color: var(--secondary-color);
+  border-radius: 40px;
+  border: 1px solid #d3d3d3;
+}
+
+input:focus:not(input[type="checkbox"]) {
+  outline: 2px solid var(--btn-color);
+  outline-offset: 2px;
 }
 
 .loading-ripple {

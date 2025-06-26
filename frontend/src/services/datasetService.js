@@ -6,7 +6,7 @@ class Dataset {
   // Post dataset
   async postDataset(file) {
     const formData = new FormData();
-    const currentUser = await authService.getCurrrentUser();
+    const currentUser = await authService.getCurrentUser();
 
     formData.append("file", file);
     formData.append("uploaded_by_user", currentUser.id);

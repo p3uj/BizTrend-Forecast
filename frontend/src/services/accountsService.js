@@ -23,13 +23,71 @@ class AccountsService {
       });
 
       if (!response.ok) {
-        return response;
+        const errorResponse = await response.json();
+        // console.log(errorResponse.email[0]);
+        return { status: response.status, message: errorResponse.email[0] };
       }
 
       //   const data = await response.json();
       return response;
     } catch (error) {
       console.log("Failed to register!", error);
+    }
+  }
+
+  // Update user information
+  async updateUserInfo(userId, firstName, lastName) {
+    try {
+      const response = await fetch(API_URL + "users/" + userId + "/", {
+        method: "PUT",
+        headers: authService.getAuthHeader(),
+        body: JSON.stringify({
+          first_name: firstName,
+          last_name: lastName,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorResponse = await response.json();
+        console.log("failed to update user info", errorResponse);
+
+        return response.status;
+      }
+
+      const data = await response.json();
+      return response.status;
+    } catch (error) {
+      console.log("Failed to update user info!", error);
+    }
+  }
+
+  // Update user profile picture
+  async updateProfile(userId, profilePicture) {
+    const formData = new FormData();
+    formData.append("profile_picture", profilePicture);
+
+    try {
+      const token = authService.getAccessToken();
+
+      const response = await fetch(API_URL + "users/" + userId + "/", {
+        method: "PATCH",
+        headers: {
+          Authorization: token ? `JWT ${token}` : "",
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorResponse = await response.json();
+        console.log("failed to update user profile picture", errorResponse);
+
+        return response.status;
+      }
+
+      return response.status;
+    } catch (error) {
+      console.log("Failed to update user profile picture!", error);
+      return error;
     }
   }
 
