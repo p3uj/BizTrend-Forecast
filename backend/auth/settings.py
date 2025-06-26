@@ -33,9 +33,17 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [ 'localhost', 'biztrend-forecast.up.railway.app' ]
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'biztrend-forecast.up.railway.app',
+    os.getenv('RAILWAY_PUBLIC_DOMAIN', ''),
+]
 
-CSRF_TRUSTED_ORIGINS = [ 'https://biztrend-forecast.up.railway.app' ]
+CSRF_TRUSTED_ORIGINS = [
+    'https://biztrend-forecast.up.railway.app',
+    f"https://{os.getenv('RAILWAY_PUBLIC_DOMAIN', '')}",
+]
 
 # Application definition
 
@@ -67,7 +75,14 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
+    'http://localhost:3000',
+    'https://biztrend-forecast-production.up.railway.app',
+    os.getenv('FRONTEND_URL', ''),
 ]
+
+# Allow all origins in development
+if ENVIRONMENT == 'development':
+    CORS_ALLOW_ALL_ORIGINS = True
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
@@ -96,22 +111,26 @@ ASGI_APPLICATION = 'auth.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+# Database configuration
+if ENVIRONMENT == 'production':
+    DATABASES = {
+        'default': dj_database_url.parse(os.getenv('DATABASE_URL'))
     }
-}
+else:
+    # Local development database
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'forecastbiztrend@gmail.com'
-EMAIL_HOST_PASSWORD = 'ehrkcfuprddgkarl'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
-
-# POSTGRES_LOCALLY = False
-# if ENVIRONMENT == 'production' or POSTGRES_LOCALLY == True:
-#     DATABASES['default'] = dj_database_url.parse(os.getenv('DATABASE_URL'))
 
 
 # Password validation

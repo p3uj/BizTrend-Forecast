@@ -13,6 +13,14 @@ lightgbm
 scikit-learn
 numpy
 tabulate
+channels
+channels-redis
+djoser
 
+# Production servers
 gunicorn
+daphne
 dj-database-url
+
+# For health checks
+requests

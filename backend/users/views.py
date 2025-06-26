@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import JsonResponse
 from rest_framework import viewsets, permissions
 from .serializers import *
 from .models import *
@@ -410,3 +411,12 @@ class PredictionViewset(viewsets.ViewSet):
                 {'error': str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+
+def health_check(request):
+    """Health check endpoint for Railway deployment"""
+    return JsonResponse({
+        'status': 'healthy',
+        'timestamp': datetime.now().isoformat(),
+        'service': 'BizTrend Forecast Backend'
+    })

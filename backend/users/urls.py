@@ -9,7 +9,10 @@ router.register('users', UserViewset, basename='users')
 router.register('dataset', DatasetViewset, basename='dataset')
 router.register('dataset_validation', DataValidationViewset, basename='dataset_validation')
 router.register('predictions', PredictionViewset, basename='predictions')
-urlpatterns = router.urls
+
+urlpatterns = [
+    path('health/', health_check, name='health_check'),
+] + router.urls
 
 
 # List of registered endpoints
