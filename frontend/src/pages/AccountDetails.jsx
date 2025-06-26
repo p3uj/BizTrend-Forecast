@@ -4,7 +4,7 @@ import DefaultProfile from "../assets/img/default-profile.svg";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import accountsService from "../services/accountsService";
-import RippleLoading from "../components/modals/loading/rippleLoading";
+import RippleLoading from "../components/modals/loading/RippleLoading";
 import Alert from "../components/modals/Alert";
 import authService from "../services/authService";
 import Skeleton from "react-loading-skeleton";
