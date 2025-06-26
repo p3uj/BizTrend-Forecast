@@ -8,7 +8,7 @@ import dataset from "../../services/datasetService";
 import predictionService from "../../services/predictionService";
 import LoadingIcon from "../../assets/icons/analysis-chart.gif";
 import { Tooltip } from "react-tooltip";
-import RippleLoading from "./loading/rippleLoading";
+import RippleLoading from "./loading/RippleLoading";
 import websocketService from "../../services/websocketService";
 
 export default function UploadDataset({ showModal, onPredictionComplete }) {

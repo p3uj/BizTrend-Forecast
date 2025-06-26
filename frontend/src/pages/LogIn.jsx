@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import authService from "../services/authService";
-import RippleLoading from "../components/modals/loading/rippleLoading";
+import RippleLoading from "../components/modals/loading/RippleLoading";
 import Alert from "../components/modals/Alert";
 
 function LogIn() {

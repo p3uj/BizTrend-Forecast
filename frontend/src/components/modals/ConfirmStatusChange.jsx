@@ -6,7 +6,7 @@ import CloseIconWhite from "../../assets/icons/close-white.svg";
 import { useEffect, useState } from "react";
 import accountsService from "../../services/accountsService";
 import { useNavigate } from "react-router-dom";
-import RippleLoading from "./loading/rippleLoading";
+import RippleLoading from "./loading/RippleLoading";
 
 export default function ConfirmStatusChange({
   isShow,

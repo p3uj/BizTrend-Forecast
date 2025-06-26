@@ -7,7 +7,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import accountsService from "../../services/accountsService";
 import "../../css/global.css";
-import RippleLoading from "./loading/rippleLoading";
+import RippleLoading from "./loading/RippleLoading";
 import Alert from "./Alert";
 import { useNavigate } from "react-router-dom";
 

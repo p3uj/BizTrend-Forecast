@@ -5,7 +5,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import RippleLoading from "../components/modals/loading/rippleLoading";
+import RippleLoading from "../components/modals/loading/RippleLoading";
 import authService from "../services/authService";
 import Alert from "../components/modals/Alert";
 
