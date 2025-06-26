@@ -251,7 +251,7 @@ export default function AccountDetails() {
               <img
                 src={
                   userInfo.profile
-                    ? `http://127.0.0.1:8000${userInfo.profile}`
+                    ? `https://backend-production-37cd.up.railway.app${userInfo.profile}`
                     : DefaultProfile
                 }
                 alt="profile-picture"
