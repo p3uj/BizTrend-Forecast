@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "rmdir /s /q ..\\backend\\build && vite build && xcopy build ..\\backend\\build /E /I /Y",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "start": "vite preview"
