@@ -1,6 +1,7 @@
 import authService from "./authService";
 
-const API_URL = "http://127.0.0.1:8000/dataset_validation/validate/";
+const API_URL =
+  "https://backend-production-37cd.up.railway.app/dataset_validation/validate/";
 
 class DatasetValidation {
   // Validate the selected file

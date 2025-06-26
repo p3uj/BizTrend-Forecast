@@ -19,7 +19,7 @@ class WebSocketService {
     try {
       // Use ws:// for development, wss:// for production
       const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-      const wsUrl = `${protocol}//127.0.0.1:8000/ws/predictions/`;
+      const wsUrl = `${protocol}backend-production-37cd.up.railway.app/wss/predictions/`;
 
       this.socket = new WebSocket(wsUrl);
 

@@ -1,5 +1,6 @@
-const API_URL = "http://127.0.0.1:8000/";
-const API_URL_QUERY = "http://127.0.0.1:8000/users/list_by_status/?is_active=";
+const API_URL = "https://backend-production-37cd.up.railway.app/";
+const API_URL_QUERY =
+  "https://backend-production-37cd.up.railway.app/users/list_by_status/?is_active=";
 
 import authService from "./authService";
 

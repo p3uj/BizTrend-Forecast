@@ -1,5 +1,5 @@
-const API_URL = "http://127.0.0.1:8000/auth/";
-const API_URL_USERS = "http://127.0.0.1:8000/users/";
+const API_URL = "https://backend-production-37cd.up.railway.app/auth/";
+const API_URL_USERS = "https://backend-production-37cd.up.railway.app/users/";
 
 class AuthService {
   // Login user and store tokens

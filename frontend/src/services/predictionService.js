@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:8000/predictions/";
+const API_URL = "https://backend-production-37cd.up.railway.app/predictions/";
 
 class PredictionService {
   // Generate ML predictions for a dataset
