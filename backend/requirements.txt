@@ -16,6 +16,7 @@ tabulate
 channels
 channels-redis
 djoser
+Pillow
 
 # Production servers
 gunicorn
