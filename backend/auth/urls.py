@@ -16,7 +16,6 @@ urlpatterns = [
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 # Serve media files - this works in both development and production
-# In production, you might want to use a CDN or cloud storage
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Serve Vite assets directly
