@@ -142,12 +142,16 @@ export default function Home() {
     }
   };
 
+  const handlePredictionComplete = (datasetId, predictionResponse) => {
+    fetchLatestTrends(); // Refresh the trends data
+  };
+
   return (
     <>
       {isUploadDataset && (
         <UploadDataset
           showModal={() => setUploadDataset(false)}
-          //onPredictionComplete={handlePredictionComplete}
+          onPredictionComplete={handlePredictionComplete}
         />
       )}
 
