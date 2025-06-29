@@ -258,7 +258,7 @@ function Navbar({ showModal }) {
               <img
                 src={
                   userProfile.profile
-                    ? `${import.meta.env.VITE_BACKEND_URL || "http://127.0.0.1:8000"}${userProfile.profile}`
+                    ? `https://backend-production-37cd.up.railway.app${userProfile.profile}`
                     : DefaultProfile
                 }
                 alt="sample-profile"
