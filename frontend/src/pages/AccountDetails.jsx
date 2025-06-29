@@ -251,7 +251,7 @@ export default function AccountDetails() {
               <img
                 src={
                   userInfo.profile
-                    ? `https://backend-production-37cd.up.railway.app${userInfo.profile}`
+                    ? `${import.meta.env.VITE_BACKEND_URL || "http://127.0.0.1:8000"}${userInfo.profile}`
                     : DefaultProfile
                 }
                 alt="profile-picture"
@@ -274,7 +274,7 @@ export default function AccountDetails() {
                   previewImage
                     ? previewImage
                     : userInfo.profile
-                    ? `http://127.0.0.1:8000${userInfo.profile}`
+                    ? `${import.meta.env.VITE_BACKEND_URL || "http://127.0.0.1:8000"}${userInfo.profile}`
                     : DefaultProfile
                 }
                 alt=""

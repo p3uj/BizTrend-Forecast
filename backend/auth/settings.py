@@ -233,6 +233,26 @@ AUTH_USER_MODEL = 'users.CustomUser'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# Production media file handling
+if ENVIRONMENT == 'production':
+    # For Railway, we'll use local storage but ensure proper serving
+    # In a real production environment, you should use cloud storage like AWS S3
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    
+    # Optional: Configure cloud storage (uncomment and configure if you have AWS S3)
+    # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    # AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+    # AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+    # AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+    # AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME', 'us-east-1')
+    # AWS_S3_FILE_OVERWRITE = False
+    # AWS_DEFAULT_ACL = None
+    # AWS_S3_VERIFY = True
+else:
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 

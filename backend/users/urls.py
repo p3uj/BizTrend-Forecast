@@ -12,6 +12,8 @@ router.register('predictions', PredictionViewset, basename='predictions')
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
+    # Custom media serving for production
+    path('media/<path:path>', serve_media_file, name='serve_media'),
 ] + router.urls
 
 

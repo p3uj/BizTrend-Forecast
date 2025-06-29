@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from rest_framework import viewsets, permissions
 from .serializers import *
 from .models import *
@@ -9,12 +9,21 @@ User = get_user_model()
 
 from rest_framework.parsers import MultiPartParser, FormParser
 from .data_validation import DatasetValidation
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, permission_classes
 from .ml_service import MLPredictionService
 from rest_framework import status
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from datetime import datetime
+from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.conf import settings
+import os
+import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def broadcast_websocket_update(message_type, message, **kwargs):
@@ -420,3 +429,32 @@ def health_check(request):
         'timestamp': datetime.now().isoformat(),
         'service': 'BizTrend Forecast Backend'
     })
+
+# Custom media serving view for production
+def serve_media_file(request, path):
+    """
+    Custom view to serve media files in production
+    This is more reliable than Django's static() function in production
+    """
+    try:
+        file_path = os.path.join(settings.MEDIA_ROOT, path)
+        if os.path.exists(file_path):
+            with open(file_path, 'rb') as f:
+                response = HttpResponse(f.read())
+                # Set appropriate content type based on file extension
+                if path.endswith('.jpg') or path.endswith('.jpeg'):
+                    response['Content-Type'] = 'image/jpeg'
+                elif path.endswith('.png'):
+                    response['Content-Type'] = 'image/png'
+                elif path.endswith('.gif'):
+                    response['Content-Type'] = 'image/gif'
+                elif path.endswith('.pdf'):
+                    response['Content-Type'] = 'application/pdf'
+                else:
+                    response['Content-Type'] = 'application/octet-stream'
+                return response
+        else:
+            return HttpResponse('File not found', status=404)
+    except Exception as e:
+        logger.error(f"Error serving media file {path}: {str(e)}")
+        return HttpResponse('Error serving file', status=500)

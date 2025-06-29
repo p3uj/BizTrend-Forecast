@@ -213,7 +213,7 @@ export default function UserManagement() {
                   <img
                     src={
                       user.profile_picture
-                        ? `http://127.0.0.1:8000${user.profile_picture}`
+                        ? `${import.meta.env.VITE_BACKEND_URL || "http://127.0.0.1:8000"}${user.profile_picture}`
                         : DefaultProfile
                     }
                     alt="Profile"

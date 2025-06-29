@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const baseUrl = "http://127.0.0.1:8000/";
+// Use environment variable for backend URL, fallback to localhost for development
+const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://127.0.0.1:8000/";
 
 const AxiosInstance = axios.create({
   baseURL: baseUrl,

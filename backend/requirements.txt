@@ -25,3 +25,7 @@ dj-database-url
 
 # For health checks
 requests
+
+# Cloud storage support (optional - for AWS S3, Google Cloud Storage, etc.)
+django-storages
+boto3
