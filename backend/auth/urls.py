@@ -12,14 +12,14 @@ urlpatterns = [
     path('auth/', include('djoser.urls.jwt')),
 ]
 
-# Serve static files and assets in development
-if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    # Serve Vite assets directly
-    build_assets_path = os.path.join(settings.BASE_DIR, 'build/assets')
-    if os.path.exists(build_assets_path):
-        urlpatterns += static('/assets/', document_root=build_assets_path)
+# Serve static files and assets
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Serve Vite assets directly
+build_assets_path = os.path.join(settings.BASE_DIR, 'build/assets')
+if os.path.exists(build_assets_path):
+    urlpatterns += static('/assets/', document_root=build_assets_path)
 
 # Catch-all route for React Router (should be last)
 urlpatterns += [re_path(r'^.*', TemplateView.as_view(template_name='index.html'))]
