@@ -20,6 +20,9 @@ export default function UserManagement() {
   const [isAddUser, setAddUser] = useState(false);
   const [hasNewUser, setHasNewUser] = useState(false);
   const [users, setUsers] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
+  const [activeUsers, setActiveUsers] = useState([]);
+  const [inactiveUsers, setInactiveUsers] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [isChangeStatus, setChangeStatus] = useState(false);
   const [userOverview, setUserOverview] = useState({
@@ -41,10 +44,13 @@ export default function UserManagement() {
       let fetchedUsers;
       if (activeTab === "All") {
         fetchedUsers = await accountsService.getAllUsers();
+        setAllUsers(fetchedUsers || []);
       } else if (activeTab === "Active") {
         fetchedUsers = await accountsService.getUsersByisActive(1);
+        setActiveUsers(fetchedUsers || []);
       } else if (activeTab === "Inactive") {
         fetchedUsers = await accountsService.getUsersByisActive(0);
+        setInactiveUsers(fetchedUsers || []);
       }
 
       setUsers(fetchedUsers || []);
@@ -121,15 +127,50 @@ export default function UserManagement() {
     };
   }, []);
 
-  // Fetch users when activeTab changes
+  // Fetch all users, active, and inactive users when the component mounts.
   useEffect(() => {
-    fetchUsers();
-  }, [activeTab]);
+    const fetchAllUsers = async () => {
+      // Fetch all users
+      const allUsers = await accountsService.getAllUsers();
+      setAllUsers(allUsers || []);
+
+      // Fetch all active users
+      const activeUsers = await accountsService.getUsersByisActive(1);
+      setActiveUsers(activeUsers || []);
+
+      // Fetch all inactive users
+      const inactiveUsers = await accountsService.getUsersByisActive(0);
+      setInactiveUsers(inactiveUsers || []);
+
+      setLoading(false);
+    };
+
+    fetchAllUsers();
+  }, []);
+
+  // Update users when activeTab changes and isLoading is false
+  useEffect(() => {
+    if (activeTab === "All") {
+      setUsers(allUsers);
+    } else if (activeTab === "Active") {
+      setUsers(activeUsers);
+    } else if (activeTab === "Inactive") {
+      setUsers(inactiveUsers);
+    }
+  }, [!isLoading && activeTab]);
+
+  // Update users every time there is a success change (change status or register new user)
+  const handleChangeSuccess = () => {
+    fetchUsers(); // Refresh user list
+  };
 
   return (
     <>
       {isAddUser && (
-        <RegisterUser showRegisterUserModal={() => setAddUser(false)} />
+        <RegisterUser
+          showRegisterUserModal={() => setAddUser(false)}
+          handleChangeSuccess={handleChangeSuccess}
+        />
       )}
 
       {hasNewUser && (
@@ -142,6 +183,7 @@ export default function UserManagement() {
           action={userOverview.action}
           userId={userOverview.userId}
           userName={userOverview.userName}
+          handleChangeSuccess={handleChangeSuccess}
         />
       )}
 
