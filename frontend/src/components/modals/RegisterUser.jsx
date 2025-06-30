@@ -10,6 +10,8 @@ import "../../css/global.css";
 import RippleLoading from "./loading/RippleLoading";
 import Alert from "./Alert";
 import { useNavigate } from "react-router-dom";
+import EyeOpen from "../../assets/icons/eye-open.svg";
+import EyeClose from "../../assets/icons/eye-close.svg";
 
 export default function RegisterUser({ showRegisterUserModal }) {
   const navigate = useNavigate();
@@ -18,6 +20,8 @@ export default function RegisterUser({ showRegisterUserModal }) {
   const [passwordErrors, setPasswordErrors] = useState([]);
   const [isSubmitting, setSubmitting] = useState(false);
   const [registrationResponse, setRegistrationResponse] = useState(null);
+  const [isShowPassword, setShowPassword] = useState(false);
+  const [isShowConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const validationSchema = yup.object().shape({
     firstName: yup.string().required("First name is required."),
@@ -79,6 +83,7 @@ export default function RegisterUser({ showRegisterUserModal }) {
   };
 
   const watchPassword = watch("password", "");
+  const watchConfirmPassword = watch("confirmPassword", "");
   useEffect(() => {
     let errors = [];
 
@@ -183,14 +188,24 @@ export default function RegisterUser({ showRegisterUserModal }) {
             </fieldset>
             <fieldset>
               <label htmlFor="password">Password *</label>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                required
-                placeholder="Enter password..."
-                {...register("password")}
-              />
+              <div>
+                <input
+                  type={isShowPassword ? "text" : "password"}
+                  name="password"
+                  id="password"
+                  required
+                  placeholder="Enter password..."
+                  {...register("password")}
+                />
+
+                {watchPassword.length > 0 && (
+                  <img
+                    src={isShowPassword ? EyeOpen : EyeClose}
+                    alt="eye"
+                    onClick={() => setShowPassword(!isShowPassword)}
+                  />
+                )}
+              </div>
 
               {passwordErrors.length !== 0 && (
                 <div className="password-errors-container">
@@ -204,13 +219,27 @@ export default function RegisterUser({ showRegisterUserModal }) {
             <fieldset>
               <label htmlFor="confirm-password">Confirm Password *</label>
               <input
-                type="password"
+                type={isShowConfirmPassword ? "text" : "password"}
                 name="confirm-password"
                 id="confirm-password"
                 required
                 placeholder="Enter confirm password..."
                 {...register("confirmPassword")}
               />
+
+              {watchConfirmPassword.length > 0 && (
+                <img
+                  src={isShowConfirmPassword ? EyeOpen : EyeClose}
+                  alt="eye"
+                  onClick={() => setShowConfirmPassword(!isShowConfirmPassword)}
+                  style={{
+                    ...(watchConfirmPassword != watchPassword && {
+                      top: "40.5px",
+                    }),
+                  }}
+                />
+              )}
+
               {errors.confirmPassword && (
                 <span>{errors.confirmPassword.message}</span>
               )}

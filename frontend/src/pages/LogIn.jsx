@@ -10,11 +10,14 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import authService from "../services/authService";
 import RippleLoading from "../components/modals/loading/RippleLoading";
 import Alert from "../components/modals/Alert";
+import EyeOpen from "../assets/icons/eye-open.svg";
+import EyeClose from "../assets/icons/eye-close.svg";
 
 function LogIn() {
   const navigate = useNavigate();
   const [isSubmitting, setSubmitting] = useState(false);
   const [isInvalidCredentials, setInvalidCredentials] = useState(null);
+  const [isShowPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (isInvalidCredentials) {
@@ -37,10 +40,13 @@ function LogIn() {
     register,
     handleSubmit,
     formState: { errors, isValid },
+    watch,
   } = useForm({
     resolver: yupResolver(validationSchema),
     mode: "all",
   });
+
+  const watchPassword = watch("password", "");
 
   const submission = async (data) => {
     setSubmitting(true);
@@ -99,7 +105,7 @@ function LogIn() {
               {errors.password && <span>{errors.password.message}</span>}
 
               <input
-                type="password"
+                type={isShowPassword ? "text" : "password"}
                 name="password"
                 id="password"
                 required
@@ -107,6 +113,14 @@ function LogIn() {
                 // onChange={handleValueFields}
                 {...register("password")}
               />
+
+              {watchPassword.length > 0 && (
+                <img
+                  src={isShowPassword ? EyeOpen : EyeClose}
+                  alt="eye"
+                  onClick={() => setShowPassword(!isShowPassword)}
+                />
+              )}
             </fieldset>
 
             <button
