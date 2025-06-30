@@ -81,6 +81,33 @@
   overflow: auto;
 }
 
+/* div of the password */
+.register-user-modal {
+  fieldset:nth-last-of-type(3) div:nth-of-type(1) {
+    width: 100%;
+    position: relative;
+
+    input {
+      width: 100%;
+    }
+
+    img[alt="eye"] {
+      top: 30%;
+    }
+  }
+}
+
+/* Confirm password field */
+.register-user-modal {
+  fieldset:nth-last-of-type(2) {
+    position: relative;
+  }
+
+  img[alt="eye"] {
+    top: 55%;
+  }
+}
+
 .register-user-modal .content form fieldset:last-of-type {
   display: flex;
   flex-direction: row;

@@ -23,6 +23,22 @@
   object-fit: contain;
 }
 
+/* Password field */
+.login-page {
+  fieldset:nth-of-type(2) {
+    position: relative;
+  }
+
+  img[alt="eye"] {
+    top: 55%;
+  }
+
+  input[type="password"],
+  input[type="text"] {
+    padding-right: 40px;
+  }
+}
+
 .login-page .left-panel {
   display: flex;
 }
@@ -34,8 +50,8 @@
   align-items: center;
   background-color: var(--primary-color);
   border-radius: 40px 0 0 40px;
-  border: 1px solid #d3d3d3;
-  box-shadow: 0 0 0 20px rgba(245, 245, 249, 0.8);
+  border: 1px solid rgb(211, 211, 211, 0.8);
+  box-shadow: 0 0 0 5px rgba(245, 245, 249, 0.8);
 }
 
 .login-page form {
