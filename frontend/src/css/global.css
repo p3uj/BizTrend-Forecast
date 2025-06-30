@@ -64,6 +64,23 @@ fieldset input {
   border: 1px solid #d3d3d3;
 }
 
+input[type="password"]::-ms-reveal {
+  display: none;
+}
+
+input[type="password"],
+input[type="text"] {
+  padding-right: 40px;
+}
+
+img[alt="eye"] {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  right: 15px;
+  cursor: pointer;
+}
+
 input:focus:not(input[type="checkbox"]) {
   outline: 2px solid var(--btn-color);
   outline-offset: 2px;
@@ -74,7 +91,7 @@ input:focus:not(input[type="checkbox"]) {
   position: relative;
   width: 20px;
 
-  > div {
+  >div {
     animation: growAndFade 2s infinite ease-out;
     background-color: #808080;
     /* border: 2px solid #808080; */
@@ -88,12 +105,15 @@ input:focus:not(input[type="checkbox"]) {
   .circle-1 {
     animation-delay: 0s;
   }
+
   .circle-2 {
     animation-delay: 0.5s;
   }
+
   .circle-3 {
     animation-delay: 1.5s;
   }
+
   .circle-4 {
     animation-delay: 2s;
   }
@@ -104,6 +124,7 @@ input:focus:not(input[type="checkbox"]) {
     opacity: 1;
     transform: scale(0);
   }
+
   100% {
     opacity: 0;
     transform: scale(1);
