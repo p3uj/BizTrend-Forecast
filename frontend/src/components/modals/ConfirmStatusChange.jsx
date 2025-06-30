@@ -13,6 +13,7 @@ export default function ConfirmStatusChange({
   action,
   userId,
   userName,
+  handleChangeSuccess,
 }) {
   let icon;
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ export default function ConfirmStatusChange({
         return;
       } else {
         navigate("/user-management", { state: { changeStatusSuccess: true } });
+        handleChangeSuccess(); // Notify parent component that user status change is complete
         isShow();
       }
     } catch (error) {

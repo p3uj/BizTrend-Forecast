@@ -13,7 +13,10 @@ import { useNavigate } from "react-router-dom";
 import EyeOpen from "../../assets/icons/eye-open.svg";
 import EyeClose from "../../assets/icons/eye-close.svg";
 
-export default function RegisterUser({ showRegisterUserModal }) {
+export default function RegisterUser({
+  showRegisterUserModal,
+  handleChangeSuccess,
+}) {
   const navigate = useNavigate();
 
   const [isCloseBtnHover, setCloseBthHover] = useState(false);
@@ -71,6 +74,7 @@ export default function RegisterUser({ showRegisterUserModal }) {
         setRegistrationResponse(postAccountResponse);
       } else {
         navigate("/user-management", { state: { registrationSuccess: true } });
+        handleChangeSuccess(); // Notify parent component that user status change is complete
         showRegisterUserModal();
       }
 
