@@ -24,7 +24,7 @@ class WebSocketService {
       this.socket = new WebSocket(wsUrl);
 
       this.socket.onopen = (event) => {
-        console.log("WebSocket connected:", event);
+        // console.log("WebSocket connected:", event);
         this.isConnected = true;
         this.isConnecting = false;
         this.reconnectAttempts = 0;
@@ -44,17 +44,17 @@ class WebSocketService {
       this.socket.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          console.log("WebSocket message received:", data);
+          // console.log("WebSocket message received:", data);
 
           // Notify listeners based on message type
           this.notifyListeners(data.type, data);
         } catch (error) {
-          console.error("Error parsing WebSocket message:", error);
+          // console.error("Error parsing WebSocket message:", error);
         }
       };
 
       this.socket.onclose = (event) => {
-        console.log("WebSocket disconnected:", event);
+        // console.log("WebSocket disconnected:", event);
         this.isConnected = false;
         this.isConnecting = false;
         this.socket = null;
@@ -74,7 +74,7 @@ class WebSocketService {
       };
 
       this.socket.onerror = (error) => {
-        console.error("WebSocket error:", error);
+        // console.error("WebSocket error:", error);
         this.isConnecting = false;
 
         this.notifyListeners("connection_error", {
@@ -83,7 +83,7 @@ class WebSocketService {
         });
       };
     } catch (error) {
-      console.error("Failed to create WebSocket connection:", error);
+      // console.error("Failed to create WebSocket connection:", error);
       this.isConnecting = false;
     }
   }
@@ -100,9 +100,9 @@ class WebSocketService {
 
   scheduleReconnect() {
     this.reconnectAttempts++;
-    console.log(
-      `Attempting to reconnect... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`
-    );
+    // console.log(
+    //   `Attempting to reconnect... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`
+    // );
 
     setTimeout(() => {
       if (!this.isConnected && !this.isConnecting) {
@@ -115,7 +115,7 @@ class WebSocketService {
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {
       this.socket.send(JSON.stringify(message));
     } else {
-      console.warn("WebSocket is not connected. Message not sent:", message);
+      // console.warn("WebSocket is not connected. Message not sent:", message);
     }
   }
 
@@ -145,7 +145,7 @@ class WebSocketService {
         try {
           callback(data);
         } catch (error) {
-          console.error(`Error in WebSocket listener for ${eventType}:`, error);
+          // console.error(`Error in WebSocket listener for ${eventType}:`, error);
         }
       });
     }

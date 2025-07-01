@@ -54,9 +54,9 @@ export default function UserManagement() {
       }
 
       setUsers(fetchedUsers || []);
-      console.log(`Users ${activeTab}:`, fetchedUsers);
+      // console.log(`Users ${activeTab}:`, fetchedUsers);
     } catch (error) {
-      console.error("Failed to fetch users:", error);
+      // console.error("Failed to fetch users:", error);
       setUsers([]);
     } finally {
       setLoading(false);
@@ -90,7 +90,7 @@ export default function UserManagement() {
   // Set up WebSocket event listeners for real-time user management
   useEffect(() => {
     const handleUserCreated = (data) => {
-      console.log("User created via WebSocket:", data);
+      // console.log("User created via WebSocket:", data);
       setHasNewUser(true);
       setTimeout(() => setHasNewUser(false), 5000);
       // Refresh user list
@@ -98,13 +98,13 @@ export default function UserManagement() {
     };
 
     const handleUserUpdated = (data) => {
-      console.log("User updated via WebSocket:", data);
+      // console.log("User updated via WebSocket:", data);
       // Refresh user list to show updated data
       fetchUsers();
     };
 
     const handleUserStatusChanged = (data) => {
-      console.log("User status changed via WebSocket:", data);
+      // console.log("User status changed via WebSocket:", data);
       setSuccessChangeStatus(true);
       setTimeout(() => setSuccessChangeStatus(false), 5000);
       // Refresh user list to show status change

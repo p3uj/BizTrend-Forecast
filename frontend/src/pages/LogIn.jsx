@@ -54,14 +54,14 @@ function LogIn() {
       const success = await authService.login(data.email, data.password);
 
       if (success) {
-        console.log("Login successfully!");
+        // console.log("Login successfully!");
 
         navigate("/home");
       } else {
         setInvalidCredentials(true);
       }
     } catch (error) {
-      console.log("login failed!", error);
+      // console.log("login failed!", error);
     } finally {
       setSubmitting(false);
     }

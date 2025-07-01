@@ -102,20 +102,20 @@ export default function AccountDetails() {
         data.lastName
       );
 
-      console.log("response received:", response);
+      // console.log("response received:", response);
 
       if (!response === 200) {
-        console.log("failed to update user info", response);
+        // console.log("failed to update user info", response);
         setUpdateSuccess(response);
       } else {
-        console.log("going to update user info...");
+        // console.log("going to update user info...");
         // Update the current user stored in the session storage
         updateUserInfo();
         setIsLoading(false);
         setUpdateSuccess(response);
       }
     } catch (error) {
-      console.log("Failed to update user info!", error);
+      // console.log("Failed to update user info!", error);
     } finally {
       setSubmitting(false);
     }
@@ -126,10 +126,10 @@ export default function AccountDetails() {
     const response = await accountsService.updateProfile(userId, file);
 
     if (!response === 200) {
-      console.log("failed to update user profile picture", response);
+      // console.log("failed to update user profile picture", response);
       setChangeProfileResStatus(response);
     } else {
-      console.log("going to update user profile picture...");
+      // console.log("going to update user profile picture...");
       // Update the current user stored in the session storage
       updateUserInfo();
       setChangeProfileResStatus(response);
@@ -149,7 +149,7 @@ export default function AccountDetails() {
     // Update current_user in the session storage.
     sessionStorage.setItem("current_user", JSON.stringify(filteredUser));
 
-    console.log("updating user info in session storage!");
+    // console.log("updating user info in session storage!");
     // Update local state with new user info
     setUserInfo({
       id: getCurrentUser.id,
@@ -159,7 +159,7 @@ export default function AccountDetails() {
       is_superuser: getCurrentUser.is_superuser,
       profile: getCurrentUser.profile_picture,
     });
-    console.log("Successfully updated the user info in the session storage!");
+    // console.log("Successfully updated the user info in the session storage!");
 
     // Dispatch custom event to notify other components (like NavBar) about the profile update
     const profileUpdateEvent = new CustomEvent("userProfileUpdated", {
@@ -169,7 +169,7 @@ export default function AccountDetails() {
       },
     });
     window.dispatchEvent(profileUpdateEvent);
-    console.log("Dispatched userProfileUpdated event");
+    // console.log("Dispatched userProfileUpdated event");
 
     setUpdatingSessionStorage(false);
   };
@@ -190,7 +190,7 @@ export default function AccountDetails() {
       : null;
 
     const handleProfileUpdated = (data) => {
-      console.log("Profile updated via WebSocket:", data);
+      // console.log("Profile updated via WebSocket:", data);
       // Only update if it's the current user's profile
       if (data.user_id === currentUserId) {
         updateUserInfo();
@@ -199,7 +199,7 @@ export default function AccountDetails() {
     };
 
     const handleUserUpdated = (data) => {
-      console.log("User updated via WebSocket:", data);
+      // console.log("User updated via WebSocket:", data);
       // Only update if it's the current user
       if (data.user_id === currentUserId) {
         updateUserInfo();

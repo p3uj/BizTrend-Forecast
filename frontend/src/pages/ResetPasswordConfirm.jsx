@@ -50,11 +50,11 @@ export default function ResetPasswordConfirm() {
       data.password
     );
 
-    console.log("response response:", response);
+    // console.log("response response:", response);
     setResponseStatus(response);
     setSubmitting(false);
 
-    console.log(data);
+    // console.log(data);
   };
 
   useEffect(() => {

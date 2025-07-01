@@ -15,7 +15,7 @@ class AuthService {
       });
 
       if (!response.ok) {
-        console.log("login failed!");
+        // console.log("login failed!");
         return false;
       }
 
@@ -24,7 +24,7 @@ class AuthService {
       if (data.access) {
         localStorage.setItem("access_token", data.access);
         localStorage.setItem("refresh_token", data.refresh);
-        console.log("token stored in the local storage!");
+        // console.log("token stored in the local storage!");
 
         // Store the info of the current authenticated user.
         const currentUser = await this.getCurrentUser();
@@ -39,12 +39,12 @@ class AuthService {
           currentUser.date_created
         );
       } else {
-        console.log("No access token in response!");
+        // console.log("No access token in response!");
       }
 
       return true;
     } catch (error) {
-      console.error("Login failed", error);
+      // console.error("Login failed", error);
       throw error;
     }
   }
@@ -62,13 +62,13 @@ class AuthService {
       });
 
       if (!response.ok) {
-        console.log("Reset password response:", response);
+        // console.log("Reset password response:", response);
         return response.status;
       }
 
       return response.status;
     } catch (error) {
-      console.log("Failed to reset password!", error);
+      // console.log("Failed to reset password!", error);
       return error;
     }
   }
@@ -90,13 +90,13 @@ class AuthService {
       });
 
       if (!response.ok) {
-        console.log("Reset password confirm response:", response.status);
+        // console.log("Reset password confirm response:", response.status);
         return response.status;
       }
 
       return response.status;
     } catch (error) {
-      console.log("Failed to reset password confirm!", error);
+      // console.log("Failed to reset password confirm!", error);
       return error;
     }
   }
@@ -112,14 +112,14 @@ class AuthService {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.log("Error data: ", errorData);
+        // console.log("Error data: ", errorData);
         return null;
       }
 
       const data = await response.json();
       return data;
     } catch (error) {
-      console.log("Failed to get the current user!", error);
+      // console.log("Failed to get the current user!", error);
     }
   }
 

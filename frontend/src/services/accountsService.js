@@ -32,7 +32,7 @@ class AccountsService {
       //   const data = await response.json();
       return response;
     } catch (error) {
-      console.log("Failed to register!", error);
+      // console.log("Failed to register!", error);
     }
   }
 
@@ -50,7 +50,7 @@ class AccountsService {
 
       if (!response.ok) {
         const errorResponse = await response.json();
-        console.log("failed to update user info", errorResponse);
+        // console.log("failed to update user info", errorResponse);
 
         return response.status;
       }
@@ -58,7 +58,7 @@ class AccountsService {
       const data = await response.json();
       return response.status;
     } catch (error) {
-      console.log("Failed to update user info!", error);
+      // console.log("Failed to update user info!", error);
     }
   }
 
@@ -80,14 +80,14 @@ class AccountsService {
 
       if (!response.ok) {
         const errorResponse = await response.json();
-        console.log("failed to update user profile picture", errorResponse);
+        // console.log("failed to update user profile picture", errorResponse);
 
         return response.status;
       }
 
       return response.status;
     } catch (error) {
-      console.log("Failed to update user profile picture!", error);
+      // console.log("Failed to update user profile picture!", error);
       return error;
     }
   }
@@ -102,7 +102,7 @@ class AccountsService {
 
       if (!response.ok) {
         const errorResponse = await response.json();
-        console.log("failed to fetch all users");
+        // console.log("failed to fetch all users");
 
         return errorResponse;
       }
@@ -110,7 +110,7 @@ class AccountsService {
       const data = await response.json();
       return Array.from(data);
     } catch (error) {
-      console.log("Failed to get all users!", error);
+      // console.log("Failed to get all users!", error);
     }
   }
 
@@ -124,7 +124,7 @@ class AccountsService {
 
       if (!response.ok) {
         const errorResponse = await response.json();
-        console.log("failed to fetch is_active users");
+        // console.log("failed to fetch is_active users");
 
         return errorResponse;
       }
@@ -132,7 +132,7 @@ class AccountsService {
       const data = await response.json();
       return Array.from(data);
     } catch (error) {
-      console.log("Failed to get users by status!", error);
+      // console.log("Failed to get users by status!", error);
     }
   }
 
@@ -149,14 +149,14 @@ class AccountsService {
 
       if (!response.ok) {
         const errorResponse = await response.json();
-        console.log("failed to change user status", errorResponse);
+        // console.log("failed to change user status", errorResponse);
 
         return false;
       }
 
       return true;
     } catch (error) {
-      console.log("Failed to change user status!", error);
+      // console.log("Failed to change user status!", error);
     }
   }
 }

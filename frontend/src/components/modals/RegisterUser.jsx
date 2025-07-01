@@ -68,7 +68,7 @@ export default function RegisterUser({
         data.isAdmin
       );
 
-      console.log("response received:", postAccountResponse);
+      // console.log("response received:", postAccountResponse);
 
       if (!postAccountResponse.ok) {
         setRegistrationResponse(postAccountResponse);

@@ -26,7 +26,7 @@ class Dataset {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.log("Failed to validate dataset!", error);
+      // console.log("Failed to validate dataset!", error);
     }
   }
 

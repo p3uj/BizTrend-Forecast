@@ -23,7 +23,7 @@ export default function UploadDataset({ showModal, onPredictionComplete }) {
   // Set up WebSocket event listeners for real-time updates
   useEffect(() => {
     const handleDatasetUploaded = (data) => {
-      console.log("Dataset uploaded via WebSocket:", data);
+      // console.log("Dataset uploaded via WebSocket:", data);
       setRealTimeUpdates((prev) => [
         ...prev,
         `Dataset uploaded: ${data.message}`,
@@ -31,13 +31,13 @@ export default function UploadDataset({ showModal, onPredictionComplete }) {
     };
 
     const handlePredictionStarted = (data) => {
-      console.log("Prediction started via WebSocket:", data);
+      // console.log("Prediction started via WebSocket:", data);
       setCurrentStep(data.message);
       setRealTimeUpdates((prev) => [...prev, `Progress: ${data.message}`]);
     };
 
     const handlePredictionCompleted = (data) => {
-      console.log("Prediction completed via WebSocket:", data);
+      // console.log("Prediction completed via WebSocket:", data);
       setPredictionSuccess(true);
       setCurrentStep(data.message);
       setRealTimeUpdates((prev) => [...prev, `Completed: ${data.message}`]);
@@ -50,7 +50,7 @@ export default function UploadDataset({ showModal, onPredictionComplete }) {
     };
 
     const handlePredictionError = (data) => {
-      console.log("Prediction error via WebSocket:", data);
+      // console.log("Prediction error via WebSocket:", data);
       setCurrentStep(`Error: ${data.message}`);
       setRealTimeUpdates((prev) => [...prev, `Error: ${data.error}`]);
       setSubmitting(false);
@@ -117,7 +117,7 @@ export default function UploadDataset({ showModal, onPredictionComplete }) {
     </div>
   );
 
-  //console.log("file selected: ", fileSelected);
+  // console.log("file selected: ", fileSelected);
 
   const handleFileUpload = (event) => {
     if (event.target.files.length > 0) {
@@ -146,14 +146,14 @@ export default function UploadDataset({ showModal, onPredictionComplete }) {
       const validationResponse = await validateDataset.validate(fileSelected);
       setResponse(validationResponse);
 
-      console.log(validationResponse);
+      // console.log(validationResponse);
 
       if (validationResponse.valid) {
         // Step 2: Upload dataset
         setCurrentStep("Uploading dataset...");
 
         const uploadResponse = await dataset.postDataset(fileSelected);
-        //console.log("Upload response:", uploadResponse);
+        // console.log("Upload response:", uploadResponse);
 
         if (uploadResponse.id) {
           // Step 3: Generate ML predictions
@@ -163,7 +163,7 @@ export default function UploadDataset({ showModal, onPredictionComplete }) {
 
           const predictionResponse =
             await predictionService.generatePredictions(uploadResponse.id);
-          //console.log("Prediction response:", predictionResponse);
+          // console.log("Prediction response:", predictionResponse);
 
           if (predictionResponse.success) {
             setPredictionSuccess(true);
@@ -195,7 +195,7 @@ export default function UploadDataset({ showModal, onPredictionComplete }) {
         }
       }
     } catch (error) {
-      console.error("Error in submission process:", error);
+      // console.error("Error in submission process:", error);
       setResponse({
         valid: false,
         message: `Error: ${error.message || "An unexpected error occurred"}`,

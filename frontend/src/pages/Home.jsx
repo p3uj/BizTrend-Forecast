@@ -26,7 +26,7 @@ export default function Home() {
   const fetchLatestTrends = async () => {
     try {
       const latestTrends = await predictionService.getLatestTrends();
-      console.log("Latest trends:", latestTrends);
+      // console.log("Latest trends:", latestTrends);
       setGrowthRateData(latestTrends[0]);
       setRevenueData(latestTrends[1]);
       setLeastCrowdedData(latestTrends[2]);
@@ -34,7 +34,7 @@ export default function Home() {
       setLoading(false);
       setLastUpdateTime(new Date().toLocaleTimeString());
     } catch (error) {
-      console.error("Failed to fetch latest trends:", error);
+      // console.error("Failed to fetch latest trends:", error);
       setLoading(false);
     }
   };
@@ -56,23 +56,23 @@ export default function Home() {
 
     // Set up WebSocket event listeners
     const handleConnectionEstablished = (data) => {
-      console.log("WebSocket connected:", data.message);
+      // console.log("WebSocket connected:", data.message);
       setWebSocketConnected(true);
     };
 
     const handleConnectionLost = (data) => {
-      console.log("WebSocket disconnected:", data.message);
+      // console.log("WebSocket disconnected:", data.message);
       setWebSocketConnected(false);
     };
 
     const handlePredictionCompleted = (data) => {
-      console.log("Prediction completed:", data);
+      // console.log("Prediction completed:", data);
       // Automatically refresh data when predictions are completed
       fetchLatestTrends();
     };
 
     const handleDatasetUploaded = (data) => {
-      console.log("Dataset uploaded:", data);
+      // console.log("Dataset uploaded:", data);
       // You can add additional handling here if needed
     };
 

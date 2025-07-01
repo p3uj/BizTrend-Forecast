@@ -48,7 +48,7 @@ export default function ResetPassword() {
     }
   }, [responseStatus]);
 
-  console.log("responseStatus:", responseStatus);
+  // console.log("responseStatus:", responseStatus);
 
   return (
     <>

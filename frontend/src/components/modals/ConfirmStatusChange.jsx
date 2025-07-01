@@ -41,7 +41,7 @@ export default function ConfirmStatusChange({
         isShow();
       }
     } catch (error) {
-      console.log("Failed to change user status!", error);
+      // console.log("Failed to change user status!", error);
     } finally {
       setSubmitting(false);
     }
